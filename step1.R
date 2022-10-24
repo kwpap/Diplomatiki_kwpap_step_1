@@ -8,6 +8,7 @@ library("RMariaDB")
 library("RMySQL")
 library("ggplot2")
 
+
 # Load Data from csv file
 # Path: Data
 # File: GDP_per_capita_1960_2021.csv
@@ -89,8 +90,25 @@ d <- read.csv(file = "./Data/nrg_bal_s_1_Data.csv",
                      header = TRUE)
 d <- d[-c(4, 5, 7)]
 
+#Replace " " with "_" in NRG_BAL column
+d$NRG_BAL <- gsub(" ", "_", d$NRG_BAL)
+
+######################################################################################
+
 #Iterate the data frame and create several new ones
-#with the data for each GEO
-for (i in 1:length(unique(d$GEO))) {
-  assign(paste0("df_", unique(d$GEO)[i]), subset(d, d$GEO == unique(d$GEO)[i]))
-}
+#with the data for each NRG_BAL
+# for (i in 1:length(unique(d$NRG_BAL))) {
+#   assign(paste0("df_", unique(d$NRG_BAL)[i]), subset(d, d$NRG_BAL == unique(d$NRG_BAL)[i]))
+# }
+# So there are 8 new data frames
+# df_Energy_supply
+# df_Energy_use
+# df_Energy_imports
+# df_Energy_exports
+# df_Energy_production
+# df_Energy_consumption
+# df_Energy_final_consumption
+# df_Energy_final_consumption_of_households
+#######################################################################################
+
+
