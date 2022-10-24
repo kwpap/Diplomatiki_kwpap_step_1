@@ -73,5 +73,24 @@ df_Inflation <- df_Inflation[-1, ]
 
 # Example plot
 png("Greece_Inflation.png")
-plot(df_Inflation[1:62, which(colnames(df_Inflation) == "Greece")], type = "l", col = "red", xlab = "Year", ylab = "Inflation, consumer prices (annual %)")
+plot(df_Inflation[1:62, which(colnames(df_Inflation) == "Greece")], type = "b", col = "red", xlab = "Year", ylab = "Inflation, consumer prices (annual %)")
 dev.off()
+
+# Load Energy Balance data from csv file
+# Path: Data
+# File: nrg_bal_s_1_Data.csv
+# Source: https://ec.europa.eu/eurostat/databrowser/view/nrg_bal_s_1/default/table?lang=en
+# Data: Energy balance
+# Country: All countries
+# Year: 2011 - 2020
+# Unit: Thousand tonnes of oil equivalent
+
+d <- read.csv(file = "./Data/nrg_bal_s_1_Data.csv",
+                     header = TRUE)
+d <- d[-c(4, 5, 7)]
+
+#Iterate the data frame and create several new ones
+#with the data for each GEO
+for (i in 1:length(unique(d$GEO))) {
+  assign(paste0("df_", unique(d$GEO)[i]), subset(d, d$GEO == unique(d$GEO)[i]))
+}
