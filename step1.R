@@ -266,8 +266,10 @@ for (i in 1:nrow(df_distance)) {
     df_distance[i, j] <- sqrt((df[i, 2] - df[j, 2])^2 + (df[i, 3] - df[j, 3])^2 + (df[i, 4] - df[j, 4])^2 + (df[i, 5] - df[j, 5])^2)
   }
 }
-# Create png file of Heatmap of the dataframe df_distance
+# Create png file of Heatmap of the dataframe df_distance with the countries as rows and columns
 
-png("heatmap.png", width = 1000, height = 1000)
-heatmap(df_distance, Rowv = NA, Colv = NA, margins = c(5, 5), col = colorRampPalette(c("blue", "white", "red"))(100))
+
+
+png("heatmap.png", width = 2000, height = 2000)
+heatmap(as.matrix.data.frame(df_distance), Rowv = NA, Colv = NA, symm = TRUE, margins = c(10, 10), col = colorRampPalette(c("#3863ff8c","white", "red"))(100))
 dev.off()
