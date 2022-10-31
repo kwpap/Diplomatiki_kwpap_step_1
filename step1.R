@@ -117,8 +117,157 @@ d <- d[-c(4, 5, 7)]
 # Subtrack only data for Energy consumption from d dataframe
 df_total_energy_supply <- subset(d, d$NRG_BAL == "Total energy supply")
 
+year_for_comparison = 2015
+# Create a new dataframe with data for the year_of_comparison for each Country with colnames ("Country", "Energy_supply","Inflation","GDPpc")
+df_1 <- df_total_energy_supply[which(df_total_energy_supply$TIME == year_for_comparison),]
+# Omit Time and NRG_BAL columns
+df_1 <- df_1[,-c(1, 3)]
+colnames(df_1) = c("GEO", "Total_energy_supply")
+
+# Add a new column with Inflation data
+for (i in 1:nrow(df_1)){
+    value <- df_Inflation[year_for_comparison-1959, which(colnames(df_Inflation) == df_1$GEO[i])]
+    if (length(value) == 0) {
+        df_1$Inflation[i] <- 0
+    } else {
+        df_1$Inflation[i] <- value
+    }
+}
+# Omit "European Union - 27 countries (from 2020)", "Euro area - 19 countries  (from 2015)", "Germany (until 1990 former territory of the FRG)","Kosovo (under United Nations Security Council Resolution 1244/99)", "T\xfcrkiye" rows
+df_1 <- df_1[-c(1, 2, 7, 27, 37, 39),]
+
+#Change df_1$Inflation from character to numeric
+df_1$Inflation <- as.numeric(df_1$Inflation)
+
+# Add a new column with GDPpc data
+for (i in 1:nrow(df_1)){
+    value <- df_GDPpc[year_for_comparison-1959, which(colnames(df_GDPpc) == df_1$GEO[i])]
+    if (length(value) == 0) {
+        df_1$GDPpc[i] <- 0
+    } else {
+        df_1$GDPpc[i] <- value
+    }
+}
+df_1$GDPpc <- as.numeric(df_1$GDPpc)
+# remove commas from df_1$Total_energy_supply
+df_1$Total_energy_supply <- gsub(",", "", df_1$Total_energy_supply)
+df_1$Total_energy_supply <- as.numeric(df_1$Total_energy_supply)
+
+
+# Open population_2011_2021.tsv file and read it
+# Path: Data
+# File: population_2011_2021.tsv
+# Source: https://data.worldbank.org/indicator/SP.POP.TOTL
+# Data: Population, total
+# Country: All countries
+# Year: 2011 - 2021
+# Unit: Persons
+# Headers are on the 1st row
+df_population <- read.csv(file = "./Data/population_2011_2021.tsv",
+                    sep = "\t",
+                    header = TRUE,
+                    as.is = TRUE)
+
+#delete first 6 character from the first column
+df_population[,1] <- gsub(" ", "", df_population[,1])
+df_population[,1] <- substr(df_population[,1], 7, nchar(df_population[,1]))
+df_population <- df_population[,-c(2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13)]
+colnames(df_population) <- c("GEO_2LABBR", "2015")
+# Find the number in each entry of column X2015 and remove the rest
+df_population$"2015" <- gsub("[^0-9]", "", df_population$"2015")
+df_population$"2015" <- as.numeric(df_population$"2015")
+#Omit NA values
+df_population <- df_population[!is.na(df_population$"2015"),]
+df_population$"2015" <- as.numeric(df_population$"2015")
+# Replace 2 letter country code with country name
+df_population$"GEO_2LABBR" <- gsub("AL", "Albania", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("AT", "Austria", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("BA", "Bosnia and Herzegovina", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("BE", "Belgium", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("BG", "Bulgaria", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("CH", "Switzerland", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("CY", "Cyprus", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("CZ", "Czechia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("DE", "Germany", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("DK", "Denmark", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("EE", "Estonia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("ES", "Spain", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("FI", "Finland", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("FR", "France", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("GE", "Georgia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("GB", "United Kingdom", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("EL", "Greece", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("HR", "Croatia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("HU", "Hungary", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("IE", "Ireland", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("IS", "Iceland", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("IT", "Italy", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("LT", "Lithuania", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("LU", "Luxembourg", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("LV", "Latvia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("ME", "Montenegro", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("MK", "North Macedonia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("MT", "Malta", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("NL", "Netherlands", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("NO", "Norway", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("PL", "Poland", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("PT", "Portugal", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("RO", "Romania", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("RS", "Serbia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("SE", "Sweden", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("SI", "Slovenia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("SK", "Slovakia", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("TR", "Turkey", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("UA", "Ukraine", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("UK", "United Kingdom", df_population$"GEO_2LABBR")
+df_population$"GEO_2LABBR" <- gsub("XK", "Kosovo", df_population$"GEO_2LABBR")
+# Omit non common "SM" (San Marino), "MD" (MaryLand), "MC" (Monaco), "VA" (Vatican City), "LI" (Liechtenstein), "BY", "EA18", "EA19"
+df_population <- df_population[df_population$"GEO_2LABBR" != "SM",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "MD",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "MC",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "VA",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "LI",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "BY",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "EA18",]
+df_population <- df_population[df_population$"GEO_2LABBR" != "EA19",]
+
+
+colnames(df_population) <- c("GEO", "Year")
+
+# Merge the two dataframes
+df <- merge(df_1, df_population, by = c("GEO"), all.x = TRUE)
+
+#Omit Moldova
+df <- df[df$"GEO" != "Moldova",]
+
+colnames(df) <- c("GEO", "Total_energy_supply", "Inflation", "GDPpc", "Population")
+
+# Mormalize all the values to 0 to 1 of the df
+max_total_energy_supply <- max(df$"Total_energy_supply")
+max_inflation <- max(df$"Inflation")
+max_GDPpc <- max(df$"GDPpc")
+max_population <- max(df$"Population")
+
+df$"Total_energy_supply" <- df$"Total_energy_supply" / max_total_energy_supply
+df$"Inflation" <- df$"Inflation" / max_inflation
+df$"GDPpc" <- df$"GDPpc" / max_GDPpc
+df$"Population" <- df$"Population" / max_population
 
 
 
 
 
+# Create a 2 D dataframe with countries as rows and countries as columns and the value of the Eukleidian Distance between all the values the two countries
+df_distance <- data.frame(matrix(NA, nrow = nrow(df), ncol = nrow(df)))
+rownames(df_distance) <- df$"GEO"
+colnames(df_distance) <- df$"GEO"
+for (i in 1:nrow(df_distance)) {
+  for (j in 1:ncol(df_distance)) {
+    df_distance[i, j] <- sqrt((df[i, 2] - df[j, 2])^2 + (df[i, 3] - df[j, 3])^2 + (df[i, 4] - df[j, 4])^2 + (df[i, 5] - df[j, 5])^2)
+  }
+}
+# Create png file of Heatmap of the dataframe df_distance
+
+png("heatmap.png", width = 1000, height = 1000)
+heatmap(df_distance, Rowv = NA, Colv = NA, margins = c(5, 5), col = colorRampPalette(c("blue", "white", "red"))(100))
+dev.off()
