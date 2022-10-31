@@ -261,8 +261,8 @@ df$"Population" <- df$"Population" / max_population
 df_distance <- data.frame(matrix(NA, nrow = nrow(df), ncol = nrow(df)))
 rownames(df_distance) <- df$"GEO"
 colnames(df_distance) <- df$"GEO"
-for (i in 1:nrow(df_distance)) {
-  for (j in 1:ncol(df_distance)) {
+for (i in 1 : nrow(df_distance)) { #nolint
+  for (j in 1 : ncol(df_distance)) { # nolint 
     df_distance[i, j] <- sqrt((df[i, 2] - df[j, 2])^2 + (df[i, 3] - df[j, 3])^2 + (df[i, 4] - df[j, 4])^2 + (df[i, 5] - df[j, 5])^2)
   }
 }
@@ -270,6 +270,49 @@ for (i in 1:nrow(df_distance)) {
 
 
 
-png("heatmap.png", width = 2000, height = 2000)
+png("heatmap_distances.png", width = 2000, height = 2000)
 heatmap(as.matrix.data.frame(df_distance), Rowv = NA, Colv = NA, symm = TRUE, margins = c(10, 10), col = colorRampPalette(c("#3863ff8c","white", "red"))(100))
 dev.off()
+
+
+# Chapter 2: Calculating the distance of those countries from the database
+
+# DEFINITIONS FOR DATABASE
+db <- "eu_ets"           # name of database
+use <- "root"           # user name
+passwor <- ""     # password
+hos <- "localhost"       # host name
+
+
+# import countries from databse
+kanali <- dbConnect(RMariaDB::MariaDB(),
+                    user = use,
+                    password = passwor,
+                    dbname = db,
+                    host = hos)
+qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
+res <- dbSendQuery(kanali, qurry_countries) # send query to database
+countries <- dbFetch(res, n = -1) # fetch all data from querry
+dbClearResult(res) # clear result
+country_names <- countries[, 1]
+country_eu_abbr2L <- countries[, 3]
+
+
+
+
+for (i in 1:length(country_names)) {
+    df_temp <- data.frame()
+    rv <- vector()
+    querr <- paste(
+    "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
+    country_eu_abbr2L[i], "' AND etos ='2015'", sep = "", collapse = NULL)
+    res <- dbSendQuery(kanali, querr) # send query to database
+    verified <- dbFetch(res, n = -1) # fetch all data from querry
+    dbClearResult(res) # clear result
+    rv <- c(rv, verified[1,1])
+    print(rv)
+}
+df_temp <- data.frame(rv)
+colnames(df_temp) <- c(country_names[i])
+
+print ("vvv")
