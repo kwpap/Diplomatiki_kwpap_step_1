@@ -74,7 +74,9 @@ df_Inflation <- df_Inflation[-1, ]
 
 # Example plot
 png("Greece_Inflation.png")
-plot(df_Inflation[1:62, which(colnames(df_Inflation) == "Greece")], type = "b", col = "red", xlab = "Year", ylab = "Inflation, consumer prices (annual %)")
+plot(df_Inflation[1:62, which(colnames(df_Inflation) == "Greece")],
+    type = "b", col = "red", xlab = "Year", ylab = "Inflation,
+    consumer prices (annual %)")
 dev.off()
 
 # Load Energy Balance data from csv file
@@ -90,13 +92,14 @@ d <- read.csv(file = "./Data/nrg_bal_s_1_Data.csv",
                      header = TRUE)
 d <- d[-c(4, 5, 7)]
 
-#Replace " " with "_" in NRG_BAL column
-d$NRG_BAL <- gsub(" ", "_", d$NRG_BAL)
+
 
 ######################################################################################
 
 #Iterate the data frame and create several new ones
 #with the data for each NRG_BAL
+#Replace " " with "_" in NRG_BAL column
+# d$NRG_BAL <- gsub(" ", "_", d$NRG_BAL)
 # for (i in 1:length(unique(d$NRG_BAL))) {
 #   assign(paste0("df_", unique(d$NRG_BAL)[i]), subset(d, d$NRG_BAL == unique(d$NRG_BAL)[i]))
 # }
@@ -110,5 +113,12 @@ d$NRG_BAL <- gsub(" ", "_", d$NRG_BAL)
 # df_Energy_final_consumption
 # df_Energy_final_consumption_of_households
 #######################################################################################
+
+# Subtrack only data for Energy consumption from d dataframe
+df_total_energy_supply <- subset(d, d$NRG_BAL == "Total energy supply")
+
+
+
+
 
 
