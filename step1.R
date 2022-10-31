@@ -299,9 +299,8 @@ country_eu_abbr2L <- countries[, 3]
 
 
 
-
+df_temp <- data.frame()
 for (i in 1:length(country_names)) {
-    df_temp <- data.frame()
     rv <- vector()
     querr <- paste(
     "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
@@ -314,5 +313,3 @@ for (i in 1:length(country_names)) {
 }
 df_temp <- data.frame(rv)
 colnames(df_temp) <- c(country_names[i])
-
-print ("vvv")
