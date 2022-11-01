@@ -299,17 +299,56 @@ country_eu_abbr2L <- countries[, 3]
 
 
 
-df_temp <- data.frame()
+df_verified_emisions <- data.frame()
+colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
 for (i in 1:length(country_names)) {
-    rv <- vector()
     querr <- paste(
     "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
-    country_eu_abbr2L[i], "' AND etos ='2015'", sep = "", collapse = NULL)
+    country_eu_abbr2L[i], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
     res <- dbSendQuery(kanali, querr) # send query to database
     verified <- dbFetch(res, n = -1) # fetch all data from querry
     dbClearResult(res) # clear result
-    rv <- c(rv, verified[1,1])
-    print(rv)
+    print(verified[1,1])
+    df_verified_emisions <- rbind(df_verified_emisions, data.frame(country_names[i], verified[1,1]))
 }
-df_temp <- data.frame(rv)
-colnames(df_temp) <- c(country_names[i])
+colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
+
+
+# Calculate Eukleidian distance of the verified_emisions from df_verified_emisions and store them in df_actual_distance
+df_actual_distance <- data.frame(matrix(NA, nrow = nrow(df_verified_emisions), ncol = nrow(df_verified_emisions)))
+rownames(df_actual_distance) <- df_verified_emisions$"GEO"
+colnames(df_actual_distance) <- df_verified_emisions$"GEO"
+for (i in 1 : nrow(df_actual_distance)) { #nolint
+  for (j in 1 : ncol(df_actual_distance)) { # nolint 
+    df_actual_distance[i, j] <- sqrt((df_verified_emisions[i, 2] - df_verified_emisions[j, 2])^2 )
+  }
+}
+
+#Normalize values of df_actual_distance to 0 to 1
+max_actual_distance <- max(df_actual_distance)
+df_actual_distance <- df_actual_distance / max_actual_distance
+
+# Create png file of Heatmap of the dataframe df_actual_distance with the countries as rows and columns
+png("heatmap_actual_distances.png", width = 2000, height = 2000)
+heatmap(as.matrix.data.frame(df_actual_distance), Rowv = NA, Colv = NA, symm = TRUE, margins = c(10, 10), col = colorRampPalette(c("#3863ff8c","white", "red"))(100))
+dev.off()
+
+# Delete the non comon_countries
+
+non_common_countries <- colnames(df_distance)
+non_common_countries <- non_common_countries[!(non_common_countries %in% rownames(df_actual_distance))]
+
+#Omit non common countries from df_distance
+df_distance <- df_distance[!(rownames(df_distance) %in% non_common_countries),]
+df_distance <- df_distance[,!(colnames(df_distance) %in% non_common_countries)]
+
+colnames(df_actual_distance) 
+
+df_merged <- data.frame()
+
+for (i in 1 : nrow(df_actual_distance)) { #nolint
+  for (j in 1 : ncol(df_actual_distance)) { # nolint 
+    print(df_distance[colnames(df_actual_distance)[i])
+    df_merged <- rbind(df_merged, data.frame(df_distance[colnames(df_actual_distance)[i], rownames(df_actual_distance)[j]], df_actual_distance[i, j]))
+  }
+}
