@@ -134,7 +134,10 @@ for (i in 1:nrow(df_1)){
     }
 }
 # Omit "European Union - 27 countries (from 2020)", "Euro area - 19 countries  (from 2015)", "Germany (until 1990 former territory of the FRG)","Kosovo (under United Nations Security Council Resolution 1244/99)", "T\xfcrkiye" rows
-df_1 <- df_1[-c(1, 2, 7, 27, 37, 39),]
+df_1 <- df_1[-c(1, 2, 27, 37, 39),]
+
+#change the name of the country "Germany (until 1990 former territory of the FRG)" to "Germany"
+df_1$GEO[which(df_1$GEO == "Germany (until 1990 former territory of the FRG)")] <- "Germany"
 
 #Change df_1$Inflation from character to numeric
 df_1$Inflation <- as.numeric(df_1$Inflation)
@@ -342,13 +345,49 @@ non_common_countries <- non_common_countries[!(non_common_countries %in% rowname
 df_distance <- df_distance[!(rownames(df_distance) %in% non_common_countries),]
 df_distance <- df_distance[,!(colnames(df_distance) %in% non_common_countries)]
 
-colnames(df_actual_distance) 
 
-df_merged <- data.frame()
+#Sort alphabetically the columns and rows of df_distance 
+df_distance <- df_distance[order(rownames(df_distance)), order(colnames(df_distance))]
+df_actual_distance <- df_actual_distance[order(rownames(df_actual_distance)), order(colnames(df_actual_distance))]
+colnames(df_distance) == rownames(df_actual_distance)
 
-for (i in 1 : nrow(df_actual_distance)) { #nolint
-  for (j in 1 : ncol(df_actual_distance)) { # nolint 
-    print(df_distance[colnames(df_actual_distance)[i])
-    df_merged <- rbind(df_merged, data.frame(df_distance[colnames(df_actual_distance)[i], rownames(df_actual_distance)[j]], df_actual_distance[i, j]))
+#Omit from actual distance rows and columns "Slovakia" and "Czech Republic"
+df_actual_distance <- df_actual_distance[!(rownames(df_actual_distance) %in% c("Slovakia", "Czech Republic")),]
+df_actual_distance <- df_actual_distance[,!(colnames(df_actual_distance) %in% c("Slovakia", "Czech Republic"))]
+
+colnames(df_distance) == rownames(df_actual_distance)
+
+
+# Create a 1D dataframe containing a tuple with 1 value from df_distance and 1 value from df_actual_distance
+df_1D <- data.frame(matrix(NA, nrow = nrow(df_distance) * ncol(df_distance), ncol = 2))
+colnames(df_1D) <- c("df_distance", "df_actual_distance")
+for (i in 1 : nrow(df_distance)) { #nolint
+  for (j in 1 : ncol(df_distance)) { # nolint 
+    df_1D[(i-1)*ncol(df_distance) + j, 1] <- df_distance[i, j]
+    df_1D[(i-1)*ncol(df_distance) + j, 2] <- df_actual_distance[i, j]
   }
 }
+
+
+# Remove rows with NA and 0
+df_1D <- df_1D[!is.na(df_1D$"df_distance"),]
+df_1D <- df_1D[!is.na(df_1D$"df_actual_distance"),]
+df_1D <- df_1D[df_1D$"df_distance" != 0,]
+df_1D <- df_1D[df_1D$"df_actual_distance" != 0,]
+
+lm <- lm(df_1D$"df_actual_distance" ~ df_1D$"df_distance")
+summary(lm)
+
+# Create png with the regression line
+png(paste("scatterplot_with_regression_line_",year_for_comparison,".png") , width = 1000, height = 1000)
+plot(df_1D$"df_distance", df_1D$"df_actual_distance", xlab = "calculated", ylab = "Actual", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))
+abline(lm, col = "red")
+dev.off()
+
+
+
+
+####################################################################################
+# Let's add more data and repeat the calculations
+####################################################################################
+
