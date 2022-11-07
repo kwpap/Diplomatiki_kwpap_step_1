@@ -10,3 +10,10 @@ Path_data/Untitled.png
 heatmap_merged.png
 heatmap_actual_distances.png
 *.png
+R_tests.R
+linear_regration_summary_for 2018 .txt
+linear_regration_summary_for 2017 .txt
+linear_regration_summary_for 2016 .txt
+linear_regration_summary_for 2015 .txt
+linear_regration_summary_for 2014 .txt
+Data/mlb2017players.txt
