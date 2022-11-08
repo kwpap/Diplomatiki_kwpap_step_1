@@ -1,0 +1,19 @@
+
+Call:
+lm(formula = df_1D$df_actual_distance ~ df_1D$df_distance)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.39755 -0.07279  0.01282  0.05442  0.42568 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -0.05067    0.01255  -4.036 6.79e-05 ***
+df_1D$df_distance  0.52049    0.01976  26.337  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1312 on 323 degrees of freedom
+Multiple R-squared:  0.6823,	Adjusted R-squared:  0.6813 
+F-statistic: 693.6 on 1 and 323 DF,  p-value: < 2.2e-16
+
