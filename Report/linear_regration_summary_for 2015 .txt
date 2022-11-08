@@ -1,0 +1,8 @@
+null device 
+          1 
+--- Please select a CRAN mirror for use in this session ---
+package 'zip' successfully unpacked and MD5 sums checked
+package 'openxlsx' successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\Kostas\AppData\Local\Temp\Rtmpqifg1o\downloaded_packages

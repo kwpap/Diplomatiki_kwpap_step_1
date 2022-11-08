@@ -14,6 +14,7 @@ library("RMySQL")
 library("ggplot2")
 
 
+will_use_log <- TRUE
 year_for_comparison <- 2015
 
 # Load Data from csv file
@@ -337,7 +338,13 @@ my_data <- my_data[, -c(2,6,7)]
 
 df <- merge(df, my_data, by = c("GEO"), all.x = FALSE)
 
-# Mormalize all the values to 0 to 1 of the df
+
+if (will_use_log){
+    df[,2] <- log(df[,2])
+    df[,4:9] <- log(df[,4:9])
+
+}
+
 max_total_energy_supply <- max(df$"Total_energy_supply")
 max_inflation <- max(df$"Inflation")
 max_GDPpc <- max(df$"GDPpc")
@@ -374,16 +381,16 @@ for (i in 1 : nrow(df_distance)) { #nolint
 }
 
 # save a file "distance_2015.tex" with the content of the dataframe df_distance
-# <<results=tex>>
-#     xtable(df_distance, caption = "Distance between countries in 2015", label = "tab:distance_2015")
-# @ 
+<<results=tex>>
+    xtable(df_distance[,21:26], caption = "Distance between countries in 2015", label = "tab:distance_2015")
+@ 
 
 
 # Create png file of Heatmap of the dataframe df_distance with the countries as rows and columns
 
 
 
-png(paste("heatmap_distances_of_", year_for_comparison,"with_full_data.png", sep=""), width = 2000, height = 2000)
+png(paste("heatmap_distances_of_", year_for_comparison,"with_full_data_and_log=", will_use_log, ".png", sep=""), width = 2000, height = 2000)
 heatmap(as.matrix.data.frame(df_distance), Rowv = NA, Colv = NA, symm = TRUE, margins = c(10, 10), col = colorRampPalette(c("#3863ff8c","white", "red"))(100))
 dev.off()
 
@@ -400,7 +407,9 @@ for (i in 1:length(country_names)) { # nolint
     df_free_allocation <- rbind(df_free_allocation, data.frame("GEO" = country_names[i], "verified_emisions" = verified[1,1]))
 }
 colnames(df_free_allocation) <- c("GEO", "verified_emisions")
-
+if (will_use_log){
+    df_free_allocation$"verified_emisions" <- log(df_free_allocation$"verified_emisions")
+}
 
 # Calculate Eukleidian distance of the verified_emisions from df_free_allocation and store them in df_actual_distance
 df_actual_distance <- data.frame(matrix(NA, nrow = nrow(df_free_allocation), ncol = nrow(df_free_allocation)))
@@ -417,7 +426,7 @@ max_actual_distance <- max(df_actual_distance)
 df_actual_distance <- df_actual_distance / max_actual_distance
 
 # Create png file of Heatmap of the dataframe df_actual_distance with the countries as rows and columns
-png("heatmap_actual_distances+with_all_data.png", width = 2000, height = 2000)
+png("heatmap_actual_distances_with_all_data", width = 2000, height = 2000)
 heatmap(as.matrix.data.frame(df_actual_distance), Rowv = NA, Colv = NA, symm = TRUE, margins = c(10, 10), col = colorRampPalette(c("#3863ff8c","white", "red"))(100))
 dev.off()
 
@@ -465,14 +474,14 @@ lm <- lm(df_1D$"df_actual_distance" ~ df_1D$"df_distance")
 summary(lm)
 
 #write that summary to a file
-sink(paste("linear_regration_summary_for", year_for_comparison, "_with_all_data.txt"))
+sink(paste("linear_regration_summary_for", year_for_comparison, "_with_all_data_and_log=", will_use_log, ".txt"))
 summary(lm)
 sink()
 
 
 
 # Create png with the regression line
-png(paste("scatterplot_with_regression_line_",year_for_comparison,"_with_all_data_.png") , width = 1000, height = 1000)
+png(paste("scatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
 plot(df_1D$"df_distance", df_1D$"df_actual_distance", xlab = "calculated", ylab = "Actual", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))
 # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
 points(df_1D[ str_detect(df_1D$"pair", regex(".Germany")), 1], df_1D[str_detect(df_1D$"pair", regex(".Germany")), 2], col = "red")
