@@ -381,9 +381,9 @@ for (i in 1 : nrow(df_distance)) { #nolint
 }
 
 # save a file "distance_2015.tex" with the content of the dataframe df_distance
-<<results=tex>>
-    xtable(df_distance[,21:26], caption = "Distance between countries in 2015", label = "tab:distance_2015")
-@ 
+#<<results=tex>>
+ #   xtable(df_distance[,21:26], caption = "Distance between countries in 2015", label = "tab:distance_2015")
+#@ 
 
 
 # Create png file of Heatmap of the dataframe df_distance with the countries as rows and columns
