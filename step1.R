@@ -9,9 +9,9 @@ library("xlsx")
 library("xtable") # Load xtable package
 library("stringr")
 library("DBI")
-library("RMariaDB")
+# library("RMariaDB")
 library("RMySQL")
-library("ggplot2")
+# library("ggplot2")
 
 
 will_use_log <- TRUE
