@@ -1,5 +1,5 @@
 will_use_log <- TRUE
-year_for_comparison <- 2012
+year_for_comparison <- 1968
 will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE
@@ -10,6 +10,8 @@ will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
 will_normalise <- TRUE
 force_fresh_data <- FALSE
+use_mean_for_missing_data <- TRUE # for psecific countries not whole rows
+information_text <- list()
 # read_data <- function() {
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
@@ -132,88 +134,33 @@ force_fresh_data <- FALSE
     }
 
     if (will_use_population){
-        # Open population_2011_2021.tsv file and read it
+        # Load Population data from csv file
         # Path: Data
-        # File: population_2011_2021.tsv
+        # File: API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv
         # Source: https://data.worldbank.org/indicator/SP.POP.TOTL
-        # Data: Population, total
         # Country: All countries
-        # Year: 2011 - 2021
+        # Year: 1960 - 2021
         # Unit: Persons
-        # Headers are on the 1st row
-        df_population <- read.csv(file = "./Data/population_2011_2021.tsv",
-                            sep = "\t",
-                            header = TRUE,
+
+        # Headers are on the 4rth row
+        headers <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
+                            skip = 4,
+                            header = FALSE,
+                            nrows = 1,
                             as.is = TRUE)
+        df_population <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
+                            skip = 4, header = FALSE)
+        colnames(df_population) <- headers
 
-        #delete first 6 character from the first column
-        df_population[,1] <- gsub(" ", "", df_population[,1])
-        df_population[,1] <- substr(df_population[,1], 7, nchar(df_population[,1]))
-        df_population <- df_population[,c(1,which(colnames(df_population) == paste("X", year_for_comparison, sep="" )))]
-        # edo isos egine akoma pio ilithia to diavasma
+        # Create new dataframe, where colnames are the country names
+        # and the rows are the years
+        df_population <- subset(df_population, select = -c(2, 3, 4))
+        df_population <- t(df_population)
+        colnames(df_population) <- df_population[1, ]
+        df_population <- df_population[-1, ]
+        for (i in 1:nrow(df_1)) {
 
-
-        colnames(df_population) <- c("GEO_2LABBR", year_for_comparison)
-        # Find the number in each entry of column X2015 and remove the rest
-        df_population[,2] <- gsub("[^0-9]", "", df_population[,2])
-        #Omit NA values
-        df_population <- df_population[!is.na(df_population[,2]),]
-        df_population[,2] <- as.numeric(df_population[,2])
-        # Replace 2 letter country code with country name
-        df_population$"GEO_2LABBR" <- gsub("AL", "Albania", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("AT", "Austria", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("BA", "Bosnia and Herzegovina", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("BE", "Belgium", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("BG", "Bulgaria", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("CH", "Switzerland", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("CY", "Cyprus", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("CZ", "Czechia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("DE", "Germany", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("DK", "Denmark", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("EE", "Estonia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("ES", "Spain", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("FI", "Finland", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("FR", "France", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("GE", "Georgia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("GB", "United Kingdom", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("EL", "Greece", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("HR", "Croatia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("HU", "Hungary", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("IE", "Ireland", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("IS", "Iceland", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("IT", "Italy", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("LT", "Lithuania", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("LU", "Luxembourg", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("LV", "Latvia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("ME", "Montenegro", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("MK", "North Macedonia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("MT", "Malta", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("NL", "Netherlands", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("NO", "Norway", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("PL", "Poland", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("PT", "Portugal", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("RO", "Romania", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("RS", "Serbia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("SE", "Sweden", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("SI", "Slovenia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("SK", "Slovakia", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("TR", "Turkey", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("UA", "Ukraine", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("UK", "United Kingdom", df_population$"GEO_2LABBR")
-        df_population$"GEO_2LABBR" <- gsub("XK", "Kosovo", df_population$"GEO_2LABBR")
-        # Omit non common "SM" (San Marino), "MD" (MaryLand), "MC" (Monaco), "VA" (Vatican City), "LI" (Liechtenstein), "BY", "EA18", "EA19"
-        df_population <- df_population[df_population$"GEO_2LABBR" != "SM",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "MD",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "MC",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "VA",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "LI",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "BY",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "EA18",]
-        df_population <- df_population[df_population$"GEO_2LABBR" != "EA19",]
-        colnames(df_population) <- c("GEO", "Population")
-
-        for (i in 1:nrow(df_1)){
-            df_1$Population[i] <- as.integer(df_population$Population[which(df_population$GEO == df_1$GEO[i])])
+            df_1$Population[i] <- as.numeric(df_population[year_for_comparison-1959, which(colnames(df_population) == df_1$"GEO"[i])])
         }
     }
 
@@ -313,6 +260,20 @@ force_fresh_data <- FALSE
             df_1$Manufacturing[i] <- as.numeric(my_data$Manufacturing[which(my_data$GEO == df_1$GEO[i])])
         }
     }
+    
+    if (use_mean_for_missing_data){
+        for (i in 1:ncol(df_1)){
+            for(j in 1:nrow(df_1)){
+                if (is.na(df_1[j,i])){
+                    information_text <- append(information_text, paste("Missing data in ", colnames(df_1)[i], " for ", df_1$GEO[j], " in year ", year_for_comparison, ". Replaced with mean value.", sep = "" ))
+                }
+            }
+            if (sum(is.na(df_1[,i])) > 0){
+                df_1[,i][is.na(df_1[,i])] <- mean(df_1[,i], na.rm = TRUE)
+            }
+        }
+    }
+
     if (will_use_log){
         df_1$Total_energy_supply <- log(abs(df_1$Total_energy_supply))
 
@@ -344,7 +305,7 @@ force_fresh_data <- FALSE
         df_1$Industry <- df_1$Industry / max_Industry
         df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
     }
-
+    print(information_text)
     
     #save csv file of df_1
     # text <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
