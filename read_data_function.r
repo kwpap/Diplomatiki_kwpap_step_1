@@ -1,21 +1,8 @@
-read_data <- function(will_use_log <- TRUE,
-year_for_comparison <- 2015,
-will_use_total_energy_supply <- TRUE,
-will_use_inflation <- TRUE,
-will_use_GDPpc <- TRUE,
-will_use_population <- TRUE,
-will_use_verified_emisions <- TRUE,
-will_use_agriculture <- TRUE,
-will_use_industry <- TRUE,
-will_use_manufacturing <- TRUE,
-will_normalise <- TRUE,
-force_fresh_data <- FALSE,
-use_mean_for_missing_data <- TRUE) {
+read_data <- function(will_use_log = TRUE, year_for_comparison = 2015, will_use_total_energy_supply = TRUE, will_use_inflation = TRUE, will_use_GDPpc = TRUE, will_use_population = TRUE, will_use_verified_emisions = TRUE, will_use_agriculture = TRUE, will_use_industry = TRUE, will_use_manufacturing = TRUE, will_normalise = TRUE, force_fresh_data = FALSE, use_mean_for_missing_data = TRUE) {
     information_text <- list()
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
     will_use <- c(will_use_total_energy_supply, will_use_GDPpc, will_use_population, will_use_inflation,will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing)
-    if (will_use_agriculture & !)
     text <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
                     (if(will_normalise) "_norm" else ""),
                     (if(will_use_total_energy_supply) "_tes" else ""),
@@ -323,8 +310,8 @@ use_mean_for_missing_data <- TRUE) {
     write.csv(df_1, file = paste("./Data/created_csvs/",text, sep = "" ), row.names = TRUE)
     return(df_1)
 }
-read_data(will_use_log <- TRUE,
-year_for_comparison <- 2015,
+read_data(will_use_log <- FALSE,
+year_for_comparison <- 2016,
 will_use_total_energy_supply <- TRUE,
 will_use_inflation <- TRUE,
 will_use_GDPpc <- TRUE,
@@ -335,4 +322,4 @@ will_use_industry <- TRUE,
 will_use_manufacturing <- TRUE,
 will_normalise <- TRUE,
 force_fresh_data <- FALSE,
-use_mean_for_missing_data <- TRUE) # for psecific countries not whole rows)
+use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
