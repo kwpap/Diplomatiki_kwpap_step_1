@@ -1,5 +1,5 @@
 will_use_log <- TRUE
-year_for_comparison <- 1968
+year_for_comparison <- 2015
 will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE
@@ -15,6 +15,8 @@ information_text <- list()
 # read_data <- function() {
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
+    will_use <- c(will_use_total_energy_supply, will_use_GDPpc, will_use_population, will_use_inflation,will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing)
+    if (will_use_agriculture & !)
     text <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
                     (if(will_normalise) "_norm" else ""),
                     (if(will_use_total_energy_supply) "_tes" else ""),
@@ -125,8 +127,7 @@ information_text <- list()
         d <- d[-c(4, 5, 7)]
         df_total_energy_supply <- subset(d, d$NRG_BAL == "Total energy supply")
         df_total_energy_supply$GEO[which(df_total_energy_supply$GEO == "Germany (until 1990 former territory of the FRG)")] <- "Germany"
-        for (i in 1:nrow(df_1)) {
-            print(df_1$"GEO"[i])
+        for (i in 1:nrow(df_1)) {   
             df_1$"Total_energy_supply"[i] <- df_total_energy_supply$"Value"[which(df_total_energy_supply$TIME == year_for_comparison & df_total_energy_supply$GEO == df_1$"GEO"[i])]
         }
         df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
@@ -260,9 +261,10 @@ information_text <- list()
             df_1$Manufacturing[i] <- as.numeric(my_data$Manufacturing[which(my_data$GEO == df_1$GEO[i])])
         }
     }
-    
+
     if (use_mean_for_missing_data){
         for (i in 1:ncol(df_1)){
+
             for(j in 1:nrow(df_1)){
                 if (is.na(df_1[j,i])){
                     information_text <- append(information_text, paste("Missing data in ", colnames(df_1)[i], " for ", df_1$GEO[j], " in year ", year_for_comparison, ". Replaced with mean value.", sep = "" ))
