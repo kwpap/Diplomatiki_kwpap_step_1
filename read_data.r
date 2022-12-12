@@ -1,4 +1,16 @@
-read_data <- function(will_use_log = TRUE, year_for_comparison = 2015, will_use_total_energy_supply = TRUE, will_use_inflation = TRUE, will_use_GDPpc = TRUE, will_use_population = TRUE, will_use_verified_emisions = TRUE, will_use_agriculture = TRUE, will_use_industry = TRUE, will_use_manufacturing = TRUE, will_normalise = TRUE, force_fresh_data = FALSE, use_mean_for_missing_data = TRUE) {
+read_data <- function(will_use_log = TRUE,
+year_for_comparison = 2015,
+will_use_total_energy_supply = TRUE,
+will_use_inflation = TRUE,
+will_use_GDPpc = TRUE,
+will_use_population = TRUE,
+will_use_verified_emisions = TRUE,
+will_use_agriculture = TRUE,
+will_use_industry = TRUE,
+will_use_manufacturing = TRUE,
+will_normalise = TRUE,
+force_fresh_data = FALSE,
+use_mean_for_missing_data = TRUE) {
     information_text <- list()
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
@@ -308,18 +320,19 @@ read_data <- function(will_use_log = TRUE, year_for_comparison = 2015, will_use_
                         # (if(will_use_manufacturing) "_man" else ""),
                         # ".csv", sep = "")
     write.csv(df_1, file = paste("./Data/created_csvs/",text, sep = "" ), row.names = TRUE)
+    dbDisconnect()
     return(df_1)
 }
-read_data(will_use_log <- FALSE,
-year_for_comparison <- 2016,
-will_use_total_energy_supply <- TRUE,
-will_use_inflation <- TRUE,
-will_use_GDPpc <- TRUE,
-will_use_population <- TRUE,
-will_use_verified_emisions <- TRUE,
-will_use_agriculture <- TRUE,
-will_use_industry <- TRUE,
-will_use_manufacturing <- TRUE,
-will_normalise <- TRUE,
-force_fresh_data <- FALSE,
-use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
+# read_data(will_use_log <- TRUE,
+# year_for_comparison <- 2017,
+# will_use_total_energy_supply <- TRUE,
+# will_use_inflation <- TRUE,
+# will_use_GDPpc <- TRUE,
+# will_use_population <- TRUE,
+# will_use_verified_emisions <- TRUE,
+# will_use_agriculture <- TRUE,
+# will_use_industry <- TRUE,
+# will_use_manufacturing <- TRUE,
+# will_normalise <- TRUE,
+# force_fresh_data <- FALSE,
+# use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
