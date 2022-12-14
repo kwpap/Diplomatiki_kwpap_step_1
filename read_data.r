@@ -1,4 +1,5 @@
-read_data <- function(will_use_log = TRUE,
+read_data <- function(
+will_use_log = TRUE,
 year_for_comparison = 2015,
 will_use_total_energy_supply = TRUE,
 will_use_inflation = TRUE,
@@ -12,10 +13,13 @@ will_normalise = TRUE,
 force_fresh_data = FALSE,
 use_mean_for_missing_data = TRUE) {
     information_text <- list()
+    
+
+    
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
     will_use <- c(will_use_total_energy_supply, will_use_GDPpc, will_use_population, will_use_inflation,will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing)
-    text <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
+    text_s <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
                     (if(will_normalise) "_norm" else ""),
                     (if(will_use_total_energy_supply) "_tes" else ""),
                     (if(will_use_verified_emisions) "_ve" else ""),
@@ -27,9 +31,9 @@ use_mean_for_missing_data = TRUE) {
                     (if(will_use_manufacturing) "_man" else ""),
                     ".csv", sep = "")
 
-    if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text, sep = ""))) {
+    if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
         print ("Using Cached Data")
-        return(read.csv(file = paste("./Data/created_csvs/",text, sep = ""),
+        return(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
                         header = TRUE))
     }
 
@@ -39,7 +43,7 @@ use_mean_for_missing_data = TRUE) {
     library("DBI")
     library("RMySQL")
     df_1 <- data.frame()
-    list_eur_countries <- c("Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovenia", "Spain", "Sweden","United Kingdom")
+    list_eur_countries <- c("Austria", "Belgium", "Bulgaria", "Cyprus", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovenia", "Spain", "Sweden","United Kingdom")
     df_1 <- data.frame(list_eur_countries)
     zero_vector <- rep(1, length(list_eur_countries))
     for (i in 1:8) {
@@ -110,27 +114,6 @@ use_mean_for_missing_data = TRUE) {
         }
     }
 
-    if (will_use_total_energy_supply) {
-        # Load Energy Balance data from csv file
-        # Path: Data
-        # File: nrg_bal_s_1_Data.csv
-        # Source: http://wdi.worldbank.org/table/4.2
-        # Data: Energy balance
-        # Country: All countries
-        # Year: 2011 - 2020
-        # Unit: Thousand tonnes of oil equivalent
-
-        d <- read.csv(file = "./Data/nrg_bal_s_1_Data.csv",
-                            header = TRUE)
-        d <- d[-c(4, 5, 7)]
-        df_total_energy_supply <- subset(d, d$NRG_BAL == "Total energy supply")
-        df_total_energy_supply$GEO[which(df_total_energy_supply$GEO == "Germany (until 1990 former territory of the FRG)")] <- "Germany"
-        for (i in 1:nrow(df_1)) {   
-            df_1$"Total_energy_supply"[i] <- df_total_energy_supply$"Value"[which(df_total_energy_supply$TIME == year_for_comparison & df_total_energy_supply$GEO == df_1$"GEO"[i])]
-        }
-        df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
-
-    }
 
     if (will_use_population){
         # Load Population data from csv file
@@ -210,6 +193,37 @@ use_mean_for_missing_data = TRUE) {
         }
     }
 
+    if (will_use_total_energy_supply) {
+      # Load Energy Balance data from csv file
+      # Path: Data
+      # File: nrg_bal_s__custom_4143365_linear.csv
+      # Source: Eurostat
+      # Data tree :  All data -> Environment and energy -> Energy -> Energy statistics -> quantities Energy statistics -> quantities, annual data -> Energy balances
+      # Data name on Eurostat : Simplified energy balances 
+      # Data: Energy balance
+      # Country: All countries
+      # Year: 1990 - 2020
+      # Unit: Thousand tonnes of oil equivalent
+      # nrg_bal codes:
+      # Primary production     		      -> PPRD
+      # Imports                	      	-> IMP
+      # Exports                         -> EXP
+      # Gross Available Energy          -> GAE
+      # Total energy supply             -> NRGSUP
+      # Available for final consumption -> AFC
+      
+      d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
+                    header = TRUE)
+      d <- d[-c(1, 2, 3, 5, 6, 10)]
+      df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
+      
+      for (i in 1:nrow(df_1)) {
+        df_1$"Total_energy_supply"[i] <- df_total_energy_supply$OBS_VALUE[which(df_total_energy_supply$TIME_PERIOD == year_for_comparison & df_total_energy_supply$geo == countries$eu_abbr2L[which(countries$name == df_1$"GEO"[i])])]
+      }
+      df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
+      
+    }
+
     if (will_use_agriculture | will_use_industry | will_use_manufacturing){
         # import data from World Bank
         # Path: Data
@@ -221,10 +235,15 @@ use_mean_for_missing_data = TRUE) {
         # Unit: Billions USD and percentage
         # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
         # We will only use the 2020 data
-
         my_data <- read.csv(file = "./Data/4.2_Structure_of_value_added.csv", sep = ",", header = FALSE, stringsAsFactors = FALSE)
         my_data <- my_data[5:230,] # Omit usesless info at the bottom
-        my_data <- my_data[, -c(2,4,6,8,10 )] #Omit 2010
+        if (year_for_comparison < 2016){
+          my_data <- my_data[, -c(3,5,7,9,11 )] #Omit 2020
+        }
+        if (year_for_comparison > 2015){
+          my_data <- my_data[, -c(2,4,6,8,10 )] #Omit 2010
+        }
+
         colnames(my_data) <- c("GEO","GDP", "Agriculture", "Industry",  "Manufacturing", "Services")
 
         # Delete all rows from my_data whose GEO is not in df_1
@@ -319,20 +338,20 @@ use_mean_for_missing_data = TRUE) {
                         # (if(will_use_industry) "_ind" else ""),
                         # (if(will_use_manufacturing) "_man" else ""),
                         # ".csv", sep = "")
-    write.csv(df_1, file = paste("./Data/created_csvs/",text, sep = "" ), row.names = TRUE)
-    dbDisconnect()
+    write.csv(df_1, file = paste("./Data/created_csvs/",text_s, sep = "" ), row.names = TRUE)
     return(df_1)
 }
-# read_data(will_use_log <- TRUE,
-# year_for_comparison <- 2017,
-# will_use_total_energy_supply <- TRUE,
-# will_use_inflation <- TRUE,
-# will_use_GDPpc <- TRUE,
-# will_use_population <- TRUE,
-# will_use_verified_emisions <- TRUE,
-# will_use_agriculture <- TRUE,
-# will_use_industry <- TRUE,
-# will_use_manufacturing <- TRUE,
-# will_normalise <- TRUE,
-# force_fresh_data <- FALSE,
-# use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
+
+#read_data(will_use_log <- TRUE,
+#year_for_comparison <- 2010,
+#will_use_total_energy_supply <- TRUE,
+#will_use_inflation <- TRUE,
+#will_use_GDPpc <- TRUE,
+#will_use_population <- TRUE,
+#will_use_verified_emisions <- TRUE,
+#will_use_agriculture <- TRUE,
+#will_use_industry <- TRUE,
+#will_use_manufacturing <- TRUE,
+#will_normalise <- TRUE,
+#force_fresh_data <- TRUE,
+#use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)

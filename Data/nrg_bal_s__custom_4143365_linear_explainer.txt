@@ -1,0 +1,17 @@
+To dataset είναι στο:
+c.europa.eu/eurostat/databrowser/view/NRG_BAL_S__custom_4143221/default/table?lang=en
+All data -> Environment and energy -> Energy -> Energy statistics -> quantities Energy statistics -> quantities, annual data -> Energy balances
+
+Simplified energy balances
+
+Για να κατεβάσουμε το συκγκεκριμένο αρχείο χρειάστηκε να χρησιμοποιήσουμε τις παρακάτω ευθμίσεις:
+
+Όλα τα GEO
+Όλα τα Time
+Κααι τα types:
+Primary production     		-> PPRD
+Imports                		-> IMP
+Exports                         -> EXP
+Gross Available Energy          -> GAE
+Total energy supply             -> NRGSUP
+Available for final consumption -> AFC
