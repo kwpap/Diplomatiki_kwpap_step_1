@@ -184,6 +184,7 @@ use_mean_for_missing_data = TRUE) {
             dbClearResult(res) # clear result
             df_verified_emisions <- rbind(df_verified_emisions, data.frame("GEO" = country_names[i], "verified_emisions" = verified[1,1]))
         }
+        dbDisconnect(kanali)
         colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
 
 
@@ -342,6 +343,56 @@ use_mean_for_missing_data = TRUE) {
     return(df_1)
 }
 
+
+read_free <- function(df_geo, year, will_normalise, will_use_log){
+  library("xlsx")
+  library("xtable") # Load xtable package
+  library("stringr")
+  library("DBI")
+  library("RMySQL")
+  # DEFINITIONS FOR DATABASE
+  db <- "eu_ets"           # name of database
+  use <- "root"           # user name
+  passwor <- ""     # password
+  hos <- "localhost"       # host name
+  
+  kanali <- dbConnect(RMariaDB::MariaDB(),
+                      user = use,
+                      password = passwor,
+                      dbname = db,
+                      host = hos)
+  ##################################
+  # include verified emissions data
+  ##################################
+  qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
+  res <- dbSendQuery(kanali, qurry_countries) # send query to database
+  countries <- dbFetch(res, n = -1) # fetch all data from querry
+  dbClearResult(res) # clear result
+
+  df_free <- data.frame(nrow = 50,ncol  = 2)
+  colnames(df_free) <- c("GEO", "Free")
+  for (i in 1:length(df_geo)) { # nolint
+    querr <- paste(
+      "SELECT SUM(freeAlloc) FROM `eutl_compliance` WHERE country = '",
+      countries$eu_abbr2L[which (countries$name == df_geo[i])], "' AND etos ='",year,"'", sep = "", collapse = NULL)
+    res <- dbSendQuery(kanali, querr) # send query to database
+    free <- dbFetch(res, n = -1) # fetch all data from querry
+    dbClearResult(res) # clear result
+    df_free <- rbind(df_free, data.frame("GEO" = df_geo[i], "Free" = free[1,1]))
+  }
+  df_free$Free <- as.numeric(df_free$Free)
+  colnames(df_free) <- c("GEO", "Free")
+  dbDisconnect(kanali)
+  if (will_use_log){
+    df_free$Free <- log(abs(df_free$Free))
+  }
+  if (will_normalise){
+    df_free$Free <- df_free$Free/max(df_free$Free)
+  }
+
+  
+  return (df_free)
+}
 #read_data(will_use_log <- TRUE,
 #year_for_comparison <- 2010,
 #will_use_total_energy_supply <- TRUE,
