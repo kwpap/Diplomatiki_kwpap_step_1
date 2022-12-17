@@ -1,7 +1,7 @@
 source("read_data.R")
-test_read_data <-read_data( TRUE, 2017,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+test_read_data <-read_data( TRUE, 2018,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
 print(test_read_data)
-test_free <- read_free(test_read_data$GEO, 2018)
+test_free <- read_free(test_read_data$GEO, 2018, TRUE, TRUE)
 print(test_free)
 
 
@@ -20,10 +20,10 @@ find_slopes <- function(will_use_log = TRUE,
                         use_mean_for_missing_data = TRUE){
   
 
-  df_data <-read_data( TRUE, 2016,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-  #df_data <-read_data(will_use_log, year_for_comparison, will_use_total_energy_supply, will_use_inflation, will_use_GDPpc, will_use_population, will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing,  will_normalise, force_fresh_data, use_mean_for_missing_data)
-  df_free <- read_free(df_data$GEO, year = 2016 ,TRUE, TRUE)
-  #df_free <- read_free(df_data$GEO, year = year_for_comparison,will_normalise, will_use_log)
+  #df_data <-read_data( TRUE, 2016,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+  df_data <-read_data(will_use_log, year_for_comparison, will_use_total_energy_supply, will_use_inflation, will_use_GDPpc, will_use_population, will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing,  will_normalise, force_fresh_data, use_mean_for_missing_data)
+  #df_free <- read_free(df_data$GEO, year = 2016 ,TRUE, TRUE)
+  df_free <- read_free(df_data$GEO, year = year_for_comparison, will_normalise, will_use_log)
   
   if (df_free[1,1] == 50){
     df_free <- df_free[-c(1),]
@@ -95,13 +95,13 @@ find_slopes <- function(will_use_log = TRUE,
   sink(paste("linear_regration_summary_for", text_s, ".txt"))
   summary(lm)
   sink()
-  return (df_1D)
+  return (list( data = df_1D, linear =  lm))
 }
-print(find_slopes())
+print(find_slopes(year_for_comparison = 2014))
 
   # Create png with the regression line
   #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
-  png("test.png", width = 1000, height = 1000)
+  png("test2.png", width = 1000, height = 1000)
   #plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))  # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
   plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance")
   points(df_1D[ str_detect(df_1D$"pair", regex(".Germany")), 1], df_1D[str_detect(df_1D$"pair", regex(".Germany")), 2], col = "red")
@@ -131,7 +131,7 @@ print(find_slopes())
   points(df_1D[ str_detect(df_1D$"pair", regex(".Luxembourg")), 1], df_1D[str_detect(df_1D$"pair", regex(".Luxembourg")), 2], col = "purple")
   points(df_1D[ str_detect(df_1D$"pair", regex("Luxembourg.")), 1], df_1D[str_detect(df_1D$"pair", regex("Luxembourg.")), 2], col = "purple")
 
- Create a legend with the colors of the points
+ #Create a legend with the colors of the points
  legend("topright", legend = c("Germany", "Greece", "Italy", "France", "United Kingdom", "Luxembourg"), col = c("red", "blue", "green", "yellow", "orange", "purple"), pch = 20)
 
  abline(lm, col = "red")

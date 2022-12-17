@@ -328,7 +328,7 @@ use_mean_for_missing_data = TRUE) {
     print(information_text)
     
     #save csv file of df_1
-    # text <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
+    # text_t <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
                         # (if(will_normalise) "_norm" else ""),
                         # (if(will_use_total_energy_supply) "_tes" else ""),
                         # (if(will_use_verified_emisions) "_ve" else ""),
@@ -339,12 +339,12 @@ use_mean_for_missing_data = TRUE) {
                         # (if(will_use_industry) "_ind" else ""),
                         # (if(will_use_manufacturing) "_man" else ""),
                         # ".csv", sep = "")
-    write.csv(df_1, file = paste("./Data/created_csvs/",text_s, sep = "" ), row.names = TRUE)
+    # write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
     return(df_1)
 }
 
 
-read_free <- function(df_geo, year, will_normalise, will_use_log){
+read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   library("xlsx")
   library("xtable") # Load xtable package
   library("stringr")
@@ -380,6 +380,9 @@ read_free <- function(df_geo, year, will_normalise, will_use_log){
     dbClearResult(res) # clear result
     df_free <- rbind(df_free, data.frame("GEO" = df_geo[i], "Free" = free[1,1]))
   }
+  if (df_free[1,1] == 50){
+    df_free <- df_free[-c(1),]
+  }
   df_free$Free <- as.numeric(df_free$Free)
   colnames(df_free) <- c("GEO", "Free")
   dbDisconnect(kanali)
@@ -390,19 +393,20 @@ read_free <- function(df_geo, year, will_normalise, will_use_log){
     df_free$Free <- df_free$Free/max(df_free$Free)
   }
 
+
   
   return (df_free)
 }
-#read_data(will_use_log <- TRUE,
-#year_for_comparison <- 2010,
-#will_use_total_energy_supply <- TRUE,
-#will_use_inflation <- TRUE,
-#will_use_GDPpc <- TRUE,
-#will_use_population <- TRUE,
-#will_use_verified_emisions <- TRUE,
-#will_use_agriculture <- TRUE,
-#will_use_industry <- TRUE,
-#will_use_manufacturing <- TRUE,
-#will_normalise <- TRUE,
-#force_fresh_data <- TRUE,
-#use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
+read_data(will_use_log <- TRUE,
+year_for_comparison <- 2004,
+will_use_total_energy_supply <- TRUE,
+will_use_inflation <- TRUE,
+will_use_GDPpc <- TRUE,
+will_use_population <- TRUE,
+will_use_verified_emisions <- TRUE,
+will_use_agriculture <- TRUE,
+will_use_industry <- TRUE,
+will_use_manufacturing <- TRUE,
+will_normalise <- TRUE,
+force_fresh_data <- TRUE,
+use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
