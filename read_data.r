@@ -398,7 +398,7 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   return (df_free)
 }
 read_data(will_use_log <- TRUE,
-year_for_comparison <- 2004,
+year_for_comparison <- 2015,
 will_use_total_energy_supply <- TRUE,
 will_use_inflation <- TRUE,
 will_use_GDPpc <- TRUE,
