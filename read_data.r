@@ -147,122 +147,154 @@ use_mean_for_missing_data = TRUE) {
     }
 
     if (will_use_verified_emisions){
-        # Taking data drom the database as well
-
-        # DEFINITIONS FOR DATABASE
-        db <- "eu_ets"           # name of database
-        use <- "root"           # user name
-        passwor <- ""     # password
-        hos <- "localhost"       # host name
-
-
-        # import countries from databse
-        kanali <- dbConnect(RMariaDB::MariaDB(),
-                            user = use,
-                            password = passwor,
-                            dbname = db,
-                            host = hos)
-        qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
-        res <- dbSendQuery(kanali, qurry_countries) # send query to database
-        countries <- dbFetch(res, n = -1) # fetch all data from querry
-        dbClearResult(res) # clear result
-        country_names <- countries[, 1]
-        country_eu_abbr2L <- countries[, 3]
-
-        ##################################
-        # include verified emissions data
-        ##################################
-
-        df_verified_emisions <- data.frame(nrow = 50,ncol = 2)
-        colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
-        for (i in 1:length(country_names)) { # nolint
-            querr <- paste(
-            "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
-            country_eu_abbr2L[i], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
-            res <- dbSendQuery(kanali, querr) # send query to database
-            verified <- dbFetch(res, n = -1) # fetch all data from querry
-            dbClearResult(res) # clear result
-            df_verified_emisions <- rbind(df_verified_emisions, data.frame("GEO" = country_names[i], "verified_emisions" = verified[1,1]))
-        }
-        dbDisconnect(kanali)
-        colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
-
-
-        # Merge the two dataframes
+      if (year_for_comparison < 1990){
         for (i in 1:nrow(df_1)){
-            df_1$Verified_emissions[i] <- as.integer(df_verified_emisions$verified_emisions[which(df_verified_emisions$GEO == df_1$GEO[i])])
+          df_1$Verified_emissions[i] <- 1
         }
-    }
-
-    if (will_use_total_energy_supply) {
-      # Load Energy Balance data from csv file
-      # Path: Data
-      # File: nrg_bal_s__custom_4143365_linear.csv
-      # Source: Eurostat
-      # Data tree :  All data -> Environment and energy -> Energy -> Energy statistics -> quantities Energy statistics -> quantities, annual data -> Energy balances
-      # Data name on Eurostat : Simplified energy balances 
-      # Data: Energy balance
-      # Country: All countries
-      # Year: 1990 - 2020
-      # Unit: Thousand tonnes of oil equivalent
-      # nrg_bal codes:
-      # Primary production     		      -> PPRD
-      # Imports                	      	-> IMP
-      # Exports                         -> EXP
-      # Gross Available Energy          -> GAE
-      # Total energy supply             -> NRGSUP
-      # Available for final consumption -> AFC
-      
-      d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
-                    header = TRUE)
-      d <- d[-c(1, 2, 3, 5, 6, 10)]
-      df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
-      
-      for (i in 1:nrow(df_1)) {
-        df_1$"Total_energy_supply"[i] <- df_total_energy_supply$OBS_VALUE[which(df_total_energy_supply$TIME_PERIOD == year_for_comparison & df_total_energy_supply$geo == countries$eu_abbr2L[which(countries$name == df_1$"GEO"[i])])]
+        print(paste("NO CO2 emissions were found for year", year_for_comparison,"."))
       }
-      df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
-      
-    }
-
-    if (will_use_agriculture | will_use_industry | will_use_manufacturing){
-        # import data from World Bank
+      else if(year_for_comparison < 2004){
+        # Load Population data from csv file
         # Path: Data
-        # File: 4.2_Structure_of_value_added.csv
-        # Source: http://wdi.worldbank.org/table/4.2
-        # Data: GDP, Argicalture, Industry, Manufacturing, Services
+        # File: API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv
+        # Source: https://data.worldbank.org/indicator/EN.ATM.GHGT.KT.CE
         # Country: All countries
-        # Year: 2010 - 2020
-        # Unit: Billions USD and percentage
-        # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
-        # We will only use the 2020 data
-        my_data <- read.csv(file = "./Data/4.2_Structure_of_value_added.csv", sep = ",", header = FALSE, stringsAsFactors = FALSE)
-        my_data <- my_data[5:230,] # Omit usesless info at the bottom
-        if (year_for_comparison < 2016){
-          my_data <- my_data[, -c(3,5,7,9,11 )] #Omit 2020
+        # Year: 1990 - 2021
+        # Unit: K tons of Co2 equivalent
+        # Headers are on the 5th row
+        
+        headers <- read.csv(file = "./Data/API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv",
+                            skip = 4,
+                            header = TRUE,
+                            nrows = 1,
+                            as.is = TRUE)
+        df_emis <- read.csv(file = "./Data/API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv",
+                                  skip = 4, header = FALSE)
+        colnames(df_emis) <- headers
+        
+        # Create new dataframe, where colnames are the country names
+        # and the rows are the years
+        df_emis <- subset(df_emis, select = -c(2, 3, 4))
+        df_emis <- t(df_emis)
+        colnames(df_emis) <- df_emis[1, ]
+        df_emis <- df_emis[-1, ]
+        for (i in 1:nrow(df_1)) {
+          
+          df_1$Verified_emissions[i] <- as.numeric(df_emis[year_for_comparison-1959, which(colnames(df_emis) == df_1$"GEO"[i])])
         }
-        if (year_for_comparison > 2015){
-          my_data <- my_data[, -c(2,4,6,8,10 )] #Omit 2010
-        }
+      } else {
+      # Taking data drom the database as well
 
-        colnames(my_data) <- c("GEO","GDP", "Agriculture", "Industry",  "Manufacturing", "Services")
+      # DEFINITIONS FOR DATABASE
+      db <- "eu_ets"           # name of database
+      use <- "root"           # user name
+      passwor <- ""     # password
+      hos <- "localhost"       # host name
 
-        # Delete all rows from my_data whose GEO is not in df_1
-        my_data <- my_data[my_data$"GEO" %in% df_1$"GEO",]
-        my_data$GDP <- gsub(",", "", my_data$GDP)
 
-        my_data$GDP <- as.numeric(my_data$GDP)
-        my_data$Agriculture <- as.numeric(my_data$Agriculture)
-        my_data$Industry <- as.numeric(my_data$Industry)
-        my_data$Manufacturing <- as.numeric(my_data$Manufacturing)
-        # Percentage to actual number in billiosn USD
-        for (i in 1:nrow(my_data)){
-            my_data[i,3] <- my_data[i,2] * my_data[i,3] / 100
-            my_data[i,4] <- my_data[i,2] * my_data[i,4] / 100
-            my_data[i,5] <- my_data[i,2] * my_data[i,5] / 100
-        }
-        # We don't care about the GDP anymore nor the services
-        my_data <- my_data[, -c(2,6,7)]
+      # import countries from databse
+      kanali <- dbConnect(RMariaDB::MariaDB(),
+                          user = use,
+                          password = passwor,
+                          dbname = db,
+                          host = hos)
+      qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
+      res <- dbSendQuery(kanali, qurry_countries) # send query to database
+      countries <- dbFetch(res, n = -1) # fetch all data from querry
+      dbClearResult(res) # clear result
+      country_names <- countries[, 1]
+      country_eu_abbr2L <- countries[, 3]
+
+      df_verified_emisions <- data.frame(nrow = 50,ncol = 2)
+      colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
+      for (i in 1:length(country_names)) { # nolint
+          querr <- paste(
+          "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
+          country_eu_abbr2L[i], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
+          res <- dbSendQuery(kanali, querr) # send query to database
+          verified <- dbFetch(res, n = -1) # fetch all data from querry
+          dbClearResult(res) # clear result
+          df_verified_emisions <- rbind(df_verified_emisions, data.frame("GEO" = country_names[i], "verified_emisions" = verified[1,1]))
+      }
+      dbDisconnect(kanali)
+      colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
+
+
+      # Merge the two dataframes
+      for (i in 1:nrow(df_1)){
+          df_1$Verified_emissions[i] <- as.integer(df_verified_emisions$verified_emisions[which(df_verified_emisions$GEO == df_1$GEO[i])])
+      }
+    }
+  }
+  if (will_use_total_energy_supply) {
+    # Load Energy Balance data from csv file
+    # Path: Data
+    # File: nrg_bal_s__custom_4143365_linear.csv
+    # Source: Eurostat
+    # Data tree :  All data -> Environment and energy -> Energy -> Energy statistics -> quantities Energy statistics -> quantities, annual data -> Energy balances
+    # Data name on Eurostat : Simplified energy balances 
+    # Data: Energy balance
+    # Country: All countries
+    # Year: 1990 - 2020
+    # Unit: Thousand tonnes of oil equivalent
+    # nrg_bal codes:
+    # Primary production     		      -> PPRD
+    # Imports                	      	-> IMP
+    # Exports                         -> EXP
+    # Gross Available Energy          -> GAE
+    # Total energy supply             -> NRGSUP
+    # Available for final consumption -> AFC
+    
+    d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
+                  header = TRUE)
+    d <- d[-c(1, 2, 3, 5, 6, 10)]
+    df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
+    
+    for (i in 1:nrow(df_1)) {
+      df_1$"Total_energy_supply"[i] <- df_total_energy_supply$OBS_VALUE[which(df_total_energy_supply$TIME_PERIOD == year_for_comparison & df_total_energy_supply$geo == countries$eu_abbr2L[which(countries$name == df_1$"GEO"[i])])]
+    }
+    df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
+    
+  }
+
+  if (will_use_agriculture | will_use_industry | will_use_manufacturing){
+      # import data from World Bank
+      # Path: Data
+      # File: 4.2_Structure_of_value_added.csv
+      # Source: http://wdi.worldbank.org/table/4.2
+      # Data: GDP, Argicalture, Industry, Manufacturing, Services
+      # Country: All countries
+      # Year: 2010 - 2020
+      # Unit: Billions USD and percentage
+      # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
+      # We will only use the 2020 data
+      my_data <- read.csv(file = "./Data/4.2_Structure_of_value_added.csv", sep = ",", header = FALSE, stringsAsFactors = FALSE)
+      my_data <- my_data[5:230,] # Omit usesless info at the bottom
+      if (year_for_comparison < 2016){
+        my_data <- my_data[, -c(3,5,7,9,11 )] #Omit 2020
+      }
+      if (year_for_comparison > 2015){
+        my_data <- my_data[, -c(2,4,6,8,10 )] #Omit 2010
+      }
+
+      colnames(my_data) <- c("GEO","GDP", "Agriculture", "Industry",  "Manufacturing", "Services")
+
+      # Delete all rows from my_data whose GEO is not in df_1
+      my_data <- my_data[my_data$"GEO" %in% df_1$"GEO",]
+      my_data$GDP <- gsub(",", "", my_data$GDP)
+
+      my_data$GDP <- as.numeric(my_data$GDP)
+      my_data$Agriculture <- as.numeric(my_data$Agriculture)
+      my_data$Industry <- as.numeric(my_data$Industry)
+      my_data$Manufacturing <- as.numeric(my_data$Manufacturing)
+      # Percentage to actual number in billiosn USD
+      for (i in 1:nrow(my_data)){
+          my_data[i,3] <- my_data[i,2] * my_data[i,3] / 100
+          my_data[i,4] <- my_data[i,2] * my_data[i,4] / 100
+          my_data[i,5] <- my_data[i,2] * my_data[i,5] / 100
+      }
+      # We don't care about the GDP anymore nor the services
+      my_data <- my_data[, -c(2,6,7)]
     }
     if (will_use_agriculture){
         for (i in 1:nrow(df_1)){
@@ -397,8 +429,8 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   
   return (df_free)
 }
-read_data(will_use_log <- TRUE,
-year_for_comparison <- 2015,
+print(read_data(will_use_log <- TRUE,
+year_for_comparison <- 2000,
 will_use_total_energy_supply <- TRUE,
 will_use_inflation <- TRUE,
 will_use_GDPpc <- TRUE,
@@ -409,4 +441,5 @@ will_use_industry <- TRUE,
 will_use_manufacturing <- TRUE,
 will_normalise <- TRUE,
 force_fresh_data <- TRUE,
-use_mean_for_missing_data <- TRUE) # for specific countries not whole rows)
+use_mean_for_missing_data <- TRUE)) # for specific countries not whole rows)
+
