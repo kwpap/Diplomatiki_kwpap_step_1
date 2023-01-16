@@ -429,8 +429,31 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   
   return (df_free)
 }
+
+run_test <- function(){
+  for (i in 2012:2018){
+    print(i)
+    x <- read_data(will_use_log <- TRUE,
+              year_for_comparison <- i,
+              will_use_total_energy_supply <- TRUE,
+              will_use_inflation <- TRUE,
+              will_use_GDPpc <- TRUE,
+              will_use_population <- TRUE,
+              will_use_verified_emisions <- TRUE,
+              will_use_agriculture <- TRUE,
+              will_use_industry <- TRUE,
+              will_use_manufacturing <- TRUE,
+              will_normalise <- TRUE,
+              force_fresh_data <- TRUE,
+              use_mean_for_missing_data <- TRUE)
+    print(dim(x))
+    
+  }
+}
+
+
 print(read_data(will_use_log <- TRUE,
-year_for_comparison <- 2000,
+year_for_comparison <- 2015,
 will_use_total_energy_supply <- TRUE,
 will_use_inflation <- TRUE,
 will_use_GDPpc <- TRUE,
