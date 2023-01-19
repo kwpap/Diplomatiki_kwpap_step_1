@@ -147,3 +147,22 @@ print(X2014$data)
 
 #  abline(lm, col = "red")
 #  dev.off()
+
+run_test_find_slopes <- function(j, l){
+  for (i in j:l){
+    X <- find_slopes(year_for_comparison = i)
+    print(i)
+    if (length(X$linear) < 2){
+      print("No data for this year")
+    } else {
+      print("Slope:")
+      print(X$linear$coefficients[2])
+      print("Intercept:")
+      print(X$linear$coefficients[1])
+      print("R squared:")
+      print(X$linear$r.squared)
+    }
+  } 
+}
+
+run_test_find_slopes(2012,2018)

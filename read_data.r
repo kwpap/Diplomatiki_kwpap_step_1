@@ -14,6 +14,20 @@ force_fresh_data = FALSE,
 use_mean_for_missing_data = TRUE) {
     information_text <- list()
     
+# will_use_log = TRUE
+# year_for_comparison = 2015
+# will_use_total_energy_supply = TRUE
+# will_use_inflation = TRUE
+# will_use_GDPpc = TRUE
+# will_use_population = TRUE
+# will_use_verified_emisions = TRUE
+# will_use_agriculture = TRUE
+# will_use_industry = TRUE,
+# will_use_manufacturing = TRUE
+# will_normalise = TRUE
+# force_fresh_data = TRUE
+# use_mean_for_missing_data = TRUE
+
 
     
     # Try to find the file in the folder "Data/created_csvs"
@@ -262,51 +276,42 @@ use_mean_for_missing_data = TRUE) {
       # Path: Data
       # File: 4.2_Structure_of_value_added.csv
       # Source: http://wdi.worldbank.org/table/4.2
+      # https://databank.worldbank.org/reports.aspx?source=2&series=NY.GDP.MKTP.CD,NV.AGR.TOTL.ZS,NV.IND.TOTL.ZS,NV.IND.MANF.ZS,NV.SRV.TETC.ZS,NV.SRV.TOTL.ZS#
       # Data: GDP, Argicalture, Industry, Manufacturing, Services
       # Country: All countries
-      # Year: 2010 - 2020
+      # Year: 1990 - 2020
       # Unit: Billions USD and percentage
       # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
-      # We will only use the 2020 data
-      my_data <- read.csv(file = "./Data/4.2_Structure_of_value_added.csv", sep = ",", header = FALSE, stringsAsFactors = FALSE)
+      # Had to select the whole dataset 
+      my_data <- read.csv(file = "./Data/2dbe830a-5afc-4ed9-b478-f5349450364b_Data.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
       my_data <- my_data[5:230,] # Omit usesless info at the bottom
-      if (year_for_comparison < 2016){
-        my_data <- my_data[, -c(3,5,7,9,11 )] #Omit 2020
-      }
-      if (year_for_comparison > 2015){
-        my_data <- my_data[, -c(2,4,6,8,10 )] #Omit 2010
-      }
 
-      colnames(my_data) <- c("GEO","GDP", "Agriculture", "Industry",  "Manufacturing", "Services")
-
-      # Delete all rows from my_data whose GEO is not in df_1
-      my_data <- my_data[my_data$"GEO" %in% df_1$"GEO",]
-      my_data$GDP <- gsub(",", "", my_data$GDP)
-
-      my_data$GDP <- as.numeric(my_data$GDP)
-      my_data$Agriculture <- as.numeric(my_data$Agriculture)
-      my_data$Industry <- as.numeric(my_data$Industry)
-      my_data$Manufacturing <- as.numeric(my_data$Manufacturing)
-      # Percentage to actual number in billiosn USD
-      for (i in 1:nrow(my_data)){
-          my_data[i,3] <- my_data[i,2] * my_data[i,3] / 100
-          my_data[i,4] <- my_data[i,2] * my_data[i,4] / 100
-          my_data[i,5] <- my_data[i,2] * my_data[i,5] / 100
+      buffer <- my_data[my_data$"Country.Name" %in% df_1$"GEO",]
+      buffer_GDP <- buffer[buffer$"Series.Name" == "GDP (current US$)",]
+      buffer_Agriculture <- buffer[buffer$"Series.Name" == "Agriculture, forestry, and fishing, value added (% of GDP)",]
+      buffer_Industry <- buffer[buffer$"Series.Name" == "Industry (including construction), value added (% of GDP)",]
+      buffer_Manufacturing <- buffer[buffer$"Series.Name" == "Manufacturing, value added (% of GDP)",]
+      
+      # Merge the dataframes for the specific year
+      for (i in 1:nrow(df_1)){
+          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
+          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
+          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
       }
-      # We don't care about the GDP anymore nor the services
-      my_data <- my_data[, -c(2,6,7)]
     }
-    if (will_use_agriculture){
+    ###################### ALLAGI!!!!!!
+    if (will_use_agriculture == FALSE){
         for (i in 1:nrow(df_1)){
-            df_1$Agriculture[i] <- as.numeric(my_data$Agriculture[which(my_data$GEO == df_1$GEO[i])])
+            df_1$Agriculture[i] <- 1
         }
     }
-    if (will_use_industry){
+    if (will_use_industry == FALSE){
         for (i in 1:nrow(df_1)){
             df_1$Industry[i] <- as.numeric(my_data$Industry[which(my_data$GEO == df_1$GEO[i])])
         }
     }
-    if (will_use_manufacturing){
+    if (will_use_manufacturing == FALSE){
         for (i in 1:nrow(df_1)){
             df_1$Manufacturing[i] <- as.numeric(my_data$Manufacturing[which(my_data$GEO == df_1$GEO[i])])
         }
@@ -430,8 +435,8 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   return (df_free)
 }
 
-run_test <- function(){
-  for (i in 2012:2018){
+run_test <- function(j,l){
+  for (i in j:l){
     print(i)
     x <- read_data(will_use_log <- TRUE,
               year_for_comparison <- i,
@@ -446,8 +451,18 @@ run_test <- function(){
               will_normalise <- TRUE,
               force_fresh_data <- TRUE,
               use_mean_for_missing_data <- TRUE)
-    print(dim(x))
-    
+    err = FALSE
+    if (dim(x) != c(25,9)){
+      print("ERROR, wrong dimensions")
+      err = TRUE
+    }
+    if (sum(is.na(x)) != 0){
+      print("ERROR, missing data")
+      err = TRUE
+    }
+    if (err == FALSE){
+      print("OK")
+    }    
   }
 }
 
@@ -466,3 +481,4 @@ will_normalise <- TRUE,
 force_fresh_data <- TRUE,
 use_mean_for_missing_data <- TRUE)) # for specific countries not whole rows)
 
+run_test(2010,2018)
