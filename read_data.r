@@ -3,7 +3,7 @@ will_use_log = TRUE,
 year_for_comparison = 2015,
 will_use_total_energy_supply = TRUE,
 will_use_inflation = TRUE,
-will_use_GDPpc = TRUE,
+will_use_GDPpc = TRUE, # nolint
 will_use_population = TRUE,
 will_use_verified_emisions = TRUE,
 will_use_agriculture = TRUE,
@@ -12,7 +12,7 @@ will_use_manufacturing = TRUE,
 will_normalise = TRUE,
 force_fresh_data = FALSE,
 use_mean_for_missing_data = TRUE) {
-    information_text <- list()
+information_text <- list()
     
 # will_use_log = TRUE
 # year_for_comparison = 2015
@@ -271,6 +271,12 @@ use_mean_for_missing_data = TRUE) {
     
   }
 
+  for (i in 1:nrow(df_1)){
+      df_1$Agriculture[i] <- 1
+      df_1$Industry[i] <- 1
+      df_1$Manufacturing[i] <- 1
+  }
+
   if (will_use_agriculture | will_use_industry | will_use_manufacturing){
       # import data from World Bank
       # Path: Data
@@ -284,36 +290,31 @@ use_mean_for_missing_data = TRUE) {
       # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
       # Had to select the whole dataset 
       my_data <- read.csv(file = "./Data/2dbe830a-5afc-4ed9-b478-f5349450364b_Data.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
-      my_data <- my_data[5:230,] # Omit usesless info at the bottom
 
       buffer <- my_data[my_data$"Country.Name" %in% df_1$"GEO",]
       buffer_GDP <- buffer[buffer$"Series.Name" == "GDP (current US$)",]
       buffer_Agriculture <- buffer[buffer$"Series.Name" == "Agriculture, forestry, and fishing, value added (% of GDP)",]
       buffer_Industry <- buffer[buffer$"Series.Name" == "Industry (including construction), value added (% of GDP)",]
       buffer_Manufacturing <- buffer[buffer$"Series.Name" == "Manufacturing, value added (% of GDP)",]
-      
-      # Merge the dataframes for the specific year
-      for (i in 1:nrow(df_1)){
-          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-      }
     }
     ###################### ALLAGI!!!!!!
-    if (will_use_agriculture == FALSE){
+    if (will_use_agriculture){
         for (i in 1:nrow(df_1)){
-            df_1$Agriculture[i] <- 1
+          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
+
         }
     }
-    if (will_use_industry == FALSE){
+    if (will_use_industry){
         for (i in 1:nrow(df_1)){
-            df_1$Industry[i] <- as.numeric(my_data$Industry[which(my_data$GEO == df_1$GEO[i])])
+          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
         }
     }
-    if (will_use_manufacturing == FALSE){
+    if (will_use_manufacturing){
         for (i in 1:nrow(df_1)){
-            df_1$Manufacturing[i] <- as.numeric(my_data$Manufacturing[which(my_data$GEO == df_1$GEO[i])])
+          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
         }
     }
 
@@ -452,7 +453,7 @@ run_test <- function(j,l){
               force_fresh_data <- TRUE,
               use_mean_for_missing_data <- TRUE)
     err = FALSE
-    if (dim(x) != c(25,9)){
+    if (dim(x)[1] != 25 & dim(x)[2] != 9){
       print("ERROR, wrong dimensions")
       err = TRUE
     }
@@ -481,4 +482,4 @@ will_normalise <- TRUE,
 force_fresh_data <- TRUE,
 use_mean_for_missing_data <- TRUE)) # for specific countries not whole rows)
 
-run_test(2010,2018)
+# run_test(2002,2018)
