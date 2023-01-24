@@ -5,7 +5,7 @@ test_free <- read_free()
 print(test_free)
 
 
-find_slopes <- function(year = 0){
+find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weight_inflation = 1, weight_agriculture = 1, weight_industry = 1, weight_manufacturing = 1, weight_total_energy_supply = 1, weight_verified_emisions = 1){
   if(year != 0) {year_for_comparison <- year}
   
 
@@ -34,7 +34,15 @@ find_slopes <- function(year = 0){
   colnames(df_distance) <- df_data$"GEO"
   for (i in 1 : nrow(df_distance)) { #nolint
     for (j in 1 : ncol(df_distance)) { # nolint 
-      df_distance[i, j] <- sqrt((df_data[i, 2] - df_data[j, 2])^2 + (df_data[i, 3] - df_data[j, 3])^2 + (df_data[i, 4] - df_data[j, 4])^2 + (df_data[i, 5] - df_data[j, 5])^2 + (df_data[i, 6] - df_data[j, 6])^2 + (df_data[i, 7] - df_data[j, 7])^2 + (df_data[i, 8] - df_data[j, 8])^2 + (df_data[i, 9] - df_data[j, 9])^2)
+      df_distance[i, j] <- sqrt((df_data[i, 2] - df_data[j, 2])^2 * weight_total_energy_supply 
+      + (df_data[i, 3] - df_data[j, 3])^2 * weight_GDPpc
+      + (df_data[i, 4] - df_data[j, 4])^2 * weight_population
+      + (df_data[i, 5] - df_data[j, 5])^2 * weight_inflation
+      + (df_data[i, 6] - df_data[j, 6])^2 * weight_verified_emisions
+      + (df_data[i, 7] - df_data[j, 7])^2 * weight_agriculture
+      + (df_data[i, 8] - df_data[j, 8])^2 * weight_industry
+      + (df_data[i, 9] - df_data[j, 9])^2 * weight_manufacturing
+      )
     }
   }
   
@@ -153,10 +161,10 @@ run_test_find_slopes <- function(j, l){
   } 
 }
 
-create_graph <- function (year = 0, name = "default"){
+create_graph <- function (year = 0, name = "default", weights = c(1,1,1,1,1,1,1,1)){
     if(year != 0) {year_for_comparison <- year}
-  df_1D <- find_slopes(year_for_comparison)$data
-  lm <- find_slopes(year_for_comparison)$linear
+  df_1D <- find_slopes(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$data
+  lm <- find_slopes(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$linear
   print(df_1D)
   # Create png with the regression line
   #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
@@ -198,3 +206,46 @@ create_graph <- function (year = 0, name = "default"){
 }
 
 # run_test_find_slopes(2012,2018)
+find_slopes_with_weights <- function(weights){
+  return (find_slopes(weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8]))
+}
+
+find_the_best_combo <- function(){
+  weights <- c(1000,1000,1000,1000,1000,1000,1000,1000)
+  r_squared <- summary(find_slopes()$linear)$r.squared
+  step <- 999
+  low <- 0
+  high <- 00000
+  for (i in 1:40){
+    # index <- i %% 8 +1
+    index <- sample(1:8, 1)
+    worth_doing_it <- TRUE
+    while(worth_doing_it){
+      lowered <- 0
+      raised <- 0
+      if (weights[index]>low+step){
+        weights[index] <- weights[index] - step
+        lowered <- summary(find_slopes_with_weights(weights)$linear)$r.squared
+        weights[index] <- weights[index] + step
+      }
+      if (weights[index]<high){
+        weights[index] <- weights[index] + step
+        raised <- summary(find_slopes_with_weights(weights)$linear)$r.squared
+        weights[index] <- weights[index] - step
+      }
+      if (lowered > r_squared){
+        r_squared <- lowered
+        weights[index] <- weights[index] - step
+      } else if (raised > r_squared){
+        r_squared <- raised
+        weights[index] <- weights[index] + step
+      } else {
+        worth_doing_it <- FALSE
+      }
+    }
+  }
+  print(weights)
+  print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
+  print(paste("R^2:", r_squared))
+}
+# create_graph(weights=c(100,0,0,51,626,1,401,1001))

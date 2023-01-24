@@ -10,6 +10,19 @@ read_data <- function(year = 0) {
   information_text <- list()
     
 
+          # import countries from databse
+      kanali <- dbConnect(RMariaDB::MariaDB(),
+                          user = use,
+                          password = passwor,
+                          dbname = db,
+                          host = hos)
+      qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
+      res <- dbSendQuery(kanali, qurry_countries) # send query to database
+      countries <- dbFetch(res, n = -1) # fetch all data from querry
+      dbClearResult(res) # clear result
+      country_names <- countries[, 1]
+      country_eu_abbr2L <- countries[, 3]
+
     
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
@@ -174,21 +187,6 @@ read_data <- function(year = 0) {
       } else {
       # Taking data drom the database as well
 
-
-
-
-      # import countries from databse
-      kanali <- dbConnect(RMariaDB::MariaDB(),
-                          user = use,
-                          password = passwor,
-                          dbname = db,
-                          host = hos)
-      qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
-      res <- dbSendQuery(kanali, qurry_countries) # send query to database
-      countries <- dbFetch(res, n = -1) # fetch all data from querry
-      dbClearResult(res) # clear result
-      country_names <- countries[, 1]
-      country_eu_abbr2L <- countries[, 3]
 
       df_verified_emisions <- data.frame(nrow = 50,ncol = 2)
       colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
