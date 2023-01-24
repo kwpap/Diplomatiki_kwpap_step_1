@@ -211,11 +211,12 @@ find_slopes_with_weights <- function(weights){
 }
 
 find_the_best_combo <- function(){
-  weights <- c(1000,1000,1000,1000,1000,1000,1000,1000)
+  # weights <- c(1,1,1,1,1,1,1,1)
+  weights <- c(500, 500, 500, 500, 500, 500, 500, 500)
   r_squared <- summary(find_slopes()$linear)$r.squared
-  step <- 999
+  step <- 10
   low <- 0
-  high <- 00000
+  high <- 10000
   for (i in 1:40){
     # index <- i %% 8 +1
     index <- sample(1:8, 1)
