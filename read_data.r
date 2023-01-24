@@ -1,33 +1,14 @@
-read_data <- function(
-will_use_log = TRUE,
-year_for_comparison = 2015,
-will_use_total_energy_supply = TRUE,
-will_use_inflation = TRUE,
-will_use_GDPpc = TRUE, # nolint
-will_use_population = TRUE,
-will_use_verified_emisions = TRUE,
-will_use_agriculture = TRUE,
-will_use_industry = TRUE,
-will_use_manufacturing = TRUE,
-will_normalise = TRUE,
-force_fresh_data = FALSE,
-use_mean_for_missing_data = TRUE) {
-information_text <- list()
-    
-# will_use_log = TRUE
-# year_for_comparison = 2015
-# will_use_total_energy_supply = TRUE
-# will_use_inflation = TRUE
-# will_use_GDPpc = TRUE
-# will_use_population = TRUE
-# will_use_verified_emisions = TRUE
-# will_use_agriculture = TRUE
-# will_use_industry = TRUE,
-# will_use_manufacturing = TRUE
-# will_normalise = TRUE
-# force_fresh_data = TRUE
-# use_mean_for_missing_data = TRUE
+library("xlsx")
+library("xtable") # Load xtable package
+library("stringr")
+library("DBI")
+library("RMySQL")
 
+read_data <- function(year = 0) {
+  source("config.R")
+  if(year != 0) {year_for_comparison <- year}
+  information_text <- list()
+    
 
     
     # Try to find the file in the folder "Data/created_csvs"
@@ -51,13 +32,7 @@ information_text <- list()
                         header = TRUE))
     }
 
-    library("xlsx")
-    library("xtable") # Load xtable package
-    library("stringr")
-    library("DBI")
-    library("RMySQL")
-    df_1 <- data.frame()
-    list_eur_countries <- c("Austria", "Belgium", "Bulgaria", "Cyprus", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovenia", "Spain", "Sweden","United Kingdom")
+
     df_1 <- data.frame(list_eur_countries)
     zero_vector <- rep(1, length(list_eur_countries))
     for (i in 1:8) {
@@ -199,11 +174,7 @@ information_text <- list()
       } else {
       # Taking data drom the database as well
 
-      # DEFINITIONS FOR DATABASE
-      db <- "eu_ets"           # name of database
-      use <- "root"           # user name
-      passwor <- ""     # password
-      hos <- "localhost"       # host name
+
 
 
       # import countries from databse
@@ -271,12 +242,6 @@ information_text <- list()
     
   }
 
-  for (i in 1:nrow(df_1)){
-      df_1$Agriculture[i] <- 1
-      df_1$Industry[i] <- 1
-      df_1$Manufacturing[i] <- 1
-  }
-
   if (will_use_agriculture | will_use_industry | will_use_manufacturing){
       # import data from World Bank
       # Path: Data
@@ -296,8 +261,9 @@ information_text <- list()
       buffer_Agriculture <- buffer[buffer$"Series.Name" == "Agriculture, forestry, and fishing, value added (% of GDP)",]
       buffer_Industry <- buffer[buffer$"Series.Name" == "Industry (including construction), value added (% of GDP)",]
       buffer_Manufacturing <- buffer[buffer$"Series.Name" == "Manufacturing, value added (% of GDP)",]
+      buffer_Services <- buffer[buffer$"Series.Name" == "Services, value added (% of GDP)",]
     }
-    ###################### ALLAGI!!!!!!
+
     if (will_use_agriculture){
         for (i in 1:nrow(df_1)){
           GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
@@ -313,6 +279,11 @@ information_text <- list()
     }
     if (will_use_manufacturing){
         for (i in 1:nrow(df_1)){
+          if (df_1$GEO[i] == "Bulgaria"){
+            # Estimating Bulgaria's manufacturing value added from the rest of the GDP components
+            df_1$Manufacturing[i] <- df_1$GDP[i] - (as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100) - (as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100) - (as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100)
+            next
+          }
           GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
           df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
         }
@@ -353,17 +324,17 @@ information_text <- list()
         max_Industry <- max(abs(df_1$Industry))
         max_Manufacturing <- max(abs(df_1$Manufacturing))
 
-
-        df_1$Total_energy_supply <- df_1$Total_energy_supply / max_total_energy_supply
-        df_1$Inflation <- df_1$Inflation / max_inflation
-        df_1$GDPpc <- df_1$GDPpc / max_GDPpc
-        df_1$Population <- df_1$Population / max_population
-        df_1$Verified_emissions <- df_1$Verified_emissions / max_verified_emissions
-        df_1$Agriculture <- df_1$Agriculture / max_Agriculture
-        df_1$Industry <- df_1$Industry / max_Industry
-        df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
+        # devide by max value of each column to normalise data unless max value is 0
+        if(max_total_energy_supply != 0) df_1$Total_energy_supply <- df_1$Total_energy_supply / max_total_energy_supply
+        if(max_inflation != 0) df_1$Inflation <- df_1$Inflation / max_inflation
+        if(max_GDPpc != 0) df_1$GDPpc <- df_1$GDPpc / max_GDPpc
+        if(max_population != 0) df_1$Population <- df_1$Population / max_population
+        if(max_verified_emissions != 0) df_1$Verified_emissions <- df_1$Verified_emissions / max_verified_emissions
+        if(max_Agriculture != 0) df_1$Agriculture <- df_1$Agriculture / max_Agriculture
+        if(max_Industry != 0) df_1$Industry <- df_1$Industry / max_Industry
+        if(max_Manufacturing != 0) df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
     }
-    print(information_text)
+    # print(information_text)
     
     #save csv file of df_1
     # text_t <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
@@ -382,17 +353,15 @@ information_text <- list()
 }
 
 
-read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
+read_free <- function(year = 0){
+  if(year != 0) {year_for_comparison <- year}
+  source("config.R")
   library("xlsx")
   library("xtable") # Load xtable package
   library("stringr")
   library("DBI")
   library("RMySQL")
-  # DEFINITIONS FOR DATABASE
-  db <- "eu_ets"           # name of database
-  use <- "root"           # user name
-  passwor <- ""     # password
-  hos <- "localhost"       # host name
+
   
   kanali <- dbConnect(RMariaDB::MariaDB(),
                       user = use,
@@ -407,22 +376,21 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
   countries <- dbFetch(res, n = -1) # fetch all data from querry
   dbClearResult(res) # clear result
 
-  df_free <- data.frame(nrow = 50,ncol  = 2)
-  colnames(df_free) <- c("GEO", "Free")
-  for (i in 1:length(df_geo)) { # nolint
+  for (i in 1:length(list_eur_countries)) { # nolint
     querr <- paste(
       "SELECT SUM(freeAlloc) FROM `eutl_compliance` WHERE country = '",
-      countries$eu_abbr2L[which (countries$name == df_geo[i])], "' AND etos ='",year,"'", sep = "", collapse = NULL)
+      countries$eu_abbr2L[which (countries$name == list_eur_countries[i])], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
     res <- dbSendQuery(kanali, querr) # send query to database
     free <- dbFetch(res, n = -1) # fetch all data from querry
     dbClearResult(res) # clear result
-    df_free <- rbind(df_free, data.frame("GEO" = df_geo[i], "Free" = free[1,1]))
+    if (i == 1){
+      df_free <- data.frame("GEO" = list_eur_countries[i], "Free" = free[1,1])
+    } else {
+      df_free <- rbind(df_free, data.frame("GEO" = list_eur_countries[i], "Free" = free[1,1]))
+    }
   }
-  if (df_free[1,1] == 50){
-    df_free <- df_free[-c(1),]
-  }
+
   df_free$Free <- as.numeric(df_free$Free)
-  colnames(df_free) <- c("GEO", "Free")
   dbDisconnect(kanali)
   if (will_use_log){
     df_free$Free <- log(abs(df_free$Free))
@@ -439,19 +407,7 @@ read_free <- function(df_geo, year, will_normalise = TRUE, will_use_log = TRUE){
 run_test <- function(j,l){
   for (i in j:l){
     print(i)
-    x <- read_data(will_use_log <- TRUE,
-              year_for_comparison <- i,
-              will_use_total_energy_supply <- TRUE,
-              will_use_inflation <- TRUE,
-              will_use_GDPpc <- TRUE,
-              will_use_population <- TRUE,
-              will_use_verified_emisions <- TRUE,
-              will_use_agriculture <- TRUE,
-              will_use_industry <- TRUE,
-              will_use_manufacturing <- TRUE,
-              will_normalise <- TRUE,
-              force_fresh_data <- TRUE,
-              use_mean_for_missing_data <- TRUE)
+    x <- read_data()
     err = FALSE
     if (dim(x)[1] != 25 & dim(x)[2] != 9){
       print("ERROR, wrong dimensions")
@@ -466,20 +422,5 @@ run_test <- function(j,l){
     }    
   }
 }
-
-
-print(read_data(will_use_log <- TRUE,
-year_for_comparison <- 2015,
-will_use_total_energy_supply <- TRUE,
-will_use_inflation <- TRUE,
-will_use_GDPpc <- TRUE,
-will_use_population <- TRUE,
-will_use_verified_emisions <- TRUE,
-will_use_agriculture <- TRUE,
-will_use_industry <- TRUE,
-will_use_manufacturing <- TRUE,
-will_normalise <- TRUE,
-force_fresh_data <- TRUE,
-use_mean_for_missing_data <- TRUE)) # for specific countries not whole rows)
 
 # run_test(2002,2018)
