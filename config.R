@@ -1,12 +1,12 @@
 will_use_log <- FALSE
 year_for_comparison <- 2017
-will_use_total_energy_supply <- FALSE
+will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
 will_use_population <- TRUE
-will_use_verified_emisions <- FALSE
+will_use_verified_emisions <- TRUE
 will_use_agriculture <- TRUE
-will_use_industry <- FALSE
+will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
 will_normalise <- TRUE
 force_fresh_data <- TRUE

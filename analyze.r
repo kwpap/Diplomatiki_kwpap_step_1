@@ -3,26 +3,48 @@ source("read_free.R")
 source("find_slopes.R")
 
 
-# find_slopes <- function(will_use_log = TRUE,
-#                         year_for_comparison = 2017,
-#                         will_use_total_energy_supply = TRUE,
-#                         will_use_inflation = TRUE,
-#                         will_use_GDPpc = TRUE,
-#                         will_use_population = TRUE,
-#                         will_use_verified_emisions = TRUE,
-#                         will_use_agriculture = TRUE,
-#                         will_use_industry = TRUE,
-#                         will_use_manufacturing = TRUE,
-#                         will_normalise = TRUE,
-#                         force_fresh_data = TRUE,
-#                         use_mean_for_missing_data = TRUE)
 
-test <- find_slopes( TRUE, 2018,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-print(paste("The slope is: ", coef(test$linear)[2], " and the intercept is: ", coef(test$linear)[1], sep = ""))
-
-# Plot the slope for years 2005-2018
-
-for (i in 2012:2018){
-  test <- find_slopes( TRUE, i,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-  print(paste("The slope is: ", coef(test$linear)[2], " and the intercept is: ", coef(test$linear)[1], sep = ""))
+find_the_best_combo <- function(){
+  # weights <- c(1,1,1,1,1,1,1,1)
+  weights <- c(500, 500, 500, 500, 500, 500, 500, 500)
+  r_squared <- summary(find_slopes()$linear)$r.squared
+  step <- 10
+  low <- 0
+  high <- 10000
+  for (i in 1:40){
+    # index <- i %% 8 +1
+    index <- sample(1:8, 1)
+    worth_doing_it <- TRUE
+    while(worth_doing_it){
+      lowered <- 0
+      raised <- 0
+      if (weights[index]>low+step){
+        weights[index] <- weights[index] - step
+        lowered <- summary(find_slopes_with_weights(weights)$linear)$r.squared
+        weights[index] <- weights[index] + step
+      }
+      if (weights[index]<high){
+        weights[index] <- weights[index] + step
+        raised <- summary(find_slopes_with_weights(weights)$linear)$r.squared
+        weights[index] <- weights[index] - step
+      }
+      if (lowered > r_squared){
+        r_squared <- lowered
+        weights[index] <- weights[index] - step
+      } else if (raised > r_squared){
+        r_squared <- raised
+        weights[index] <- weights[index] + step
+      } else {
+        worth_doing_it <- FALSE
+      }
+    }
+  }
+  print(weights)
+  print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
+  print(paste("R^2:", r_squared))
 }
+# create_graph(weights=c(100,0,0,51,626,1,401,1001))
+
+# create an average allocation comparing to the median of all.
+
+new_allocation <- function()
