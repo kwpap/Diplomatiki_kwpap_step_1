@@ -49,7 +49,7 @@ find_the_best_combo <- function(){
 find_the_best_combo_with_one <- function(){
   weights <- rep(1,8)
   r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
-  step <- 0.1
+  step <- 1
   low <- 0
   high <- 10
   for (i in 1:40){
