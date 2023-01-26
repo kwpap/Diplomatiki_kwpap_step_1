@@ -1,5 +1,5 @@
 source("read_data.R")
-source("read_free.R")
+# source("read_free.R")
 source("find_slopes.R")
 
 
@@ -48,10 +48,11 @@ find_the_best_combo <- function(){
 
 find_the_best_combo_with_one <- function(){
   weights <- rep(1,8)
-  r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
-  step <- 1
+  country = "Greece"
+  r_squared <- summary(find_slopes_with_one_country_with_weights(name = country, weights = weights)$linear)$r.squared
+  step <- 1000
   low <- 0
-  high <- 10
+  high <- 10000
   for (i in 1:40){
     # index <- i %% 8 +1
     index <- sample(1:8, 1)
@@ -61,12 +62,12 @@ find_the_best_combo_with_one <- function(){
       raised <- 0
       if (weights[index]>low+step){
         weights[index] <- weights[index] - step
-        lowered <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
+        lowered <- summary(find_slopes_with_one_country_with_weights(name = country,weights = weights)$linear)$r.squared
         weights[index] <- weights[index] + step
       }
       if (weights[index]<high){
         weights[index] <- weights[index] + step
-        raised <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
+        raised <- summary(find_slopes_with_one_country_with_weights(name = country,weights = weights)$linear)$r.squared
         weights[index] <- weights[index] - step
       }
       if (lowered > r_squared){
