@@ -296,17 +296,17 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   return (list( data = df_distance, linear =  lm))
 }
   
-find_slopes_with_one_country_with_weights <- function( year = 2015, name = "Germany", weights = c(1,1,1,1,1,1,1,1)){
+find_slopes_with_one_country_with_weights <- function( year = 0, name = "Germany", weights = c(1,1,1,1,1,1,1,1)){
   if(year != 0) {year_for_comparison <- year}
-  df_1D <- find_slopes_with_one_country(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$data
-  lm <- find_slopes_with_one_country(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$linear
-  return (list( data = df_1D, linear =  lm))
+  buffer <- find_slopes_with_one_country(country = name, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  return (buffer)
 }
 
 create_graph_for_one <- function (year = 0, name = "default", weights = c(1,1,1,1,1,1,1,1)){
     if(year != 0) {year_for_comparison <- year}
-  df_1D <- find_slopes_with_one_country(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$data
-  lm <- find_slopes_with_one_country(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$linear
+    buffer <- find_slopes_with_one_country(country = name, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  df_1D <- buffer$data
+  lm <- buffer$linear
   print(df_1D)
   # Create png with the regression line
   #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
