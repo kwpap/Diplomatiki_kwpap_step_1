@@ -96,8 +96,8 @@ find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weigh
 
 #XRISIMOPOIEITAI ETSI:
 
-print(find_slopes(year_for_comparison = 2014))
-X2014 <- find_slopes(year_for_comparison = 2014)
+print(find_slopes(year = 2014))
+X2014 <- find_slopes(year = 2014)
 print(X2014$linear)
 print(X2014$data)
 
@@ -234,7 +234,7 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
     ranking <- ranking[order(ranking$value),]
     # print(ranking)
     country <- ranking[nrow(ranking)/2,1]
-    # print(paste("The median country is ", country, sep = ""))
+    print(paste("The median country is ", country, sep = ""))
   }
   country_index <- which(df_data$GEO == country)
 
@@ -296,15 +296,15 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   return (list( data = df_distance, linear =  lm))
 }
   
-find_slopes_with_one_country_with_weights <- function( year = 0, name = "Germany", weights = c(1,1,1,1,1,1,1,1)){
+find_slopes_with_one_country_with_weights <- function( year = 0, name = "none", weights = c(1,1,1,1,1,1,1,1)){
   if(year != 0) {year_for_comparison <- year}
   buffer <- find_slopes_with_one_country(country = name, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   return (buffer)
 }
 
-create_graph_for_one <- function (year = 0, name = "default", weights = c(1,1,1,1,1,1,1,1)){
+create_graph_for_one <- function (year = 0, name = "default", country = "none", weights = c(1,1,1,1,1,1,1,1)){
     if(year != 0) {year_for_comparison <- year}
-    buffer <- find_slopes_with_one_country(country = name, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+    buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   df_1D <- buffer$data
   lm <- buffer$linear
   print(df_1D)
@@ -312,8 +312,41 @@ create_graph_for_one <- function (year = 0, name = "default", weights = c(1,1,1,
   #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
   png(paste(name,".png",sep=""), width = 1000, height = 1000)
   #plot(df_1D$"df_distance", df_1D$"d f_free_distance", xlab = "Combined calculated distance", ylab = "Free distance", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))  # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance")
+  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance",paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, " with r^2: ", summary(lm)$r.squared, sep = ""))
  
   abline(lm, col = "red")
   dev.off()
 }
+
+# Create a table for all the countries with the the r^2 value for each country and each year 2005 to 2018 on the columns and the countries on the rows
+
+create_table_for_all_countries <- function(year = 0, weights = c(1,1,1,1,1,1,1,1)){
+  if(year != 0) {year_for_comparison <- year}
+  df <- data.frame(GEO = character(), slope = numeric(), r_squared = numeric())
+  df_free <- read_free()
+  for (i in 1 : nrow(df_free)) { #nolint
+    buffer <- find_slopes_with_one_country(country = df_free[i, 1], year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+    df[i, 1] <- df_free[i, 1]
+    df[i, 2] <- summary(buffer$linear)$coefficients[2, 1]
+    df[i, 3] <- summary(buffer$linear)$r.squared
+  }
+  return(df)
+}
+create_for_all_year_latex_table <- function(weights = c(1,1,1,1,1,1,1,1)){
+  df <- data.frame(year = numeric(), slope = numeric(), r_squared = numeric(), min_r_squared = numeric(), max_r_squared = numeric())
+  for (i in 2008 : 2018) { #nolint
+    buffer <- create_table_for_all_countries(year = i, weights = weights)
+    df[i - 2004, 1] <- i
+    df[i - 2004, 2] <- mean(buffer$slope)
+    df[i - 2004, 3] <- mean(buffer$r_squared)
+    df[i - 2004, 4] <- min(buffer$r_squared)
+    df[i - 2004, 5] <- max(buffer$r_squared)
+  }
+  return(df)
+}
+gg <- create_for_all_year_latex_table()
+gg <- create_table_for_all_countries()
+<<results=tex>>
+    xtable(gg)
+@
+
