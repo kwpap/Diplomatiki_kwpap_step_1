@@ -234,7 +234,7 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
     ranking <- ranking[order(ranking$value),]
     # print(ranking)
     country <- ranking[nrow(ranking)/2,1]
-    print(paste("The median country is ", country, sep = ""))
+    # print(paste("The median country is ", country, sep = ""))
   }
   country_index <- which(df_data$GEO == country)
 
@@ -291,9 +291,9 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   summary(lm)
   sink()
   # plot the regression line
-  plot(df_distance$"df_distance", df_distance$"df_free_distance", xlab = "Distance between countries in 2015", ylab = "Distance between countries in 2015 with free allocation", main = paste("Distance between countries in 2015 and in 2015 with free allocation", year_for_comparison))
-  abline(lm, col = "red")
-  return (list( data = df_distance, linear =  lm))
+  # plot(df_distance$"df_distance", df_distance$"df_free_distance", xlab = "Distance between countries in 2015", ylab = "Distance between countries in 2015 with free allocation", main = paste("Distance between countries in 2015 and in 2015 with free allocation", year_for_comparison))
+  # abline(lm, col = "red")
+  return (list( data = df_distance, linear =  lm, country = country))
 }
   
 find_slopes_with_one_country_with_weights <- function( year = 0, name = "none", weights = c(1,1,1,1,1,1,1,1)){
@@ -302,19 +302,21 @@ find_slopes_with_one_country_with_weights <- function( year = 0, name = "none", 
   return (buffer)
 }
 
-create_graph_for_one <- function (year = 0, name = "default", country = "none", weights = c(1,1,1,1,1,1,1,1)){
+create_graph_for_one <- function (year = 0, name = "", country = "none", weights = c(1,1,1,1,1,1,1,1)){
     if(year != 0) {year_for_comparison <- year}
     buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   df_1D <- buffer$data
   lm <- buffer$linear
-  print(df_1D)
+  country <- buffer$country
+  print(country)
+  # print(df_1D)
   # Create png with the regression line
   #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
-  png(paste(name,".png",sep=""), width = 1000, height = 1000)
+  png(paste(name, country, " ", year_for_comparison,".png",sep=""), width = 1000, height = 1000)
   #plot(df_1D$"df_distance", df_1D$"d f_free_distance", xlab = "Combined calculated distance", ylab = "Free distance", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))  # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance",paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, " with r^2: ", summary(lm)$r.squared, sep = ""))
- 
-  abline(lm, col = "red")
+  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance",main = paste( country, " year: ", year_for_comparison, " with r^2: ", summary(lm)$r.squared, sep = ""))
+  abline(lm, col = "blue")
+  text(df_1D$"df_distance",df_1D$"df_free_distance"+0.02,df_1D$GEO,col='red')
   dev.off()
 }
 
@@ -344,9 +346,21 @@ create_for_all_year_latex_table <- function(weights = c(1,1,1,1,1,1,1,1)){
   }
   return(df)
 }
-gg <- create_for_all_year_latex_table()
-gg <- create_table_for_all_countries()
-<<results=tex>>
-    xtable(gg)
-@
+#gg <- create_for_all_year_latex_table()
+#gg <- create_table_for_all_countries()
+#<<results=tex>>
+#    xtable(gg)
+#@
 
+      
+##################
+gg <- create_table_for_all_countries()
+g <-read_data()
+gg$GDP <- g$GDPpc*g$Population
+#lm <- lm(gg$Industry ~ gg$r_squared)
+#summary(lm)
+png("2017 r^2 vs GDP.png", width = 1000, height = 1000)
+plot(gg$GDP, gg$r_squared, xlab = "GDP", ylab = "r^2", main = "2017 r^2 vs GDP")
+text(gg$GDP, gg$r_squared, gg$GEO,col="red")
+#abline(lm, col = "red")
+dev.off()

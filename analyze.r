@@ -1,5 +1,4 @@
 source("read_data.R")
-source("read_free.R")
 source("find_slopes.R")
 
 
@@ -47,12 +46,12 @@ find_the_best_combo <- function(){
 # create an average allocation comparing to the median of all.
 
 find_the_best_combo_with_one <- function(){
-  weights <- rep(1,8)
-  r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
-  step <- 250
+  weights <- rep(50,8)
+  r_squared <- summary(find_slopes_with_one_country_with_weights(name = "Hungary", weights = weights)$linear)$r.squared
+  step <- 1
   low <- 0
-  high <- 1000
-  for (i in 1:40){
+  high <- 100
+  for (i in 1:60){
     # index <- i %% 8 +1
     index <- sample(1:8, 1)
     worth_doing_it <- TRUE
