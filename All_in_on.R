@@ -25,9 +25,4 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
  "Malta", "Netherlands", "Poland", "Portugal",
  "Romania", "Slovenia", "Spain", "Sweden",     
  "United Kingdom")
-
-library("xlsx")
-library("xtable") # Load xtable package
-library("stringr")
-library("DBI")
-library("RMySQL")
+ 
