@@ -768,3 +768,22 @@ find_the_best_combo_with_one <- function(){
   print(paste("R^2:", r_squared))
 }
 
+p_val <- function (modelobject) {
+    if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+    f <- summary(modelobject)$fstatistic
+    p <- pf(f[1],f[2],f[3],lower.tail=F)
+    attributes(p) <- NULL
+    return(p)
+}
+MSE <- function(modelobject){
+  if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+  return(mean(summary(modelobject)$residuals^2))
+}
+
+is_first_linear_regration_better <- function(lm1, lm2){
+  if (summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05){
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
