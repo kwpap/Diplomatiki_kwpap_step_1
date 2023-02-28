@@ -651,9 +651,9 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   return (list( data = df_distance, linear =  lm, country = country))
 }
   
-find_slopes_with_one_country_with_weights <- function( year = 0, name = "none", weights = c(1,1,1,1,1,1,1,1)){
+find_slopes_with_one_country_with_weights <- function( year = 0, country = "none", weights = c(1,1,1,1,1,1,1,1)){
   if(year != 0) {year_for_comparison <- year}
-  buffer <- find_slopes_with_one_country(country = name, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   return (buffer)
 }
 
@@ -910,13 +910,13 @@ let_s_compare_problematic_poland_france <-function(){
 @
 }
 
-find_the_better_best_combo_with_one <- function(){
+find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
   weights <- rep(50,8)
-  old <- find_slopes_with_one_country_with_weights(name = "Hungary", weights = weights)$linear
-  step <- 1
+  old <- find_slopes_with_one_country_with_weights(country, year, weights = weights)$linear
+  step <- 10
   low <- 0
   high <- 100
-  for (i in 1:60){
+  for (i in 1:24){
     # index <- i %% 8 +1
     index <- sample(1:8, 1)
     worth_doing_it <- TRUE
@@ -926,7 +926,7 @@ find_the_better_best_combo_with_one <- function(){
       raised <- 0
       if (weights[index]>low+step){
         weights[index] <- weights[index] - step
-        lowered <- find_slopes_with_one_country_with_weights(weights = weights)$linear
+        lowered <- find_slopes_with_one_country_with_weights(country, year,weights = weights)$linear
         weights[index] <- weights[index] + step
         if (is_first_linear_regration_better(lowered, old)){
           old <- lowered
@@ -936,7 +936,7 @@ find_the_better_best_combo_with_one <- function(){
       }
       if (weights[index]<high){
         weights[index] <- weights[index] + step
-        raised <- find_slopes_with_one_country_with_weights(weights = weights)$linear
+        raised <- find_slopes_with_one_country_with_weights(country, year, weights = weights)$linear
         weights[index] <- weights[index] - step
         if (is_first_linear_regration_better(raised, old)){
           old <- raised
@@ -949,4 +949,5 @@ find_the_better_best_combo_with_one <- function(){
   print(weights)
   print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
   print(how_much_good(old))
+  return(old)
 }
