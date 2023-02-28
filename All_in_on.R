@@ -781,9 +781,11 @@ MSE <- function(modelobject){
 }
 
 is_first_linear_regration_better <- function(lm1, lm2){
-  if (summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05){
+  if (summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05 && MSE(lm1) < MSE(lm2)*1.5){
     return(TRUE)
   } else {
     return(FALSE)
   }
 }
+
+
