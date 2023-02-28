@@ -68,8 +68,9 @@ read_data <- function(year = 0) {
 
     if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
         print ("Using Cached Data")
-        return(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
-                        header = TRUE))
+       
+        return(data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
+                        header = TRUE)))
     }
 
 
@@ -361,19 +362,19 @@ read_data <- function(year = 0) {
     }
     # print(information_text)
     
-    #save csv file of df_1
-    # text_t <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
-                        # (if(will_normalise) "_norm" else ""),
-                        # (if(will_use_total_energy_supply) "_tes" else ""),
-                        # (if(will_use_verified_emisions) "_ve" else ""),
-                        # (if(will_use_GDPpc) "_gdp" else ""),
-                        # (if(will_use_population) "_pop" else ""),
-                        # (if(will_use_inflation) "_inf" else ""),
-                        # (if(will_use_agriculture) "_agr" else ""),
-                        # (if(will_use_industry) "_ind" else ""),
-                        # (if(will_use_manufacturing) "_man" else ""),
-                        # ".csv", sep = "")
-    # write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
+    # save csv file of df_1
+    text_t <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
+                        (if(will_normalise) "_norm" else ""),
+                        (if(will_use_total_energy_supply) "_tes" else ""),
+                        (if(will_use_verified_emisions) "_ve" else ""),
+                        (if(will_use_GDPpc) "_gdp" else ""),
+                        (if(will_use_population) "_pop" else ""),
+                        (if(will_use_inflation) "_inf" else ""),
+                        (if(will_use_agriculture) "_agr" else ""),
+                        (if(will_use_industry) "_ind" else ""),
+                        (if(will_use_manufacturing) "_man" else ""),
+                        ".csv", sep = "")
+    write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
     return(df_1)
 }
 
@@ -652,8 +653,8 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
 }
   
 find_slopes_with_one_country_with_weights <- function( year = 0, country = "none", weights = c(1,1,1,1,1,1,1,1)){
-  if(year != 0) {year_for_comparison <- year}
-  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  if(year != 0) { year_for_comparison <- year}
+  buffer <- find_slopes_with_one_country(country = country, year = year, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   return (buffer)
 }
 
@@ -912,13 +913,13 @@ let_s_compare_problematic_poland_france <-function(){
 
 find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
   weights <- rep(50,8)
-  old <- find_slopes_with_one_country_with_weights(country, year, weights = weights)$linear
+  old <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
   step <- 10
   low <- 0
   high <- 100
-  for (i in 1:24){
-    # index <- i %% 8 +1
-    index <- sample(1:8, 1)
+  for (i in 1:8){
+    index <- i %% 8 +1
+
     worth_doing_it <- TRUE
     while(worth_doing_it){
       worth_doing_it <- FALSE
@@ -926,7 +927,7 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
       raised <- 0
       if (weights[index]>low+step){
         weights[index] <- weights[index] - step
-        lowered <- find_slopes_with_one_country_with_weights(country, year,weights = weights)$linear
+        lowered <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
         weights[index] <- weights[index] + step
         if (is_first_linear_regration_better(lowered, old)){
           old <- lowered
@@ -936,7 +937,7 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
       }
       if (weights[index]<high){
         weights[index] <- weights[index] + step
-        raised <- find_slopes_with_one_country_with_weights(country, year, weights = weights)$linear
+        raised <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
         weights[index] <- weights[index] - step
         if (is_first_linear_regration_better(raised, old)){
           old <- raised
@@ -946,8 +947,59 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
       }
     }
   }
-  print(weights)
-  print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
-  print(how_much_good(old))
-  return(old)
+  # print(weights)
+  # print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
+  # print(how_much_good(old))
+  return(list(old, weights))
 }
+
+All_the_countries_throught_the_years_with_best_combo <- function(){
+  dat <- data.frame(matrix(ncol=13, nrow = length(list_eur_countries)))
+  colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "max p-value", "max MSE")
+  rownames(dat) <- list_eur_countries
+  all_weights <- list()
+  for (i in 1:length(list_eur_countries)){
+    pv <- 0
+    mse <- 0
+    for (j in 1:11){
+      gg<- find_the_better_best_combo_with_one(country = list_eur_countries[i], year = j + 2007)
+      all_weights <- append(all_weights, list(gg[[2]]))
+      gg <- gg[[1]]
+      dat[i,j] <- summary(gg)$r.squared
+      if (p_val(gg) > pv){
+        pv <- p_val(gg)
+      }
+      if (MSE(gg) > mse){
+        mse <- MSE(gg)  
+    }
+    dat[i,12] <- pv
+    dat[i,13] <- mse
+  }
+  }
+  <<results=tex>>
+    xtable(dat)
+  @
+  #short the rows of the data frame "dat" by the sum of the row values
+  dat2 <- dat[ ,-c(12,13)]
+  dat2 <- dat2[order(rowSums(dat2), decreasing = TRUE),]
+  for( j in 1:nrow(dat2)){
+    g <- 0
+    for( i in 1:11){
+      g <- g + as.numeric(dat2[j,i])
+    }
+    dat2[j,1] <- g/11
+  }
+  dat2 <- dat2[,-c(3:11)]
+  dat3 <- data.frame(rownames(dat2), dat2$"2008")
+  colnames(dat3) <- c("Country", "Average R^2")
+    <<results=tex>>
+      xtable(dat3)
+  @
+  #make a heatmap of the countries and their R^2 values for each year
+
+  gg <- dat[,-c(12,13)]
+  matrixgg <- as.matrix(gg)
+  heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
+}
+
+

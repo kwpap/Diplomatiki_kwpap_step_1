@@ -12,3 +12,4 @@ heatmap_actual_distances.png
 R_tests.R
 
 *.txt
+*.csv
