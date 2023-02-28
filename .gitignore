@@ -11,3 +11,4 @@ heatmap_merged.png
 heatmap_actual_distances.png
 R_tests.R
 
+*.txt

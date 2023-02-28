@@ -25,9 +25,14 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
  "Malta", "Netherlands", "Poland", "Portugal",
  "Romania", "Slovenia", "Spain", "Sweden",     
  "United Kingdom")
- 
+
+library("xlsx")
+library("xtable") # Load xtable package
+library("stringr")
+library("DBI")
+library("RMySQL")
+
 read_data <- function(year = 0) {
-  source("config.R")
   if(year != 0) {year_for_comparison <- year}
   information_text <- list()
     
@@ -374,12 +379,7 @@ read_data <- function(year = 0) {
 
 read_free <- function(year = 0){
   if(year != 0) {year_for_comparison <- year}
-  source("config.R")
-  library("xlsx")
-  library("xtable") # Load xtable package
-  library("stringr")
-  library("DBI")
-  library("RMySQL")
+
 
   
   kanali <- dbConnect(RMariaDB::MariaDB(),
@@ -781,11 +781,172 @@ MSE <- function(modelobject){
 }
 
 is_first_linear_regration_better <- function(lm1, lm2){
-  if (summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05 && MSE(lm1) < MSE(lm2)*1.5){
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
+  return(summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05 && MSE(lm1) < MSE(lm2)*1.5)
 }
 
+how_much_good <-function(lm){
+  return(paste("R^2:", summary(lm)$r.squared, "p-value:", p_val(lm), "MSE:", MSE(lm)))
+}
 
+find_the_better_best_combo <- function(){
+  weights <- rep(1,8)
+
+  old <- find_slopes_with_one_country()$linear
+  step <- 1
+  low <- 0
+  high <- 10
+  for (i in 1:40){
+    # index <- i %% 8 +1
+    index <- sample(1:8, 1)
+    worth_doing_it <- TRUE
+    while(worth_doing_it){
+      worth_doing_it <- FALSE
+      lowered <- 0
+      raised <- 0
+      if (weights[index]>low+step){
+        weights[index] <- weights[index] - step
+        lowered <- find_slopes_with_one_country_with_weights(weights)$linear
+        weights[index] <- weights[index] + step
+        if(is_first_linear_regration_better(lowered, old)){
+          old <- lowered
+          weights[index] <- weights[index] - step
+          worth_doing_it <- TRUE
+      }
+      }
+      if (weights[index]<high){
+        weights[index] <- weights[index] + step
+        raised <- find_slopes_with_one_country_with_weights(weights)$linear
+        weights[index] <- weights[index] - step
+        if(is_first_linear_regration_better(raised, old)){
+          old <- raised
+          weights[index] <- weights[index] + step
+          worth_doing_it <- TRUE
+      }
+    }
+    }
+  }
+  print(weights)
+  print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
+  print(how_much_good(old))
+}
+
+All_the_middle_countries <- function(){
+    dat <-data.frame(matrix(ncol=5, nrow = 11))
+    colnames(dat) <- c("Year", "R^2", "p-value", "MSE", "Country")
+    dat$Year <- c(2008:2018)
+    for (i in 1:11){
+      dat$Country[i] <- find_slopes_with_one_country(year = i + 2007)$country
+      dat$"R^2"[i] <- summary(find_slopes_with_one_country(year = i + 2007)$linear)$r.squared
+      dat$"p-value"[i] <- p_val(find_slopes_with_one_country(year = i + 2007)$linear)
+      dat$MSE[i] <- MSE(find_slopes_with_one_country(year = i + 2007)$linear)
+    }
+  <<results=tex>>
+    xtable(dat)
+@
+}
+
+All_the_countries_throught_the_years <- function(){
+  dat <- data.frame(matrix(ncol=13, nrow = length(list_eur_countries)))
+  colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "max p-value", "max MSE")
+  rownames(dat) <- list_eur_countries
+  for (i in 1:length(list_eur_countries)){
+    pv <- 0
+    mse <- 0
+    for (j in 1:11){
+      gg <- find_slopes_with_one_country(year = j + 2007, country = list_eur_countries[i])$linear
+      dat[i,j] <- summary(gg)$r.squared
+      if (p_val(gg) > pv){
+        pv <- p_val(gg)
+      }
+      if (MSE(gg) > mse){
+        mse <- MSE(gg)  
+    }
+    dat[i,12] <- pv
+    dat[i,13] <- mse
+  }
+  }
+  <<results=tex>>
+    xtable(dat)
+  @
+  #short the rows of the data frame "dat" by the sum of the row values
+  dat2 <- dat[ ,-c(12,13)]
+  dat2 <- dat2[order(rowSums(dat2), decreasing = TRUE),]
+  for( j in 1:nrow(dat2)){
+    g <- 0
+    for( i in 1:11){
+      g <- g + as.numeric(dat2[j,i])
+    }
+    dat2[j,1] <- g/11
+  }
+  dat2 <- dat2[,-c(3:11)]
+  dat3 <- data.frame(rownames(dat2), dat2$"2008")
+  colnames(dat3) <- c("Country", "Average R^2")
+    <<results=tex>>
+      xtable(dat3)
+  @
+  #make a heatmap of the countries and their R^2 values for each year
+
+  gg <- dat[,-c(12,13)]
+  matrixgg <- as.matrix(gg)
+  heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
+}
+
+let_s_compare_problematic_poland_france <-function(){
+  gg <- read_data(year = 2012)
+  gg <- gg[gg$GEO == "Poland",]
+  g1 <- read_data(year = 2013)
+  g1 <- g1[g1$GEO == "Poland",]
+  gg <- rbind(gg, g1)
+  g1 <- read_data(year = 2012)
+  g1 <- g1[g1$GEO == "France",]
+  g2 <- read_data(year = 2013)
+  g2 <- g2[g2$GEO == "France",]
+  gg <- rbind(gg, g1,g2)
+  # transpose gg
+  gg <- t(gg)
+  colnames(gg) <- c("2012", "2013", "2012", "2013")
+    <<results=tex>>
+    xtable(gg)
+@
+}
+
+find_the_better_best_combo_with_one <- function(){
+  weights <- rep(50,8)
+  old <- find_slopes_with_one_country_with_weights(name = "Hungary", weights = weights)$linear
+  step <- 1
+  low <- 0
+  high <- 100
+  for (i in 1:60){
+    # index <- i %% 8 +1
+    index <- sample(1:8, 1)
+    worth_doing_it <- TRUE
+    while(worth_doing_it){
+      worth_doing_it <- FALSE
+      lowered <- 0
+      raised <- 0
+      if (weights[index]>low+step){
+        weights[index] <- weights[index] - step
+        lowered <- find_slopes_with_one_country_with_weights(weights = weights)$linear
+        weights[index] <- weights[index] + step
+        if (is_first_linear_regration_better(lowered, old)){
+          old <- lowered
+          worth_doing_it <- TRUE
+          weights[index] <- weights[index] - step
+        }
+      }
+      if (weights[index]<high){
+        weights[index] <- weights[index] + step
+        raised <- find_slopes_with_one_country_with_weights(weights = weights)$linear
+        weights[index] <- weights[index] - step
+        if (is_first_linear_regration_better(raised, old)){
+          old <- raised
+          worth_doing_it <- TRUE
+          weights[index] <- weights[index] + step
+        }
+      }
+    }
+  }
+  print(weights)
+  print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
+  print(how_much_good(old))
+}
