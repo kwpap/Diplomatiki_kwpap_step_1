@@ -1,0 +1,25 @@
+\babel@toc {english}{}\relax 
+\babel@toc {greek}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {greek}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Περιγραφή}{2}{section.1}%
+\contentsline {section}{\numberline {2}Δεδομένα}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Πηγές δεδομένων}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Επιλογή δεδομένων}{4}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Πειράματα}{4}{section.3}%
+\contentsline {section}{\numberline {4}Αποτελέσματα}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Πείραμα 1}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Πείραμα 2}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Πείραμα 3}{6}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Πείραμα 4}{8}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Προτάσεις}{9}{section.5}%
+\contentsline {section}{\numberline {6}Ένθετο}{9}{section.6}%
+\contentsline {section}{\numberline {7}Επανεκίνηση μετά τα Χριστούγεννα}{10}{section.7}%
+\contentsline {section}{\numberline {8}Δοκιμές για διαφορετικά βάρη στις παραμέτρους}{12}{section.8}%
+\contentsline {section}{\numberline {9}Για τη 31η Γενάρη}{13}{section.9}%
+\contentsline {section}{\numberline {10}ΓιΑ την 28η Φεβρουαρίου}{18}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Αλλαγή 1}{18}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Μεσαία χώρα ανά τα έτη}{18}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Όλες οι χώρες για όλα τα έτη}{19}{subsection.10.3}%
+\contentsline {section}{\numberline {11}Για τη 7η Φλεβάρη}{22}{section.11}%
