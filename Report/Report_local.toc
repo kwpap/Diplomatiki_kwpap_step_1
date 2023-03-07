@@ -24,3 +24,5 @@
 \contentsline {subsection}{\numberline {10.3}Όλες οι χώρες για όλα τα έτη}{20}{subsection.10.3}%
 \contentsline {section}{\numberline {11}Για τη 7η Φλεβάρη}{23}{section.11}%
 \contentsline {subsection}{\numberline {11.1}Πίνακας $r^2$ με βέλτιστα επιλεγμένα βάρη}{23}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Οπτικοποίηση δεδομένων}{25}{subsection.11.2}%
+\contentsline {subsubsection}{\numberline {11.2.1}Πληθυσμός}{25}{subsubsection.11.2.1}%

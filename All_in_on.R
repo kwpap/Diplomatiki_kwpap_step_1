@@ -1047,10 +1047,68 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   #matrixgg <- as.matrix(gg)
   #heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
 }
-visualize <- function(){
-  gg <-read_data()
+visualize_population <- function(){
+  will_normalise <- FALSE
+  pop <- data.frame(matrix(ncol = 3))
+  colnames(pop) <- c("Country", "Population","Year")
+  for(i in (1:11)){
+    print(i)
+    gg <-read_data(year = 2007+i)[-c(2,3,5,6,7,8,9)]
+    for (j in 1:length(gg[,1])){
+      pop[nrow(pop) + 1,] <- c(gg$GEO[j], as.numeric(gg$Population[j]), 2007+i)
+    }
+  }
+  pop <- pop[-c(1),]
+  
+ # ggplot(data = pop) + 
+ #   geom_point(aes(x = Country, y = Population),fill = 'grey') + 
+  #  labs(title = "Population vs Country", x = "Country", y = "Population") +
+  #  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  print(sapply(pop, class)) 
+  
+  # Syntax
+  pop$Population = as.numeric(as.character(pop$Population))
+  
+  
+  ggplot(pop, aes(x=Country, y=Population)) + 
+    geom_boxplot(
+      # custom boxes
+      color="blue",
+      fill="blue",
+      alpha=0.2,
+      
+
+      # custom outliers
+      outlier.colour="red",
+      outlier.fill="red",
+      outlier.size=3
+    )+
+    labs(title = "Population vs Country", x = "Country", y = "Population in Millions")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+
+  # pop[which(pop$Country == "Greece" | pop$Country == "Belgium"),]
+  
+  ggplot(pop, aes(x= Year, y = Population, group = Country))+
+    geom_point(aes(colour = Country))+
+    geom_line (aes(colour = Country)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  
+  #Let's make some latex tables
+  po <- data.frame(matrix(nrow = length(list_eur_countries), ncol = 17))
+  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","max","median","25-quantile","75-quantile","Std")
+  rownames(po) <- list_eur_countries
+  for (i in 1:11){
+    for(j in 1:length(list_eur_countries)){
+      po[j,i]<- pop[which(pop$Year==2007+i & pop$Country==list_eur_countries[j]),]$Population
+    }
+  }
   
 }
+
+
+
 
 
 
