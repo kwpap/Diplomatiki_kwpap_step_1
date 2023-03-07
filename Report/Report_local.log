@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  6 MAR 2023 20:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  7 MAR 2023 13:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1571,10 +1571,11 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 829.
 
+[23]
+Underfull \hbox (badness 10000) in paragraph at lines 894--895
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ []
 
- [23]
 [24] (Report_local.aux)
 
 LaTeX Warning: There were multiply-defined labels.
@@ -1583,8 +1584,8 @@ Package rerunfilecheck Info: File `Report_local.out' has not changed.
 (rerunfilecheck)             Checksum: 34AACCB49FC0FE4FCA9BFC00BD1E2E69;3837.
  ) 
 Here is how much of TeX's memory you used:
- 27446 strings out of 476339
- 512595 string characters out of 5787648
+ 27451 strings out of 476339
+ 512630 string characters out of 5787648
  1907340 words of memory out of 5000000
  47274 multiletter control sequences out of 15000+600000
  528122 words of font info for 86 fonts, out of 8000000 for 9000
@@ -1615,9 +1616,9 @@ xn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cb
 greek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/cbgreek/grxn2074.pfb>
-Output written on Report_local.pdf (24 pages, 711443 bytes).
+Output written on Report_local.pdf (24 pages, 712645 bytes).
 PDF statistics:
- 429 PDF objects out of 1000 (max. 8388607)
- 95 named destinations out of 1000 (max. 500000)
+ 435 PDF objects out of 1000 (max. 8388607)
+ 100 named destinations out of 1000 (max. 500000)
  266 words of extra memory for PDF output out of 10000 (max. 10000000)
 

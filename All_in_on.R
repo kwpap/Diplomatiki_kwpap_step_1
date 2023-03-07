@@ -1,3 +1,5 @@
+library(hash)
+
 will_use_log <- FALSE
 year_for_comparison <- 2017
 will_use_total_energy_supply <- TRUE
@@ -11,6 +13,8 @@ will_use_manufacturing <- TRUE
 will_normalise <- TRUE
 force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
+cached_data <- hash()
+cached_free <- hash()
 
   # DEFINITIONS FOR DATABASE
   db <- "eu_ets"           # name of database
@@ -31,24 +35,14 @@ library("xtable") # Load xtable package
 library("stringr")
 library("DBI")
 library("RMySQL")
+library("ggplot2")
 
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
   information_text <- list()
     
 
-          # import countries from databse
-      kanali <- dbConnect(RMariaDB::MariaDB(),
-                          user = use,
-                          password = passwor,
-                          dbname = db,
-                          host = hos)
-      qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
-      res <- dbSendQuery(kanali, qurry_countries) # send query to database
-      countries <- dbFetch(res, n = -1) # fetch all data from querry
-      dbClearResult(res) # clear result
-      country_names <- countries[, 1]
-      country_eu_abbr2L <- countries[, 3]
+
 
     
     # Try to find the file in the folder "Data/created_csvs"
@@ -65,14 +59,28 @@ read_data <- function(year = 0) {
                     (if(will_use_industry) "_ind" else ""),
                     (if(will_use_manufacturing) "_man" else ""),
                     ".csv", sep = "")
-
+    if(!force_fresh_data & !is.null(cached_data[[text_s]])){
+      #print (paste("Using Cached Data from hash for: ", year_for_comparison))
+      return(cached_data[[text_s]])
+}
     if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
-        print ("Using Cached Data")
-       
+        #print ("Using Cached Data from csv")
+        cached_data[[text_s]] <- data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
         return(data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
-                        header = TRUE)))
+                        header = TRUE)[-c(1)]))
     }
-
+    # import countries from databse
+    kanali <- dbConnect(RMariaDB::MariaDB(),
+                        user = use,
+                        password = passwor,
+                        dbname = db,
+                        host = hos)
+    qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
+    res <- dbSendQuery(kanali, qurry_countries) # send query to database
+    countries <- dbFetch(res, n = -1) # fetch all data from querry
+    dbClearResult(res) # clear result
+    country_names <- countries[, 1]
+    country_eu_abbr2L <- countries[, 3]
 
     df_1 <- data.frame(list_eur_countries)
     zero_vector <- rep(1, length(list_eur_countries))
@@ -375,15 +383,28 @@ read_data <- function(year = 0) {
                         (if(will_use_manufacturing) "_man" else ""),
                         ".csv", sep = "")
     write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
+    cached_data[[text_t]] <- df_1
     return(df_1)
 }
 
 read_free <- function(year = 0){
   if(year != 0) {year_for_comparison <- year}
-
-
-  
-  kanali <- dbConnect(RMariaDB::MariaDB(),
+  text_s <- paste("df_free_",year_for_comparison,(if (will_use_log) "_log" else ""),
+                  (if(will_normalise) "_norm" else ""),
+                  (if(will_use_total_energy_supply) "_tes" else ""),
+                  (if(will_use_verified_emisions) "_ve" else ""),
+                  (if(will_use_GDPpc) "_gdp" else ""),
+                  (if(will_use_population) "_pop" else ""),
+                  (if(will_use_inflation) "_inf" else ""),
+                  (if(will_use_agriculture) "_agr" else ""),
+                  (if(will_use_industry) "_ind" else ""),
+                  (if(will_use_manufacturing) "_man" else ""),
+                  ".csv", sep = "")
+  if(!force_fresh_data & !is.null(cached_free[[text_s]])){
+    #print (paste("Using Cached Free Data from hash for: ", year_for_comparison))
+    return(cached_free[[text_s]])
+  }
+    kanali <- dbConnect(RMariaDB::MariaDB(),
                       user = use,
                       password = passwor,
                       dbname = db,
@@ -419,7 +440,7 @@ read_free <- function(year = 0){
     df_free$Free <- df_free$Free/max(df_free$Free)
   }
 
-
+  cached_free[[text_s]] <- df_free
   
   return (df_free)
 }
@@ -841,9 +862,9 @@ All_the_middle_countries <- function(){
       dat$"p-value"[i] <- p_val(find_slopes_with_one_country(year = i + 2007)$linear)
       dat$MSE[i] <- MSE(find_slopes_with_one_country(year = i + 2007)$linear)
     }
-  <<results=tex>>
-    xtable(dat)
-@
+#  <<results=tex>>
+#    xtable(dat)
+#@
 }
 
 All_the_countries_throught_the_years <- function(){
@@ -866,9 +887,9 @@ All_the_countries_throught_the_years <- function(){
     dat[i,13] <- mse
   }
   }
-  <<results=tex>>
-    xtable(dat)
-  @
+  #<<results=tex>>
+  #  xtable(dat)
+  #@
   #short the rows of the data frame "dat" by the sum of the row values
   dat2 <- dat[ ,-c(12,13)]
   dat2 <- dat2[order(rowSums(dat2), decreasing = TRUE),]
@@ -882,9 +903,9 @@ All_the_countries_throught_the_years <- function(){
   dat2 <- dat2[,-c(3:11)]
   dat3 <- data.frame(rownames(dat2), dat2$"2008")
   colnames(dat3) <- c("Country", "Average R^2")
-    <<results=tex>>
-      xtable(dat3)
-  @
+ #   <<results=tex>>
+ #     xtable(dat3)
+ # @
   #make a heatmap of the countries and their R^2 values for each year
 
   gg <- dat[,-c(12,13)]
@@ -906,9 +927,9 @@ let_s_compare_problematic_poland_france <-function(){
   # transpose gg
   gg <- t(gg)
   colnames(gg) <- c("2012", "2013", "2012", "2013")
-    <<results=tex>>
-    xtable(gg)
-@
+#    <<results=tex>>
+#    xtable(gg)
+#@
 }
 
 find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
@@ -916,9 +937,10 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
   old <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
   step <- 10
   low <- 0
-  high <- 100
-  for (i in 1:8){
-    index <- i %% 8 +1
+  high <- 1000
+  for (i in 1:100){
+    #index <- i %% 8 +1
+    index <- sample (c(1:8), size=1)
 
     worth_doing_it <- TRUE
     while(worth_doing_it){
@@ -958,9 +980,14 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "max p-value", "max MSE")
   rownames(dat) <- list_eur_countries
   all_weights <- list()
+  newi = 0
   for (i in 1:length(list_eur_countries)){
     pv <- 0
     mse <- 0
+    if(newi !=i){
+      newi <- i
+      print(paste("Working on: ",list_eur_countries[i]))
+    }
     for (j in 1:11){
       gg<- find_the_better_best_combo_with_one(country = list_eur_countries[i], year = j + 2007)
       all_weights <- append(all_weights, list(gg[[2]]))
@@ -976,9 +1003,28 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
     dat[i,13] <- mse
   }
   }
-  <<results=tex>>
-    xtable(dat)
-  @
+  #<<results=tex>>
+  #  xtable(dat)
+  #@
+    
+    
+  average_weights <- c(0,0,0,0,0,0,0,0)
+  for (i in 1:length(all_weights)){
+    average_weights <- average_weights + all_weights[[i]]
+  }
+  average_weights <- average_weights/length(all_weights)
+  different_weights <- hash()
+  for (i in 1:length(all_weights)){
+    tet <- paste(all_weights[[i]][[1]], all_weights[[i]][[2]], all_weights[[i]][[3]], all_weights[[i]][[4]], all_weights[[i]][[5]], all_weights[[i]][[6]], all_weights[[i]][[7]], all_weights[[i]][[8]],sep = " ")
+    if(is.null(different_weights[[tet]])){
+      different_weights[[tet]] <- 1
+    }
+    else {
+      different_weights[[tet]] <- different_weights[[tet]] + 1
+    }
+      
+  }
+    
   #short the rows of the data frame "dat" by the sum of the row values
   dat2 <- dat[ ,-c(12,13)]
   dat2 <- dat2[order(rowSums(dat2), decreasing = TRUE),]
@@ -992,14 +1038,19 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   dat2 <- dat2[,-c(3:11)]
   dat3 <- data.frame(rownames(dat2), dat2$"2008")
   colnames(dat3) <- c("Country", "Average R^2")
-    <<results=tex>>
-      xtable(dat3)
-  @
+  #  <<results=tex>>
+  #    xtable(dat3)
+  #@
   #make a heatmap of the countries and their R^2 values for each year
 
-  gg <- dat[,-c(12,13)]
-  matrixgg <- as.matrix(gg)
-  heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
+  #gg <- dat[,-c(12,13)]
+  #matrixgg <- as.matrix(gg)
+  #heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
 }
+visualize <- function(){
+  gg <-read_data()
+  
+}
+
 
 
