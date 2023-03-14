@@ -1,5 +1,12 @@
 library(hash)
 
+library("xlsx")
+library("xtable") # Load xtable package
+library("stringr")
+library("DBI")
+library("RMySQL")
+library("ggplot2")
+
 will_use_log <- FALSE
 year_for_comparison <- 2017
 will_use_total_energy_supply <- TRUE
@@ -7,7 +14,7 @@ will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
 will_use_population <- TRUE
 will_use_verified_emisions <- TRUE
-will_use_agriculture <- TRUE
+will_use_  <- TRUE
 will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
 will_normalise <- TRUE
@@ -30,12 +37,6 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
  "Romania", "Slovenia", "Spain", "Sweden",     
  "United Kingdom")
 
-library("xlsx")
-library("xtable") # Load xtable package
-library("stringr")
-library("DBI")
-library("RMySQL")
-library("ggplot2")
 
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
@@ -862,9 +863,9 @@ All_the_middle_countries <- function(){
       dat$"p-value"[i] <- p_val(find_slopes_with_one_country(year = i + 2007)$linear)
       dat$MSE[i] <- MSE(find_slopes_with_one_country(year = i + 2007)$linear)
     }
-#  <<results=tex>>
-#    xtable(dat)
-#@
+  #  <<results=tex>>
+  #    xtable(dat)
+  #@
 }
 
 All_the_countries_throught_the_years <- function(){
@@ -927,9 +928,9 @@ let_s_compare_problematic_poland_france <-function(){
   # transpose gg
   gg <- t(gg)
   colnames(gg) <- c("2012", "2013", "2012", "2013")
-#    <<results=tex>>
-#    xtable(gg)
-#@
+  #    <<results=tex>>
+  #    xtable(gg)
+  #@
 }
 
 find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
@@ -1047,6 +1048,7 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   #matrixgg <- as.matrix(gg)
   #heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
 }
+
 visualize_population <- function(){
   will_normalise <- FALSE
   pop <- data.frame(matrix(ncol = 3))
@@ -1097,18 +1099,95 @@ visualize_population <- function(){
   
   #Let's make some latex tables
   po <- data.frame(matrix(nrow = length(list_eur_countries), ncol = 17))
-  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","max","median","25-quantile","75-quantile","Std")
+  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","25-quantile","median","75-quantile","max","Std")
   rownames(po) <- list_eur_countries
   for (i in 1:11){
     for(j in 1:length(list_eur_countries)){
       po[j,i]<- pop[which(pop$Year==2007+i & pop$Country==list_eur_countries[j]),]$Population
     }
+    po[,i] <- as.numeric(as.character(po[,i]))
   }
-  
+  for(i in 1:length(list_eur_countries)){
+    po[i,12] <- min(po[i,1:11])
+    po[i,13] <- quantile(po[i,1:11], 0.25)
+    po[i,14] <- median(as.numeric(po[i,1:11]))
+    po[i,15] <- quantile(po[i,1:11], 0.75)
+    po[i,16] <- max(po[i,1:11])
+    po[i,17] <- sd(po[i,1:11])
+
+  }
+  po2 <- po[,-c(1:11)]
+  po3 <- po2/1000000
+  #<<results=tex>>
+  #  xtable(po3)
+  #@
 }
 
+visualize_Manufacturing  <- function(){
+    will_use_log <- FALSE
+    will_normalise <- FALSE
+  pop <- data.frame(matrix(ncol = 3))
+  colnames(pop) <- c("Country", "Manufacturing","Year")
+  for(i in (1:11)){
+    print(i)
+    gg <-read_data(year = 2007+i)[-c(2,3,4,5,6,8,9)]
+    for (j in 1:length(gg[,1])){
+      pop[nrow(pop) + 1,] <- c(gg$GEO[j], as.numeric(gg$Manufacturing [j]), 2007+i)
+    }
+  }
+  pop <- pop[-c(1),]
+  
+ # ggplot(data = pop) + 
+ #   geom_point(aes(x = Country, y = Population),fill = 'grey') + 
+  #  labs(title = "Population vs Country", x = "Country", y = "Population") +
+  #  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  print(sapply(pop, class)) 
+  
+  # Syntax
+  pop$Manufacturing  = as.numeric(as.character(pop$Manufacturing ))
+  
+  
+  #Let's make some latex tables
+  po <- data.frame(matrix(nrow = length(list_eur_countries), ncol = 17))
+  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","25-quantile","median","75-quantile","max","Std")
+  rownames(po) <- list_eur_countries
+  for (i in 1:11){
+    for(j in 1:length(list_eur_countries)){
+      po[j,i]<- pop[which(pop$Year==2007+i & pop$Country==list_eur_countries[j]),]$Manufacturing 
+    }
+    po[,i] <- as.numeric(as.character(po[,i]))
+  }
+  po <- po/1000000000
+  for(i in 1:length(list_eur_countries)){
+    po[i,12] <- min(po[i,1:11])
+    po[i,13] <- quantile(po[i,1:11], 0.25)
+    po[i,14] <- median(as.numeric(po[i,1:11]))
+    po[i,15] <- quantile(po[i,1:11], 0.75)
+    po[i,16] <- max(po[i,1:11])
+    po[i,17] <- sd(po[i,1:11])
 
+  }
+  po2 <- po[,-c(1:11)]
+  <<results=tex>>
+    xtable(po2)
+  @
 
+ggplot(pop, aes(x=Country, y=Manufacturing )) + 
+  geom_boxplot(
+    # custom boxes
+    color="blue",
+    fill="blue",
+    alpha=0.2,
+    
+    
+    # custom outliers
+    outlier.colour="red",
+    outlier.fill="red",
+    outlier.size=3
+  )+
+  labs(title = "Manufacturing  vs Country", x = "Country", y = " Manufacturing ")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
 
 
 

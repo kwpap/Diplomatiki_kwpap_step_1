@@ -26,3 +26,10 @@
 \contentsline {subsection}{\numberline {11.1}Πίνακας $r^2$ με βέλτιστα επιλεγμένα βάρη}{23}{subsection.11.1}%
 \contentsline {subsection}{\numberline {11.2}Οπτικοποίηση δεδομένων}{25}{subsection.11.2}%
 \contentsline {subsubsection}{\numberline {11.2.1}Πληθυσμός}{25}{subsubsection.11.2.1}%
+\contentsline {subsubsection}{\numberline {11.2.2}Πληθωρισμός}{27}{subsubsection.11.2.2}%
+\contentsline {subsubsection}{\numberline {11.2.3}Total energy Supply}{29}{subsubsection.11.2.3}%
+\contentsline {subsubsection}{\numberline {11.2.4}GDP per capita}{29}{subsubsection.11.2.4}%
+\contentsline {subsubsection}{\numberline {11.2.5}Verified emissions}{30}{subsubsection.11.2.5}%
+\contentsline {subsubsection}{\numberline {11.2.6}Agriculture}{33}{subsubsection.11.2.6}%
+\contentsline {subsubsection}{\numberline {11.2.7}Industry}{35}{subsubsection.11.2.7}%
+\contentsline {subsubsection}{\numberline {11.2.8}Manufacturing}{35}{subsubsection.11.2.8}%

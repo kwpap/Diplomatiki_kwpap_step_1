@@ -896,26 +896,445 @@
 \newpage
 \subsection{Οπτικοποίηση δεδομένων}
 \subsubsection{Πληθυσμός}
+	\begin{itemize}
+	\item Source: https://data.worldbank.org/indicator/SP.POP.TOTL
+	\item Year: 2011 - 2021
+	\item Unit: Persons
+\end{itemize}   
 Για τον πληθυσμό δεν έχω τίποτα εντυπωσιακό να πω. Ίσως είναι κάπως εύκολο να δούμε όλα τα δεδομένα ταυτόχρονα και να παρατηρήσουμε τι αλλαγή επιφέρει η κανονικοποίηση στα δεδομένα. Όπως φαίνεται στα figure 7 και 8. Τα σχήματα είναι ολόιδια. Η διαφορά είναι πως το ένα έχει διαιρεθεί με το 1000000 ενώ το άλλο έχει διαιρεθεί με το μέγιστο κάθε χρονιάς, οπότε είναι ελαφρώς διαφορετικές οι σχέσεις μεταξύ των αριθμών κάθε χώρας. 
 
-Παράλληλα, μπορούμε να παρατηρήσουμε τα δεδομένα κάπως καλύτερα:
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+		\hline
+		Population & min & 25-quantile & median & 75-quantile & max & Std \\ 
+		\hline
+		Austria & 8.32 & 8.38 & 8.48 & 8.69 & 8.84 & 0.19 \\ 
+		Belgium & 10.71 & 10.97 & 11.16 & 11.30 & 11.43 & 0.24 \\ 
+		Bulgaria & 7.03 & 7.15 & 7.27 & 7.37 & 7.49 & 0.15 \\ 
+		Cyprus & 1.08 & 1.12 & 1.14 & 1.17 & 1.19 & 0.03 \\ 
+		Denmark & 5.49 & 5.56 & 5.61 & 5.71 & 5.79 & 0.10 \\
+		\hline 
+		Estonia & 1.31 & 1.32 & 1.32 & 1.33 & 1.34 & 0.01 \\ 
+		Finland & 5.31 & 5.38 & 5.44 & 5.49 & 5.52 & 0.07 \\ 
+		France & 64.37 & 65.19 & 66.00 & 66.64 & 67.10 & 0.93 \\ 
+		Germany & 80.27 & 80.81 & 81.78 & 82.23 & 82.91 & 0.91 \\ 
+		Greece & 10.73 & 10.80 & 10.97 & 11.09 & 11.12 & 0.15 \\ 
+		\hline
+		Hungary & 9.78 & 9.83 & 9.89 & 9.99 & 10.04 & 0.09 \\ 
+		Ireland & 4.49 & 4.57 & 4.62 & 4.73 & 4.87 & 0.12 \\ 
+		Italy & 58.83 & 59.33 & 60.23 & 60.58 & 60.79 & 0.73 \\ 
+		Latvia & 1.93 & 1.97 & 2.01 & 2.08 & 2.18 & 0.08 \\ 
+		Lithuania & 2.80 & 2.89 & 2.96 & 3.06 & 3.20 & 0.13 \\ 
+		\hline
+		Luxembourg & 0.49 & 0.51 & 0.54 & 0.58 & 0.61 & 0.04 \\ 
+		Malta & 0.41 & 0.42 & 0.43 & 0.45 & 0.48 & 0.03 \\ 
+		Netherlands & 16.45 & 16.65 & 16.80 & 16.99 & 17.23 & 0.25 \\ 
+		Poland & 37.97 & 37.98 & 38.04 & 38.06 & 38.15 & 0.06 \\ 
+		Portugal & 10.28 & 10.34 & 10.46 & 10.56 & 10.57 & 0.12 \\ 
+		\hline
+		Romania & 19.47 & 19.76 & 19.98 & 20.20 & 20.54 & 0.33 \\ 
+		Slovenia & 2.02 & 2.05 & 2.06 & 2.06 & 2.07 & 0.01 \\ 
+		Spain & 45.95 & 46.46 & 46.58 & 46.68 & 46.80 & 0.24 \\ 
+		Sweden & 9.22 & 9.41 & 9.60 & 9.86 & 10.18 & 0.31 \\ 
+		United Kingdom & 61.81 & 63.01 & 64.13 & 65.36 & 66.46 & 1.55 \\ 
+		\hline
+	\end{tabular}
+	\caption{Population in millions 2008-2018}
+	\label{population}
+\end{table}
 
+
+Παράλληλα, μπορούμε να παρατηρήσουμε τα δεδομένα κάπως καλύτερα, όπου φαίνεται πως η κανονικοποίηση δεν επηρεάζει καθόλου την σχέση μεταξύ των τιμών:
 
 
 \begin{figure}[H]
 	\centering
+	\begin{subfigure}[a]{0.8\textwidth}
+		\centering
 	\includegraphics[width=1\linewidth]{"images/Boxplot Population Normalized vs Country"}
 	\caption{}
 	\label{fig:boxplot-population-normalized-vs-country}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.8\textwidth}
+		\includegraphics[width=1\linewidth]{"images/Boxplot Population in Millions vs Country"}
+		\caption{}
+		\label{fig:boxplot-population-in-millions-vs-country}
+	\end{subfigure}
 \end{figure}
+\subsubsection{Πληθωρισμός}
+	\begin{itemize}
+	\item Source: https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
+	\item Year: 1960-2021
+	\item Unit: \%
+	\end{itemize}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+\hline
+		Inflation & min & 25-quantile & median & 75-quantile & max & Std \\ 
+  \hline
+Austria & 0.87 & 1.71 & 1.85 & 2.01 & 2.30 & 0.45 \\ 
+Belgium & 0.53 & 1.30 & 1.81 & 1.90 & 1.96 & 0.47 \\ 
+Bulgaria & 0.07 & 1.23 & 3.32 & 4.52 & 8.10 & 2.45 \\ 
+Cyprus & -1.33 & -0.66 & 1.00 & 1.65 & 4.73 & 1.74 \\ 
+Denmark & 0.25 & 0.58 & 0.89 & 1.78 & 4.13 & 1.27 \\ 
+\hline
+Estonia & -0.39 & 2.00 & 3.59 & 4.05 & 6.80 & 2.02 \\ 
+Finland & 0.09 & 1.22 & 1.77 & 2.59 & 3.04 & 1.02 \\ 
+France & 0.07 & 0.55 & 0.95 & 1.10 & 2.37 & 0.58 \\ 
+Germany & 0.65 & 1.20 & 1.50 & 1.87 & 1.97 & 0.46 \\ 
+Greece & -2.05 & -0.44 & -0.18 & 0.62 & 4.34 & 1.85 \\ 
+\hline
+Hungary & 1.32 & 2.66 & 2.89 & 4.11 & 4.85 & 1.15 \\ 
+Ireland & -4.62 & -0.28 & 0.71 & 1.22 & 7.70 & 3.10 \\ 
+Italy & 0.44 & 0.92 & 1.13 & 1.58 & 2.40 & 0.54 \\ 
+Latvia & -9.67 & 0.49 & 1.92 & 3.77 & 11.65 & 5.17 \\ 
+Lithuania & -3.30 & 1.06 & 2.53 & 3.88 & 9.71 & 3.30 \\ 
+\hline
+Luxembourg & -1.11 & 1.94 & 2.28 & 3.36 & 6.61 & 1.99 \\ 
+Malta & 1.12 & 2.06 & 2.22 & 2.75 & 4.22 & 0.82 \\ 
+Netherlands & 0.19 & 0.35 & 0.94 & 1.36 & 2.44 & 0.79 \\ 
+Poland & 0.30 & 0.75 & 1.65 & 2.82 & 3.89 & 1.34 \\ 
+Portugal & -0.39 & 0.67 & 1.51 & 1.78 & 2.25 & 0.90 \\ 
+\hline
+Romania & 1.80 & 3.33 & 3.77 & 4.38 & 16.02 & 3.88 \\ 
+Slovenia & -1.03 & 0.68 & 1.04 & 1.86 & 4.47 & 1.49 \\ 
+Spain & -0.22 & 0.06 & 0.32 & 0.90 & 2.25 & 0.76 \\ 
+Sweden & 0.93 & 1.04 & 1.74 & 2.25 & 3.24 & 0.75 \\ 
+United Kingdom & 0.51 & 1.60 & 1.82 & 2.03 & 3.23 & 0.65 \\ 
+\hline
+	\end{tabular}
+	\caption{Πληθωρισμός μεταξύ 2008-2018}
+	\label{Inflation}
+\end{table}
+Εδώ βέβαια ίσως έχει σημασία να δούμε λίγο τι συμβαίνει στα δεδομένα με την κανονικοποίηση. Ούτε εδώ αλλάζουν σημαντικά οι σχέσεις μεταξύ τους.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"images/Boxplot Population in Millions vs Country"}
-	\caption{}
-	\label{fig:boxplot-population-in-millions-vs-country}
+	\begin{subfigure}[]{0.8\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{"images/boxplot\_inflation\_raw.png"}
+		\caption{}
+		\label{fig:boxplot-Inflation-normalized-vs-country}
+	\end{subfigure}
+	\begin{subfigure}[]{0.8\textwidth}
+		\includegraphics[width=1\linewidth]{"images/boxplot\_inflation\_normalized.png"}
+		\caption{}
+		\label{fig:boxplot-inflation-vs-country}
+	\end{subfigure}
+\end{figure}
+\subsubsection{Total energy Supply}
+	\begin{itemize}
+	\item Source: https://ec.europa.eu/eurostat/databrowser/view/nrg\_bal\_s\_1/default/table?lang=en
+	\item Year: 2011 - 2020
+	\item Unit: Thousand tonnes of oil equivalent
+\end{itemize}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 32011.29 & 33031.17 & 33177.75 & 33562.30 & 34166.28 & 660.54 \\ 
+Belgium & 52238.38 & 53015.79 & 55039.87 & 55272.03 & 59313.06 & 2255.37 \\ 
+Bulgaria & 16923.38 & 17726.43 & 18234.79 & 18722.35 & 19823.90 & 813.92 \\ 
+Cyprus & 1955.96 & 2121.56 & 2262.44 & 2440.09 & 2616.93 & 221.87 \\ 
+Denmark & 16374.16 & 16838.22 & 17383.65 & 18304.45 & 19558.31 & 1128.72 \\
+  \hline 
+Estonia & 4399.62 & 5378.58 & 5648.48 & 5846.32 & 5978.41 & 496.84 \\ 
+Finland & 32022.99 & 33165.71 & 33582.86 & 34469.06 & 36251.74 & 1195.84 \\ 
+France & 248383.41 & 250072.60 & 256292.91 & 259845.13 & 266394.54 & 6206.33 \\ 
+Germany & 305036.83 & 310746.75 & 313107.91 & 318940.66 & 335474.27 & 9403.81 \\ 
+Greece & 22748.62 & 23240.71 & 23407.97 & 27231.17 & 30404.91 & 2854.85 \\ 
+  \hline
+Hungary & 23652.51 & 24816.51 & 25609.63 & 26395.50 & 26900.70 & 1096.99 \\ 
+Ireland & 12776.63 & 13293.33 & 13625.33 & 14225.86 & 15022.14 & 727.58 \\ 
+Italy & 146769.88 & 152859.01 & 156093.49 & 168758.58 & 181736.20 & 10969.89 \\ 
+Latvia & 4259.46 & 4307.46 & 4407.65 & 4465.42 & 4640.00 & 129.86 \\ 
+Lithuania & 6946.51 & 7067.95 & 7290.53 & 7647.47 & 9553.50 & 819.46 \\ 
+  \hline
+Luxembourg & 3682.05 & 3785.50 & 3948.40 & 4127.44 & 4212.94 & 195.48 \\ 
+Malta & 594.33 & 687.68 & 780.25 & 834.21 & 881.48 & 97.20 \\ 
+Netherlands & 71379.09 & 73882.75 & 75619.51 & 77123.41 & 82743.78 & 3132.34 \\ 
+Poland & 93773.11 & 96236.75 & 97971.41 & 101131.11 & 108970.23 & 4555.35 \\ 
+Portugal & 21439.29 & 22060.46 & 22651.14 & 23433.93 & 24716.20 & 1092.37 \\
+  \hline 
+Romania & 31378.66 & 31668.07 & 33454.78 & 34845.41 & 39485.27 & 2432.37 \\ 
+Slovenia & 6473.51 & 6722.90 & 6875.85 & 7127.16 & 7982.69 & 419.35 \\ 
+Spain & 114522.76 & 119335.11 & 125486.61 & 126434.02 & 138166.04 & 6411.76 \\ 
+Sweden & 44092.81 & 48432.69 & 49103.98 & 49874.22 & 50118.89 & 1857.82 \\ 
+United Kingdom & 174024.39 & 177000.66 & 186386.17 & 191789.70 & 208268.88 & 11384.30 \\ 
+\hline
+	\end{tabular}
+	\caption{Total energy supply μεταξύ 2008-2018}
+	\label{Total energy Supply}
+\end{table}
+
+\subsubsection{GDP per capita}
+	\begin{itemize}
+	\item Source: https://data.worldbank.org/indicator/NY.GDP.PCAP.CD
+	\item Year: 1960 - 2021
+	\item Unit: US\$
+\end{itemize}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 44.20 & 47.17 & 48.56 & 51.46 & 51.92 & 2.75 \\ 
+Belgium & 41.01 & 44.19 & 44.76 & 47.48 & 48.30 & 2.43 \\ 
+Bulgaria & 6.85 & 7.17 & 7.57 & 7.88 & 9.45 & 0.74 \\ 
+Cyprus & 23.41 & 26.89 & 28.91 & 31.57 & 35.40 & 3.57 \\ 
+Denmark & 53.25 & 57.83 & 58.51 & 61.67 & 64.32 & 3.39 \\ 
+\hline
+Estonia & 14.66 & 17.40 & 18.20 & 19.66 & 23.06 & 2.45 \\ 
+Finland & 42.80 & 46.46 & 47.71 & 50.16 & 53.77 & 3.25 \\ 
+France & 36.65 & 39.73 & 41.59 & 42.84 & 45.52 & 2.75 \\ 
+Germany & 41.10 & 41.89 & 44.65 & 46.50 & 48.02 & 2.61 \\ 
+Greece & 17.92 & 19.17 & 21.79 & 26.10 & 32.13 & 4.84 \\ \hline
+Hungary & 12.72 & 13.09 & 13.72 & 14.46 & 16.43 & 1.21 \\ 
+Ireland & 48.66 & 51.83 & 55.60 & 62.44 & 79.11 & 9.57 \\ 
+Italy & 30.24 & 33.51 & 35.56 & 36.63 & 40.94 & 3.17 \\ 
+Latvia & 11.42 & 13.56 & 14.33 & 15.72 & 17.87 & 1.87 \\ 
+Lithuania & 11.82 & 14.32 & 14.94 & 16.14 & 19.19 & 2.11 \\ \hline
+Luxembourg & 105.46 & 109.81 & 112.58 & 119.51 & 123.68 & 6.14 \\ 
+Malta & 21.08 & 22.37 & 24.77 & 26.19 & 31.57 & 3.23 \\ 
+Netherlands & 45.19 & 49.37 & 52.20 & 52.97 & 57.88 & 3.66 \\ 
+Poland & 11.53 & 12.60 & 13.70 & 13.94 & 15.47 & 1.08 \\ 
+Portugal & 19.25 & 21.03 & 22.10 & 23.18 & 24.95 & 1.68 \\ \hline
+Romania & 8.21 & 8.76 & 9.55 & 10.24 & 12.40 & 1.23 \\ 
+Slovenia & 20.89 & 23.07 & 23.53 & 24.96 & 27.60 & 1.92 \\ 
+Spain & 25.74 & 28.25 & 29.50 & 31.11 & 35.51 & 2.74 \\ 
+Sweden & 46.95 & 52.42 & 54.59 & 59.03 & 61.13 & 4.45 \\ 
+United Kingdom & 38.95 & 41.18 & 42.69 & 44.56 & 47.79 & 2.92 \\ 
+\hline
+	\end{tabular}
+	\caption{GDP per capita in thousands USD}
+	\label{GDP per capita}
+\end{table}
+\subsubsection{Verified emissions}
+	\begin{itemize}
+	\item Source: EU ETS Database
+	\item Table: eutl\_compliance
+	\item Column: verified
+\end{itemize} 
+Από όποια μονάδα και να ήταν, εδώ πάνε 1.000.000 φορές κάτω:
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 27.36 & 29.61 & 30.51 & 30.87 & 32.08 & 1.27 \\ 
+Belgium & 45.03 & 45.17 & 45.99 & 46.29 & 55.46 & 3.16 \\ 
+Bulgaria & 31.28 & 33.24 & 34.57 & 35.95 & 40.00 & 2.63 \\ 
+Cyprus & 4.19 & 4.58 & 4.61 & 4.92 & 5.58 & 0.41 \\ 
+Denmark & 15.50 & 17.05 & 19.46 & 23.71 & 26.55 & 4.05 \\   \hline
+Estonia & 10.38 & 13.50 & 13.89 & 14.76 & 16.00 & 1.55 \\ 
+Finland & 26.18 & 27.81 & 30.68 & 34.72 & 41.30 & 4.74 \\ 
+France & 101.40 & 104.86 & 110.90 & 114.46 & 124.13 & 7.10 \\ 
+Germany & 428.29 & 448.66 & 462.35 & 469.31 & 489.86 & 18.24 \\ 
+Greece & 47.34 & 50.74 & 58.84 & 61.09 & 69.85 & 7.10 \\   \hline
+Hungary & 20.08 & 21.23 & 22.40 & 22.61 & 27.24 & 1.91 \\ 
+Ireland & 15.77 & 18.88 & 23.63 & 27.08 & 28.53 & 4.72 \\ 
+Italy & 148.37 & 157.09 & 166.78 & 187.42 & 220.68 & 21.98 \\ 
+Latvia & 2.43 & 2.59 & 2.74 & 2.96 & 3.24 & 0.26 \\ 
+Lithuania & 5.61 & 5.92 & 6.23 & 6.65 & 7.56 & 0.59 \\   \hline
+Luxembourg & 1.73 & 1.83 & 2.06 & 2.17 & 3.62 & 0.52 \\ 
+Malta & 0.84 & 1.09 & 1.89 & 1.92 & 2.28 & 0.51 \\ 
+Netherlands & 79.97 & 82.27 & 89.14 & 92.79 & 96.47 & 6.31 \\ 
+Poland & 191.17 & 198.28 & 199.73 & 203.07 & 206.35 & 4.12 \\ 
+Portugal & 24.17 & 25.64 & 26.99 & 28.75 & 31.42 & 2.23 \\   \hline
+Romania & 40.53 & 42.21 & 43.07 & 48.72 & 63.82 & 6.83 \\ 
+Slovenia & 6.18 & 6.60 & 7.45 & 8.03 & 8.86 & 0.91 \\ 
+Spain & 121.48 & 128.26 & 132.69 & 140.52 & 163.46 & 11.31 \\ 
+Sweden & 17.49 & 21.05 & 22.51 & 22.63 & 22.86 & 1.71 \\ 
+United Kingdom & 141.76 & 172.90 & 220.88 & 236.57 & 265.06 & 42.22 \\ 
+\hline
+	\end{tabular}
+	\caption{Verified emissions}
+	\label{Verified emissions}
+\end{table}
+Εδώ επειδή δεν φαίνεται τίποτα, θα βάλω log απλά για να μπορούμε να διακρίνουμε κάτι, χωρίς κάποια κανονικοποίηση.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[]{0.8\textwidth}
+		\centering
+	\includegraphics[width=1\linewidth]{images/Boxplot_Verified}
+		\caption{}
+		\label{fig:boxplot-Verified emissions-vs-country}
+	\end{subfigure}
+	\begin{subfigure}[]{0.8\textwidth}
+		\centering
+	\includegraphics[width=1\linewidth]{images/boxplot_verified_log}
+		\caption{}
+		\label{fig:boxplot-Verified emissions-vs-country}
+	\end{subfigure}
 \end{figure}
 
-	
-	
+\subsubsection{Agriculture}
+	\begin{itemize}
+	\item Source: http://wdi.worldbank.org/table/4.2
+	\item Year:  2020
+	\item Unit: Argicultural in Billions USD.
+\end{itemize}  
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 4.32 & 4.79 & 5.14 & 5.46 & 6.05 & 0.55 \\ 
+Belgium & 2.99 & 3.22 & 3.39 & 3.62 & 3.88 & 0.27 \\ 
+Bulgaria & 2.04 & 2.20 & 2.39 & 2.56 & 3.20 & 0.33 \\ 
+Cyprus & 0.37 & 0.44 & 0.49 & 0.52 & 0.59 & 0.07 \\ 
+Denmark & 2.68 & 3.02 & 3.87 & 4.49 & 5.41 & 0.91 \\ \hline
+Estonia & 0.49 & 0.63 & 0.65 & 0.80 & 0.85 & 0.13 \\ 
+Finland & 5.29 & 5.82 & 6.03 & 6.41 & 6.59 & 0.43 \\ 
+France & 35.54 & 39.60 & 42.43 & 44.42 & 47.28 & 3.91 \\ 
+Germany & 22.99 & 25.78 & 29.91 & 32.78 & 35.20 & 4.54 \\ 
+Greece & 6.79 & 7.71 & 8.33 & 8.85 & 9.99 & 0.90 \\ \hline
+Hungary & 4.01 & 4.87 & 5.31 & 5.51 & 5.67 & 0.60 \\ 
+Ireland & 1.32 & 2.28 & 2.61 & 3.06 & 3.96 & 0.71 \\ 
+Italy & 36.20 & 38.32 & 40.70 & 43.21 & 45.94 & 3.17 \\ 
+Latvia & 0.85 & 0.96 & 0.97 & 1.07 & 1.24 & 0.11 \\ 
+Lithuania & 0.95 & 1.38 & 1.55 & 1.66 & 1.71 & 0.24 \\ \hline
+Luxembourg & 0.13 & 0.14 & 0.15 & 0.17 & 0.20 & 0.02 \\ 
+Malta & 0.09 & 0.10 & 0.11 & 0.11 & 0.13 & 0.01 \\ 
+Netherlands & 13.20 & 13.89 & 15.07 & 15.49 & 15.71 & 0.92 \\ 
+Poland & 11.25 & 13.13 & 14.22 & 15.96 & 16.76 & 1.91 \\ 
+Portugal & 4.16 & 4.38 & 4.64 & 4.77 & 5.17 & 0.32 \\ \hline
+Romania & 7.87 & 8.47 & 9.88 & 10.88 & 13.51 & 1.74 \\ 
+Slovenia & 0.89 & 0.91 & 0.92 & 1.01 & 1.22 & 0.10 \\ 
+Spain & 31.90 & 34.18 & 34.84 & 36.07 & 39.19 & 2.23 \\ 
+Sweden & 6.27 & 7.53 & 8.11 & 8.47 & 9.59 & 0.87 \\ 
+United Kingdom & 14.74 & 16.11 & 17.05 & 18.33 & 22.84 & 2.28 \\ 
+\hline
+	\end{tabular}
+	\caption{Agriculture}
+	\label{Agriculture}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[]{0.8\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{images/Boxplot_Agriculture}
+		\caption{}
+		\label{fig:boxplot-Agriculture-vs-country}
+	\end{subfigure}
+
+\end{figure}
+
+\newpage
+\subsubsection{Industry}
+	\begin{itemize}
+	\item Source: http://wdi.worldbank.org/table/4.2
+	\item Year:  2020
+	\item Unit:  Industry in Billions USD
+\end{itemize}  
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 96.16 & 102.24 & 106.03 & 111.06 & 116.48 & 6.50 \\ 
+Belgium & 90.94 & 98.13 & 100.59 & 104.53 & 111.72 & 6.42 \\ 
+Bulgaria & 12.04 & 13.16 & 13.62 & 14.01 & 14.87 & 0.87 \\ 
+Cyprus & 2.03 & 2.45 & 2.95 & 3.63 & 4.98 & 0.90 \\ 
+Denmark & 60.50 & 64.40 & 68.89 & 69.76 & 79.84 & 5.40 \\ \hline
+Estonia & 4.61 & 5.63 & 5.97 & 6.42 & 7.36 & 0.81 \\ 
+Finland & 54.66 & 61.38 & 63.49 & 65.70 & 84.47 & 7.78 \\ 
+France & 431.14 & 459.74 & 479.72 & 506.08 & 551.30 & 36.97 \\ 
+Germany & 843.80 & 934.68 & 1000.01 & 1014.25 & 1085.27 & 69.42 \\ 
+Greece & 27.44 & 28.64 & 35.83 & 42.48 & 55.73 & 9.66 \\ \hline
+Hungary & 32.23 & 32.95 & 33.99 & 36.13 & 40.79 & 2.98 \\ 
+Ireland & 51.79 & 57.18 & 62.99 & 110.85 & 141.75 & 32.57 \\ 
+Italy & 383.06 & 431.67 & 449.66 & 474.26 & 568.48 & 50.60 \\ 
+Latvia & 4.90 & 5.37 & 5.81 & 6.01 & 7.81 & 0.78 \\ 
+Lithuania & 9.38 & 11.12 & 12.22 & 13.05 & 13.97 & 1.52 \\ \hline
+Luxembourg & 5.99 & 6.42 & 6.93 & 7.48 & 7.80 & 0.62 \\ 
+Malta & 1.36 & 1.48 & 1.54 & 1.59 & 1.84 & 0.14 \\ 
+Netherlands & 138.29 & 155.19 & 166.89 & 173.29 & 204.75 & 19.28 \\ 
+Poland & 129.76 & 146.41 & 150.02 & 156.35 & 169.32 & 10.65 \\ 
+Portugal & 38.81 & 41.82 & 43.54 & 47.46 & 53.70 & 4.42 \\ \hline
+Romania & 54.81 & 61.02 & 63.42 & 67.76 & 78.81 & 7.80 \\ 
+Slovenia & 12.08 & 12.77 & 13.77 & 13.95 & 16.62 & 1.31 \\ 
+Spain & 240.11 & 268.98 & 278.66 & 328.16 & 429.02 & 57.54 \\ 
+Sweden & 97.80 & 114.87 & 122.21 & 126.94 & 135.67 & 10.52 \\ 
+United Kingdom & 448.57 & 473.78 & 494.10 & 522.75 & 583.44 & 40.55 \\ 
+\hline
+\end{tabular}
+\caption{Industry}
+\label{Industry}
+\end{table}
+
+\subsubsection{Manufacturing}
+	\begin{itemize}
+	\item Source: http://wdi.worldbank.org/table/4.2
+	\item Year:  2020
+	\item Unit:  Manufacturing in Billions USD.
+\end{itemize} 
+
+Εδώ φαίνεται εμφανώς πως έχω κάνει ένα τεράστιο λάθος. Λείπουν οι τιμές για το Manufacturing στην Βουλγαρία και νόμιζα πως το είχα βάλει να παίρνει έναν μέσο όρο και πως αυτό δεν θα άλλαζε σημαντικά τα αποτελέσματα. Όμως είναι εμφανές πως η Βουλγαρία όχι μόνο δεν έπαιρνε τις τιμές που ήθελα, αλλά και να συνέβαινε αυτό είναι πολύ πιθανό και πάλι να μην ήταν αρκετά λογικό το αποτέλεσμα. Η Βουλγαρία μάλλον θα πρέπει να αφαιρεθεί από τις δοκιμές, μαζί με χώρες όπως η Σλοβακία. 
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|r|rrrrr|r|}
+  \hline
+& min & 25-quantile & median & 75-quantile & max & Std \\ 
+\hline
+Austria & 63.75 & 66.61 & 70.28 & 72.47 & 76.57 & 4.24 \\ 
+Belgium & 58.69 & 62.46 & 64.21 & 66.70 & 72.39 & 4.02 \\ 
+Bulgaria & -470.74 & -453.31 & -432.37 & -420.07 & -399.33 & 22.79 \\ 
+Cyprus & 0.85 & 0.95 & 1.12 & 1.33 & 1.52 & 0.23 \\ 
+Denmark & 35.21 & 37.47 & 40.47 & 41.64 & 46.70 & 3.45 \\ \hline
+Estonia & 2.41 & 3.20 & 3.35 & 3.56 & 4.13 & 0.47 \\ 
+Finland & 34.44 & 38.11 & 39.73 & 42.29 & 59.40 & 6.76 \\ 
+France & 254.30 & 268.11 & 278.31 & 292.38 & 325.40 & 20.87 \\ 
+Germany & 603.23 & 697.07 & 743.97 & 755.59 & 796.43 & 56.32 \\ 
+Greece & 15.64 & 16.78 & 18.19 & 22.95 & 30.27 & 4.63 \\ \hline
+Hungary & 22.45 & 24.56 & 25.39 & 27.39 & 29.71 & 2.23 \\ 
+Ireland & 43.26 & 47.00 & 49.10 & 100.06 & 126.39 & 31.76 \\ 
+Italy & 264.39 & 290.81 & 301.69 & 308.97 & 372.63 & 28.24 \\ 
+Latvia & 2.57 & 2.85 & 3.20 & 3.32 & 3.63 & 0.32 \\ 
+Lithuania & 5.65 & 7.20 & 8.00 & 8.15 & 8.91 & 0.96 \\ \hline
+Luxembourg & 2.53 & 2.88 & 3.14 & 3.41 & 3.93 & 0.42 \\ 
+Malta & 0.83 & 0.96 & 1.00 & 1.06 & 1.23 & 0.11 \\ 
+Netherlands & 82.70 & 89.39 & 91.54 & 95.12 & 109.07 & 7.43 \\ 
+Poland & 71.81 & 82.05 & 85.70 & 88.28 & 98.64 & 7.14 \\ 
+Portugal & 24.20 & 25.62 & 27.24 & 27.71 & 31.35 & 2.12 \\ \hline
+Romania & 35.95 & 37.70 & 39.72 & 44.53 & 49.91 & 4.70 \\ 
+Slovenia & 8.43 & 8.69 & 9.28 & 9.90 & 11.00 & 0.87 \\ 
+Spain & 135.09 & 148.07 & 155.06 & 166.17 & 207.17 & 19.84 \\ 
+Sweden & 60.02 & 69.65 & 72.99 & 77.49 & 83.80 & 6.77 \\ 
+United Kingdom & 218.33 & 242.14 & 251.42 & 268.16 & 286.56 & 20.19 \\ 
+\hline
+	\end{tabular}
+	\caption{Manufacturing}
+	\label{Manufacturing}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images/boxplot_Manufacturing}
+	\caption{}
+	\label{fig:boxplotmanufacturing}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
 	
 \end{document}	
