@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  14 MAR 2023 18:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  14 MAR 2023 19:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1677,8 +1677,14 @@ Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 1
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `Report_local.out' has not changed.
-(rerunfilecheck)             Checksum: C0ED0E19B8E16D929123D72219CF9437;5228.
+
+Package rerunfilecheck Warning: File `Report_local.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Report_local.out':
+(rerunfilecheck)             Before: C0ED0E19B8E16D929123D72219CF9437;5228
+(rerunfilecheck)             After:  829D2685C22F042023FC30F7475885E6;5228.
  ) 
 Here is how much of TeX's memory you used:
  27600 strings out of 476339
@@ -1713,7 +1719,7 @@ xn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cb
 greek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/cbgreek/grxn2074.pfb>
-Output written on Report_local.pdf (36 pages, 821756 bytes).
+Output written on Report_local.pdf (36 pages, 822028 bytes).
 PDF statistics:
  565 PDF objects out of 1000 (max. 8388607)
  134 named destinations out of 1000 (max. 500000)

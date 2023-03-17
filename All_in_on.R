@@ -1168,9 +1168,9 @@ visualize_Manufacturing  <- function(){
 
   }
   po2 <- po[,-c(1:11)]
-  <<results=tex>>
-    xtable(po2)
-  @
+  #<<results=tex>>
+  #  xtable(po2)
+  #@
 
 ggplot(pop, aes(x=Country, y=Manufacturing )) + 
   geom_boxplot(
@@ -1188,6 +1188,3 @@ ggplot(pop, aes(x=Country, y=Manufacturing )) +
   labs(title = "Manufacturing  vs Country", x = "Country", y = " Manufacturing ")+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
-
-
-
