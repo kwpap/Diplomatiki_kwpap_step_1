@@ -13,6 +13,7 @@ will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
 will_use_population <- TRUE
+will_use_agriculture <- TRUE
 will_use_verified_emisions <- TRUE
 will_use_  <- TRUE
 will_use_industry <- TRUE
@@ -1172,19 +1173,72 @@ visualize_Manufacturing  <- function(){
   #  xtable(po2)
   #@
 
-ggplot(pop, aes(x=Country, y=Manufacturing )) + 
-  geom_boxplot(
-    # custom boxes
-    color="blue",
-    fill="blue",
-    alpha=0.2,
-    
-    
-    # custom outliers
-    outlier.colour="red",
-    outlier.fill="red",
-    outlier.size=3
-  )+
-  labs(title = "Manufacturing  vs Country", x = "Country", y = " Manufacturing ")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  ggplot(pop, aes(x=Country, y=Manufacturing )) + 
+    geom_boxplot(
+      # custom boxes
+      color="blue",
+      fill="blue",
+      alpha=0.2,
+      
+      
+      # custom outliers
+      outlier.colour="red",
+      outlier.fill="red",
+      outlier.size=3
+    )+
+    labs(title = "Manufacturing  vs Country", x = "Country", y = " Manufacturing ")+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  }
+  # write a function that compares free allocation between 2012 and 2013
+
+compare_2012_2013 <-function{
+  gg <-read_free(year = 2012)
+  gg2 <-read_free(year = 2013)
+  output <- data.frame(matrix(ncol = 4))
+  colnames(output) <- c("Country", "2012","2013","Percentage drop")
+  for(i in 1:length(gg[,1])){
+    output[nrow(output)+1,] <- c(gg$GEO[i], as.numeric(gg$Free[i]), as.numeric(gg2$Free[i]), as.numeric((as.numeric(gg2$Free[i])-as.numeric(gg$Free[i]))/as.numeric(gg$Free[i])))
+  }
+  output <- output[-c(1),]
+  output$"Percentage drop" <- as.numeric(output$"Percentage drop" )* 100
+  output <- output[order(output$"Percentage drop"),]
+  output$"Percentage drop" <- round(output$"Percentage drop",2)
+
+  output$"2012" <- as.numeric(output$"2012")/1000000
+  output$"2013" <- as.numeric(output$"2013")/1000000
+
+  print(xtable(output), format.args = list(big.mark = ",", decimal.mark = "."))
 }
+
+
+calculate_all_with_given_weights <-function(weights){
+    # write a function that calculates all the r^2 values for all the countries and all the years with given weights
+ weights <- c(60,20,15,70,410,10,170,850)
+dat <- data.frame(matrix(ncol=13, nrow = length(list_eur_countries)))
+  colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "max p-value", "max MSE")
+  rownames(dat) <- list_eur_countries
+  newi = 0
+  for (i in 1:length(list_eur_countries)){
+    pv <- 0
+    mse <- 0
+    if(newi !=i){
+      newi <- i
+      print(paste("Working on: ",list_eur_countries[i]))
+    }
+    for (j in 1:11){
+      gg<- find_slopes_with_one_country_with_weights(country = list_eur_countries[i], year =  2007+j,weights =  weights)$linear
+      dat[i,j] <- summary(gg)$r.squared
+      if (p_val(gg) > pv){
+        pv <- p_val(gg)
+      }
+      if (MSE(gg) > mse){
+        mse <- MSE(gg)  
+      }
+      dat[i,12] <- pv
+      dat[i,13] <- mse
+    } 
+  }
+    
+  print(xtable(dat), format.args = list(big.mark = ",", decimal.mark = "."))
+}
+calculate_all_with_given_weights(c(60,20,15,70,410,10,170,850))

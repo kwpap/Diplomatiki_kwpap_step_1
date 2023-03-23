@@ -33,3 +33,6 @@
 \contentsline {subsubsection}{\numberline {11.2.6}Agriculture}{33}{subsubsection.11.2.6}%
 \contentsline {subsubsection}{\numberline {11.2.7}Industry}{35}{subsubsection.11.2.7}%
 \contentsline {subsubsection}{\numberline {11.2.8}Manufacturing}{35}{subsubsection.11.2.8}%
+\contentsline {section}{\numberline {12}Για την 21η Μαρτίου}{37}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Γιατί η Πολωνία και η Γαλλία αποτυγχάνουν να εξηγήσουν τις άλλες πριν το 2012;}{37}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Τα βέλτιστα βάρη για όλα τα σενάρια}{38}{subsection.12.2}%
