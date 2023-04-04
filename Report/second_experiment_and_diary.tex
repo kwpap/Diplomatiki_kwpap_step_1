@@ -1689,20 +1689,20 @@ Bulgaria &   3 \\
 
 Εδώ λοιπόν αφήνουμε τον αλγόριθμο μόνο του να ψάξει για τη μεσαία χώρα και στην συνέχεια να προσπαθήσει μέσω αυτής να εξηγήσει τις υπόλοιπες της ίδιας συστάδας. Έχουμε λοιπόν:
 \begin{enumerate}
-	\item \textbf{Εκβιομηχανισμένες}
+	\item \textbf{Εκβιομηχανισμένες}, διάγραμμα \ref{fig:distances-from-italy}
 	\begin{itemize}
-		\item Μεσαία χώρα: 
-		\item Ικανότητα εξήγησης των άλλων $r^2$:
+		\item Μεσαία χώρα: Ιταλία
+		\item Ικανότητα εξήγησης των άλλων $r^2$: 0.99966 Ουάου, μπορεί να περάσει ευθεία από 3 σημεία όταν τα δύο είναι δίπλα... Απίστευτο
 	\end{itemize}
-	\item \textbf{Ανατολικό Μπλοκ}
+	\item \textbf{Ανατολικό Μπλοκ}, διάγραμμα \ref{fig:distances-from-lithuania}
 		\begin{itemize}
-		\item Μεσαία χώρα:
-		\item Ικανότητα εξήγησης των άλλων $r^2$:
+		\item Μεσαία χώρα: Λιθουανία
+		\item Ικανότητα εξήγησης των άλλων $r^2$: 0.0117745
 	\end{itemize}
-	\item \textbf{Λοιποί}
+	\item \textbf{Λοιποί}, διάγραμμα \ref{fig:distances-from-denmark-third-cluster}
 		\begin{itemize}
-		\item Μεσαία χώρα:
-		\item Ικανότητα εξήγησης των άλλων $r^2$:
+		\item Μεσαία χώρα: Δανία
+		\item Ικανότητα εξήγησης των άλλων $r^2$: 0.5614167
 	\end{itemize}
 \end{enumerate}
 
@@ -1715,7 +1715,7 @@ Bulgaria &   3 \\
 		\hline
 		Τιμή & Εκβιομηχανισμένες & Ανατολικό Μπλοκ & Λοιποί \\
 		\hline
-		\$r\^{}2\$ & 0.9999999 & 0.976670 & 0.9463548 \\
+		$r^2$ & 0.9999999 & 0.976670 & 0.9463548 \\
 		\hline
 		Βάρη &  &  &  \\
 		\hline
@@ -1737,13 +1737,103 @@ Bulgaria &   3 \\
 		\hline
 		&  &  &  \\
 		\hline
-		Πιθανή αναλογία free & Οτιδήποτε & Industry + Agriculture & T otal energy supply \\
+		Πιθανή αναλογία free & Οτιδήποτε & Industry + Agriculture & Total energy supply \\
 		\hline
 	\end{tabular}
 \end{table}
 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{"images/Distances from Lithuania"}
+	\caption{}
+	\label{fig:distances-from-lithuania}
+	\includegraphics[width=0.8\linewidth]{"images/Distances from Denmark, third Cluster"}
+	\caption{}
+	\label{fig:distances-from-denmark-third-cluster}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{"images/Distances from Italy"}
+	\caption{}
+	\label{fig:distances-from-italy}
+\end{figure}
+
+\subsection{Ύστερα από αλλαγή στον τρόπο της κανονικοποίησης}
+Μέχρι τώρα η κανονικοποίηση γίνεται χρησιμοποιώντας την μέγιστη τιμή σε κάθε feature. Τα επόμενα όμως θα γίνουν διαιρώντας τα πάντα με την τιμή που εμφανίζεται στην Γερμανία. Οπότε προκύπτουν τα παρακάτω:
 
 
+Σε περίπτωση που κάποιος ήθελε να δει τα νέα κανονικοποιημένα δεδομένα με βάση την Γερμανία, έχουμε:
+\begin{table}[ht]
+	\centering
+	\tabcolsep=0.11cm
+	\begin{tabular}{lrrrrrrrrr}
+		\hline
+		GEO & Tot\_en\_sup & GDPpc & Poπ. & Infl. & Verified\_em. & Agr. & Industry & Manu. & partition \\ 
+		\hline
+		 France & 0.80 & 0.87 & 0.81 & 0.35 & 0.25 & 1.27 & 0.44 & 0.35 &   1 \\ 
+		 \rowcolor{yellow} Germany & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 &   1 \\ 
+		 Italy & 0.50 & 0.73 & 0.73 & 0.48 & 0.35 & 1.23 & 0.41 & 0.39 &   1 \\ 
+		 \rowcolor{cyan} Poland & 0.33 & 0.31 & 0.46 & 1.24 & 0.45 & 0.50 & 0.15 & 0.12 &   1 \\ 
+		 Spain & 0.40 & 0.63 & 0.56 & 0.86 & 0.32 & 1.16 & 0.26 & 0.20 &   1 \\ 
+		 United Kingdom & 0.56 & 0.92 & 0.80 & 1.21 & 0.33 & 0.51 & 0.47 & 0.32 &   1 \\ 
+		 \hline
+		 Bulgaria & 0.06 & 0.19 & 0.09 & 3.20 & 0.08 & 0.08 & 0.01 & -0.57 &   2 \\ 
+		 Estonia & 0.02 & 0.46 & 0.02 & 2.39 & 0.03 & 0.02 & 0.01 & 0.00 &   2 \\ 
+		 Hungary & 0.08 & 0.33 & 0.12 & 2.68 & 0.05 & 0.17 & 0.04 & 0.04 &   2 \\ 
+		 Latvia & 0.01 & 0.35 & 0.02 & 1.96 & 0.01 & 0.03 & 0.01 & 0.00 &   2 \\ 
+		 Lithuania & 0.02 & 0.38 & 0.03 & 2.82 & 0.01 & 0.05 & 0.01 & 0.01 &   2 \\ 
+		 Romania & 0.11 & 0.24 & 0.24 & 3.11 & 0.09 & 0.30 & 0.06 & 0.06 &   2 \\ 
+		 \hline
+		 Austria & 0.11 & 1.06 & 0.11 & 0.67 & 0.07 & 0.16 & 0.10 & 0.09 &   3 \\ 
+		 Belgium & 0.18 & 0.99 & 0.14 & 1.22 & 0.10 & 0.11 & 0.10 & 0.08 &   3 \\ 
+		 Cyprus & 0.01 & 0.60 & 0.01 & 0.69 & 0.01 & 0.01 & 0.00 & 0.00 &   3 \\ 
+		 Denmark & 0.05 & 1.29 & 0.07 & 0.79 & 0.04 & 0.14 & 0.07 & 0.06 &   3 \\ 
+		 Finland & 0.11 & 1.04 & 0.07 & 0.54 & 0.06 & 0.19 & 0.06 & 0.05 &   3 \\ 
+		 Greece & 0.07 & 0.42 & 0.13 & 0.19 & 0.11 & 0.25 & 0.03 & 0.02 &   3 \\ 
+		 Ireland & 0.04 & 1.56 & 0.06 & 0.62 & 0.06 & 0.13 & 0.12 & 0.14 &   3 \\ 
+		 Luxembourg & 0.01 & 2.47 & 0.01 & 1.43 & 0.00 & 0.00 & 0.01 & 0.00 &   3 \\ 
+		 Malta & 0.00 & 0.65 & 0.01 & 1.40 & 0.00 & 0.00 & 0.00 & 0.00 &   3 \\ 
+		 Netherlands & 0.24 & 1.09 & 0.21 & 0.84 & 0.21 & 0.49 & 0.15 & 0.12 &   3 \\ 
+		 Portugal & 0.07 & 0.48 & 0.12 & 1.01 & 0.07 & 0.15 & 0.04 & 0.04 &   3 \\ 
+		 Slovenia & 0.02 & 0.53 & 0.02 & 0.97 & 0.01 & 0.03 & 0.01 & 0.01 &   3 \\ 
+		 Sweden & 0.16 & 1.20 & 0.12 & 1.42 & 0.05 & 0.25 & 0.12 & 0.09 &   3 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+Όπως είναι εμφανές, η μόνη χώρα που άλλαξε κατά την αλλαγή αυτή είναι η Πολωνία. Αντίστοιχα λοιπόν προκύπτει:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Τιμή & Εκβιομηχανισμένες & Ανατολικό Μπλοκ & Λοιποί \\
+		\hline
+		$r^2$ & 0.9388624 & 0.987699 & 0.891066 \\
+		\hline
+		Βάρη &  &  &  \\
+		\hline
+		Population & 0 & 0 & 100 \\
+		\hline
+		GDPpc & 14 & 1 & 1 \\
+		\hline
+		Inflation & 50 & 50 & 50 \\
+		\hline
+		Agriculture & 0 & 79 & 1 \\
+		\hline
+		Industry & 1 & 1 & 0 \\
+		\hline
+		Manufacturing & 0 & 0 & 0 \\
+		\hline
+		Total Energy Supply & 100 & 0 & 100 \\
+		\hline
+		Verified Emissions & 100 & 1 & 1 \\
+		\hline
+		&  &  &  \\
+		\hline
+		Πιθανή αναλογία free & Tot energy + Verified & Agriculture & Pop + Tot energy  \\
+		\hline
+	\end{tabular}
+\end{table}
 
 \end{document}	

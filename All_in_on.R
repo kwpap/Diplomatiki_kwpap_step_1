@@ -1260,8 +1260,17 @@ clustering <- function(){
   # We will use the k-means algorithm
   # We will use the elbow method, the silhouette method, and the gap statistic to find the optimal number of clusters
 
-  will_normalise <- TRUE
+  #will_normalise <- TRUE
   features <- read_data()
+  features$Total_energy_supply <- features$Total_energy_supply / features$Total_energy_supply[9]
+  features$GDPpc <- features$GDPpc / features$GDPpc[9]
+  features$Population <- features$Population / features$Population[9]
+  features$Inflation<- features$Inflation / features$Inflation[9]
+  features$Verified_emissions <- features$Verified_emissions / features$Verified_emissions[9]
+  features$Agriculture <- features$Agriculture / features$Agriculture[9]
+  features$Industry <- features$Industry / features$Industry[9]
+  features$Manufacturing <- features$Manufacturing / features$Manufacturing[9]
+  
   names_of_df <-names(features)
   for (i in 2:length(names_of_df)){
     features[[i]] <- as.numeric(as.character(features[[i]]))
@@ -1301,6 +1310,8 @@ clustering_per_capita <-function(){
 
 can_countries_explain_their_own_cluster <-function(){
   # Για να τρέξει πρέπει πρώτα να έχουμε βάλει όλες τις χώρες ξανά.
+  will_normalise <- FALSE
+  
   features <- clustering()
   # First cluster
   gg1 <- features[features$partition == 3,]
@@ -1310,6 +1321,12 @@ can_countries_explain_their_own_cluster <-function(){
   # Ως έχει
   g1<- find_slopes_with_one_country()
   # graph the linear regration
-  ggplot(g1$data, aes(x = df_distance, y = df_free_distance)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+  ggplot(g1$data, aes(x = df_distance, y = df_free_distance)) + 
+    geom_point(aes(color = GEO)) + 
+    geom_smooth(method = "lm", se = FALSE) +
+    xlab("Distance in features") + 
+    ylab("Distance in free") +
+    labs(title = "Distances from Italy, first cluster")
+    
 
 }
