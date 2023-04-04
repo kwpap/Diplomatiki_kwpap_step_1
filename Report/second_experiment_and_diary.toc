@@ -50,3 +50,5 @@
 \contentsline {subsubsection}{\numberline {14.1.1}Πλήθος συστάδων}{41}{subsubsection.14.1.1}%
 \contentsline {subsubsection}{\numberline {14.1.2}Βέλτιστες συστάδες}{43}{subsubsection.14.1.2}%
 \contentsline {subsubsection}{\numberline {14.1.3}Συστάδες, αν όλα τα δεδομένα ήταν κατά κεφαλήν και κανονικοποιημένα ύστερα}{43}{subsubsection.14.1.3}%
+\contentsline {subsection}{\numberline {14.2}Ικανότητα εξήγησης υπολοίπων μέσα στην ίδια συστάδα}{44}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Υπάρχει κάποια εύκολη σχέση μεταξύ των δωρεάν αδειών και κάποιου feature;}{45}{subsection.14.3}%

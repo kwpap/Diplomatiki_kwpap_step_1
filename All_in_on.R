@@ -6,6 +6,8 @@ library("stringr")
 library("DBI")
 library("RMySQL")
 library("ggplot2")
+library("factoextra")
+library("NbClust")
 
 will_use_log <- FALSE
 year_for_comparison <- 2017
@@ -41,7 +43,7 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
 
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
-  information_text <- list()
+    information_text <- list()
     
 
 
@@ -64,7 +66,7 @@ read_data <- function(year = 0) {
     if(!force_fresh_data & !is.null(cached_data[[text_s]])){
       #print (paste("Using Cached Data from hash for: ", year_for_comparison))
       return(cached_data[[text_s]])
-}
+  }
     if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
         #print ("Using Cached Data from csv")
         cached_data[[text_s]] <- data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
@@ -755,13 +757,23 @@ find_the_best_combo <- function(){
 
 find_the_best_combo_with_one <- function(){
   weights <- rep(50,8)
-  r_squared <- summary(find_slopes_with_one_country_with_weights(name = "Hungary", weights = weights)$linear)$r.squared
+  r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
   step <- 1
   low <- 0
   high <- 100
-  for (i in 1:60){
+  for (i in 1:100){
     # index <- i %% 8 +1
     index <- sample(1:8, 1)
+    for (j in 1:10){
+      random_val <- sample(low:high, 1)
+      weight_with_random_val <- weights
+      weight_with_random_val[index] <- random_val
+      r_squared_with_random_val <- summary(find_slopes_with_one_country_with_weights(weights = weight_with_random_val)$linear)$r.squared
+      if (r_squared_with_random_val > r_squared){
+        r_squared <- r_squared_with_random_val
+        weights[index] <- random_val
+      }
+    }
     worth_doing_it <- TRUE
     while(worth_doing_it){
       lowered <- 0
@@ -1241,4 +1253,63 @@ dat <- data.frame(matrix(ncol=13, nrow = length(list_eur_countries)))
     
   print(xtable(dat), format.args = list(big.mark = ",", decimal.mark = "."))
 }
-calculate_all_with_given_weights(c(60,20,15,70,410,10,170,850))
+#calculate_all_with_given_weights(c(60,20,15,70,410,10,170,850))
+
+clustering <- function(){
+  # Let's cluster the countries based on their features from the read_data() function
+  # We will use the k-means algorithm
+  # We will use the elbow method, the silhouette method, and the gap statistic to find the optimal number of clusters
+
+  will_normalise <- TRUE
+  features <- read_data()
+  names_of_df <-names(features)
+  for (i in 2:length(names_of_df)){
+    features[[i]] <- as.numeric(as.character(features[[i]]))
+  }
+  gg <- NbClust(features[-c(1)], distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans", index = "all")
+
+
+  #print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
+  features$partition <- gg$Best.partition
+  features <- features[order(features$partition),]
+  #print(xtable(features[-c(2:9)]), format.args = list(big.mark = ",", decimal.mark = "."))
+  return(features)
+}
+clustering_per_capita <-function(){
+  will_normalise <- FALSE
+  features <- read_data()
+  features$Total_energy_supply <- features$Total_energy_supply / features$Population
+  features$Verified_emissions <- features$Verified_emissions / features$Population
+  features$Agriculture <- features$Agriculture / features$Population
+  features$Manufacturing <- features$Manufacturing / features$Population
+  features$Industry <- features$Industry / features$Population
+
+  # normalise the data
+  
+  names_of_df <-names(features)
+  for (i in 2:length(names_of_df)){
+    features[[i]] <- as.numeric(as.character(features[[i]])) / max(as.numeric(as.character(features[[i]])))
+  }
+  gg <- NbClust(features[-c(1,4)], distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans", index = "all")
+
+
+  print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
+  features$partition <- gg$Best.partition
+  features <- features[order(features$partition),]
+  print(xtable(features[c(1,4,10)]), format.args = list(big.mark = ",", decimal.mark = "."))
+}
+
+can_countries_explain_their_own_cluster <-function(){
+  # Για να τρέξει πρέπει πρώτα να έχουμε βάλει όλες τις χώρες ξανά.
+  features <- clustering()
+  # First cluster
+  gg1 <- features[features$partition == 3,]
+  list_eur_countries <- gg1$GEO
+  # Αυτό εδώ μπορεί να μας βρει πολύ γρήγορα ποιο είναι το βέλτιστο σετ.
+  g1 <- find_the_best_combo_with_one()
+  # Ως έχει
+  g1<- find_slopes_with_one_country()
+  # graph the linear regration
+  ggplot(g1$data, aes(x = df_distance, y = df_free_distance)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+
+}
