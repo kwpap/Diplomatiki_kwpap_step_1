@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  5 APR 2023 01:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  7 APR 2023 19:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1752,18 +1752,24 @@ Overfull \vbox (10.44368pt too high) has occurred while \output is active []
 hird Cluster.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [47 <./images/Distances from Italy.png>] [48] (second_experiment_and_diary.aux
-)
+ [47 <./images/Distances from Italy.png>] [48] [49] (second_experiment_and_diar
+y.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `second_experiment_and_diary.out' has not cha
-nged.
-(rerunfilecheck)             Checksum: F6AFD38995C105B42AB4CDF62593EAED;11169.
+
+Package rerunfilecheck Warning: File `second_experiment_and_diary.out' has chan
+ged.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `second_experiment_and_diary.out':
+(rerunfilecheck)             Before: F6AFD38995C105B42AB4CDF62593EAED;11169
+(rerunfilecheck)             After:  471513E80C21961F5A6745ED716D79AC;11285.
  ) 
 Here is how much of TeX's memory you used:
- 27729 strings out of 476339
- 521052 string characters out of 5787648
+ 27731 strings out of 476339
+ 521074 string characters out of 5787648
  1907340 words of memory out of 5000000
  47457 multiletter control sequences out of 15000+600000
  528122 words of font info for 86 fonts, out of 8000000 for 9000
@@ -1795,9 +1801,9 @@ cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/cbgreek/grxn2074.pfb>
-Output written on second_experiment_and_diary.pdf (48 pages, 1947947 bytes).
+Output written on second_experiment_and_diary.pdf (49 pages, 1949769 bytes).
 PDF statistics:
- 761 PDF objects out of 1000 (max. 8388607)
- 181 named destinations out of 1000 (max. 500000)
+ 767 PDF objects out of 1000 (max. 8388607)
+ 183 named destinations out of 1000 (max. 500000)
  563 words of extra memory for PDF output out of 10000 (max. 10000000)
 

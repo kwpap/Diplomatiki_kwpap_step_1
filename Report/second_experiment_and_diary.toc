@@ -53,3 +53,4 @@
 \contentsline {subsection}{\numberline {14.2}Ικανότητα εξήγησης υπολοίπων μέσα στην ίδια συστάδα}{44}{subsection.14.2}%
 \contentsline {subsection}{\numberline {14.3}Υπάρχει κάποια εύκολη σχέση μεταξύ των δωρεάν αδειών και κάποιου feature;}{45}{subsection.14.3}%
 \contentsline {subsection}{\numberline {14.4}Ύστερα από αλλαγή στον τρόπο της κανονικοποίησης}{47}{subsection.14.4}%
+\contentsline {subsection}{\numberline {14.5}To do list}{48}{subsection.14.5}%

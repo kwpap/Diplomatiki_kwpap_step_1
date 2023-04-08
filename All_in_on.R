@@ -20,11 +20,12 @@ will_use_verified_emisions <- TRUE
 will_use_  <- TRUE
 will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
-will_normalise <- TRUE
+will_normalise <- FALSE
 force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 cached_data <- hash()
 cached_free <- hash()
+
 
   # DEFINITIONS FOR DATABASE
   db <- "eu_ets"           # name of database
@@ -39,7 +40,10 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
  "Malta", "Netherlands", "Poland", "Portugal",
  "Romania", "Slovenia", "Spain", "Sweden",     
  "United Kingdom")
-
+clusters <- list(c("France","Germany","Italy","Poland","Spain","United Kingdom"), 
+              c("Bulgaria","Estonia","Hungary","Latvia","Lithuania","Romania"), 
+              c("Austria","Belgium","Cyprus","Denmark","Finland","Greece","Ireland",
+                "Luxembourg","Malta","Netherlands","Portugal","Slovenia","Sweden" ))
 
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
@@ -756,22 +760,36 @@ find_the_best_combo <- function(){
 }
 
 find_the_best_combo_with_one <- function(){
-  weights <- rep(50,8)
+  weights <- rep(1,8)
   r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
   step <- 1
   low <- 0
   high <- 100
   for (i in 1:100){
-    # index <- i %% 8 +1
-    index <- sample(1:8, 1)
+    index <- i %% 8 +1
+    
+    #if (i %% 2 == 0 ){
+     # index <- (i/2) %% 8+1
+    #} else {
+    #  index <- sample(1:8, 1)
+    #}
+    
+    #index <- sample(1:8, 1)
     for (j in 1:10){
-      random_val <- sample(low:high, 1)
+      random_val <- sample((low + (j-1)*high/10):( j*high/10), 1)
       weight_with_random_val <- weights
       weight_with_random_val[index] <- random_val
       r_squared_with_random_val <- summary(find_slopes_with_one_country_with_weights(weights = weight_with_random_val)$linear)$r.squared
       if (r_squared_with_random_val > r_squared){
         r_squared <- r_squared_with_random_val
         weights[index] <- random_val
+        shit <- data.frame(type = c(paste("Population: ", weights[1]), paste("GDPpc: ", weights[2]), paste( "Inflation: ", weights[3]), paste("Agriculture: ", weights[4]), paste("Industry: ", weights[5]), paste("Manufacturing: ", weights[6]), paste("Total Energy Supply: ", weights[7]), paste("Verified Emissions: ", weights[8]))
+                           , value = weights)
+        
+        print(ggplot(shit, aes(x = type, y=value)) +
+                geom_bar(stat = "identity") + 
+                theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+                ggtitle(paste("R^2 = ", r_squared)))
       }
     }
     worth_doing_it <- TRUE
@@ -797,6 +815,11 @@ find_the_best_combo_with_one <- function(){
       } else {
         worth_doing_it <- FALSE
       }
+      shit <- data.frame(type = c(paste("Population: ", weights[1]), paste("GDPpc: ", weights[2]), paste( "Inflation: ", weights[3]), paste("Agriculture: ", weights[4]), paste("Industry: ", weights[5]), paste("Manufacturing: ", weights[6]), paste("Total Energy Supply: ", weights[7]), paste("Verified Emissions: ", weights[8])), value = weights)
+      print(ggplot(shit, aes(x = type, y=value)) +
+              geom_bar(stat = "identity") + 
+              theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+              ggtitle(paste("R^2 = ", r_squared)))
     }
   }
   print(weights)
@@ -947,7 +970,7 @@ let_s_compare_problematic_poland_france <-function(){
 }
 
 find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
-  weights <- rep(50,8)
+  weights <- rep(1,8)
   old <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
   step <- 10
   low <- 0
@@ -1313,20 +1336,54 @@ can_countries_explain_their_own_cluster <-function(){
   will_normalise <- FALSE
   
   features <- clustering()
+  feat <-list()
+  slop <- list()
   # First cluster
-  gg1 <- features[features$partition == 3,]
-  list_eur_countries <- gg1$GEO
-  # Αυτό εδώ μπορεί να μας βρει πολύ γρήγορα ποιο είναι το βέλτιστο σετ.
-  g1 <- find_the_best_combo_with_one()
-  # Ως έχει
-  g1<- find_slopes_with_one_country()
-  # graph the linear regration
-  ggplot(g1$data, aes(x = df_distance, y = df_free_distance)) + 
+  for (i in 1:3){
+    feat[[i]] <- features[features$partition == i,]
+    temp <- list_eur_countries
+    list_eur_countries <- feat[[i]]$GEO
+    slop[[i]] <- find_slopes_with_one_country()
+    list_eur_countries <-temp
+  }
+  # Plot it 
+  select <-2
+  ggplot(slop[[select]]$data, aes(x = df_distance, y = df_free_distance)) + 
     geom_point(aes(color = GEO)) + 
     geom_smooth(method = "lm", se = FALSE) +
     xlab("Distance in features") + 
     ylab("Distance in free") +
-    labs(title = "Distances from Italy, first cluster")
-    
+    labs(title = paste("Distances from ", slop[[select]]$country ," at ",as.character(select)," cluster and r^2 = ", as.character(summary(slop[[select]]$linear)$r.squared)))
+  
+  
+  #list_eur_countries <- gg1$GEO
+  # Αυτό εδώ μπορεί να μας βρει πολύ γρήγορα ποιο είναι το βέλτιστο σετ.
+  #g1 <- find_the_best_combo_with_one()
+
+  # graph the linear regration
+}
+
+#Let's find out if we can find a relation between the features of each country and the free allocation it got
+
+features_linear_free <- function(){
+  will_normalise <- FALSE
+  dat <- read_data()
+  free <- read_free()
+  dat <- merge(dat, free, by = "GEO")
+  select <- 3
+  # keep only the countries of the list "clusters"
+  dat <- dat[dat$GEO %in% clusters[[select]],]
+
+  linear <- list()
+  linear[[select]] <- lm(dat$Free ~  dat$Population )
+  summary(linear[[select]])
+  
+  ggplot(dat, aes(x = Population + Total_energy_supply, y = Free)) + 
+    geom_point(aes(color = GEO)) + 
+    geom_smooth(method = "lm", se = FALSE) +
+    xlab("Total energy supply in Thousant tones of oil equivalent") + 
+    ylab("Free allocation") +
+    labs(title = paste("Relationship of the", as.character(select)," cluster and r^2 = ", as.character(summary(linear[[select]])$r.squared)))
+  
 
 }
