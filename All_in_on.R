@@ -1,5 +1,4 @@
-library(hash)
-
+library("hash")
 library("xlsx")
 library("xtable") # Load xtable package
 library("stringr")
@@ -8,6 +7,8 @@ library("RMySQL")
 library("ggplot2")
 library("factoextra")
 library("NbClust")
+
+  # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
 year_for_comparison <- 2017
@@ -23,16 +24,19 @@ will_use_manufacturing <- TRUE
 will_normalise <- FALSE
 force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
+Manufacturing_Industry_Agriculture_as_percentage <- TRUE
 cached_data <- hash()
 cached_free <- hash()
 
 
   # DEFINITIONS FOR DATABASE
-  db <- "eu_ets"           # name of database
-  use <- "root"           # user name
-  passwor <- ""     # password
-  hos <- "localhost"       # host name
+db <- "eu_ets"           # name of database
+use <- "root"           # user name
+passwor <- ""     # password
+hos <- "localhost"       # host name
 
+  # LIST OF COUNTRIES WITH DATA
+  
 list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",        
  "Denmark","Estonia", "Finland","France",   
  "Germany","Greece", "Hungary","Ireland",
@@ -40,6 +44,9 @@ list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",
  "Malta", "Netherlands", "Poland", "Portugal",
  "Romania", "Slovenia", "Spain", "Sweden",     
  "United Kingdom")
+  
+  #Clustering on features as derived from the 2017 features.
+
 clusters <- list(c("France","Germany","Italy","Poland","Spain","United Kingdom"), 
               c("Bulgaria","Estonia","Hungary","Latvia","Lithuania","Romania"), 
               c("Austria","Belgium","Cyprus","Denmark","Finland","Greece","Ireland",
@@ -47,12 +54,8 @@ clusters <- list(c("France","Germany","Italy","Poland","Spain","United Kingdom")
 
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
-    information_text <- list()
-    
+    information_text <- list() # To kef errors and missing data
 
-
-
-    
     # Try to find the file in the folder "Data/created_csvs"
     # If it is not found, create it
     will_use <- c(will_use_total_energy_supply, will_use_GDPpc, will_use_population, will_use_inflation,will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing)
@@ -307,28 +310,56 @@ read_data <- function(year = 0) {
     }
 
     if (will_use_agriculture){
+      if (Manufacturing_Industry_Agriculture_as_percentage){
+        for (i in 1:nrow(df_1)){
+          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+        }
+      }
+      else {
         for (i in 1:nrow(df_1)){
           GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
           df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-
         }
+      }
     }
     if (will_use_industry){
+      if(Manufacturing_Industry_Agriculture_as_percentage){
+        for (i in 1:nrow(df_1)){
+          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+        } 
+      }
+      else{
         for (i in 1:nrow(df_1)){
           GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
           df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-        }
+        }        
+      }
     }
     if (will_use_manufacturing){
+      if(Manufacturing_Industry_Agriculture_as_percentage){
         for (i in 1:nrow(df_1)){
           if (df_1$GEO[i] == "Bulgaria"){
             # Estimating Bulgaria's manufacturing value added from the rest of the GDP components
-            df_1$Manufacturing[i] <- df_1$GDP[i] - (as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100) - (as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100) - (as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100)
+            df_1$Manufacturing[i] <- 100 - (as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])) - (as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])) - (as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]))
+            next
+          }
+          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+        }
+      }
+      else{
+        for (i in 1:nrow(df_1)){
+          if (df_1$GEO[i] == "Bulgaria"){
+            # Estimating Bulgaria's manufacturing value added from the rest of the GDP components
+            GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+            df_1$Manufacturing[i] <- GDP_multiplier / 100 * (100 - as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) 
+                                                    - as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
+                                                    - as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]))
             next
           }
           GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
           df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
         }
+      }
     }
 
     if (use_mean_for_missing_data){
@@ -1285,6 +1316,9 @@ clustering <- function(){
 
   #will_normalise <- TRUE
   features <- read_data()
+  
+  # Normalize based on Germany
+  
   features$Total_energy_supply <- features$Total_energy_supply / features$Total_energy_supply[9]
   features$GDPpc <- features$GDPpc / features$GDPpc[9]
   features$Population <- features$Population / features$Population[9]
@@ -1294,15 +1328,31 @@ clustering <- function(){
   features$Industry <- features$Industry / features$Industry[9]
   features$Manufacturing <- features$Manufacturing / features$Manufacturing[9]
   
+  # I'll change the values because the clustering produces the error "system is computationally singular: reciprocal condition number = 9.94365e-17"otherwise
+  # Values that are closer fixes the problem
+  #features$Total_energy_supply <- features$Total_energy_supply / 1000
+  #features$GDPpc <- features$GDPpc / 1000 # USD -> thousants USD
+  #features$Population <- features$Population / 1000000 # Millions of people
+  #features$Inflation<- features$Inflation #Sufficiently small
+  #features$Verified_emissions <- features$Verified_emissions / 1000000 # tCO2 equivalent -> ECO2 (exa CO2) equivalent
+  #features$Agriculture <- features$Agriculture 
+  #features$Industry <- features$Industry
+  #features$Manufacturing <- features$Manufacturing 
+  
+  
+  
   names_of_df <-names(features)
   for (i in 2:length(names_of_df)){
     features[[i]] <- as.numeric(as.character(features[[i]]))
   }
   gg <- NbClust(features[-c(1)], distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans", index = "all")
 
-
   #print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
   features$partition <- gg$Best.partition
+  
+  gg <- kmeans(features[-c(1)], 3, 20, 30)
+  features$partition <- gg$cluster
+  
   features <- features[order(features$partition),]
   #print(xtable(features[-c(2:9)]), format.args = list(big.mark = ",", decimal.mark = "."))
   return(features)
@@ -1370,20 +1420,57 @@ features_linear_free <- function(){
   dat <- read_data()
   free <- read_free()
   dat <- merge(dat, free, by = "GEO")
-  select <- 3
+  select <- 2
   # keep only the countries of the list "clusters"
   dat <- dat[dat$GEO %in% clusters[[select]],]
-
+  #dat <- dat[-which(dat$GEO == "Germany"),]
   linear <- list()
-  linear[[select]] <- lm(dat$Free ~  dat$Population )
+  linear[[select]] <- lm(dat$Free ~    dat$Population)
   summary(linear[[select]])
+  summary(linear[[select]])$r.squared
   
-  ggplot(dat, aes(x = Population + Total_energy_supply, y = Free)) + 
+  ggplot(dat, aes(x = Population, y = Free)) + 
     geom_point(aes(color = GEO)) + 
     geom_smooth(method = "lm", se = FALSE) +
-    xlab("Total energy supply in Thousant tones of oil equivalent") + 
+    xlab("Industry in Billios USD (as calculated in GDP)") + 
     ylab("Free allocation") +
     labs(title = paste("Relationship of the", as.character(select)," cluster and r^2 = ", as.character(summary(linear[[select]])$r.squared)))
+}
+
+# Are these correlated?
+gg <-function(){
+  g<- read_data()
+  ff <- lm(g$Agriculture ~ g$GDPpc)
+  summary(ff)
+  ggplot(g, aes(x = Agriculture, y = Industry)) + 
+    geom_point(aes(color = GEO)) + 
+    geom_smooth(method = "lm", se = FALSE) +
+    xlab("Agriculture") + 
+    ylab("GDPpc")
+    
+}
+
+Fotakis_idea <- function(){
+  features <- clustering()
+  free <- read_free()
+  features <- merge(features, free, by = "GEO")
+  for (i in 1:25){
+    if (features$partition[i] == 1){
+      features$partition[i] <- "Industrialized"
+    }
+    if (features$partition[i] == 2){
+      features$partition[i] <- "USSR"
+    }
+    if (features$partition[i] == 3){
+      features$partition[i] <- "REST"
+    }
+  }
   
 
+  ggplot(features, aes(x = Verified_emissions, y = Free)) + 
+    geom_point(aes(color = partition)) + 
+    geom_smooth(method = "lm", se = FALSE) +
+    xlab("Verified 2008") + 
+    ylab("Free") 
 }
+
