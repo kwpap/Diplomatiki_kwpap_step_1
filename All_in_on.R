@@ -1930,13 +1930,28 @@ Peirama_1 <-function(){
     temp <- rbind(temp, temp2)
   }
   
+  # Find which cluster they belong to from the list "clusters"
   for (i in 1:nrow(temp)){
-    temp$partition[i] <-temp2$partition[which[temp2$GEO==temp$GEO[i]]]
-  }
+    for (j in 1:6){
+      if (temp$GEO[i] == clusters[[1]][j]){
+        temp$partition[i] <- "First"
+      }
+    }
+    for (j in 1:6){
+      if (temp$GEO[i] == clusters[[2]][j]){
+        temp$partition[i] <- "Second"
+      }
+    }    
+    for (j in 1:13){
+      if (temp$GEO[i] == clusters[[3]][j]){
+        temp$partition[i] <- "Third"
+      }
+    }
+    }
 
-  ggplot(temp, aes(x = Verified_emissions, y = Free))+
-    geom_point(aes(color = Phase)) +
-    geom_smooth(method = "lm", aes(color = Phase), se = FALSE) +
+  ggplot(temp[which(temp$Phase=="Phase III"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE) +
     xlab("Verified") + 
     ylab("Free") 
   
