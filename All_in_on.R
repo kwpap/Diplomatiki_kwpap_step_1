@@ -11,7 +11,7 @@ library("dplyr")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
-year_for_comparison <- 2019
+year_for_comparison <- 2012
 will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
@@ -195,7 +195,7 @@ read_data_2 <- function(year = 0) {
       if (length(all_stable_installations) == 0){
         all_stable_installations <- 0
       }
-      df_1$Verified_emissions[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
+      df_1$Free[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
     }
   }
   
