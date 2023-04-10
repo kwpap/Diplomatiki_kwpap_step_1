@@ -1686,7 +1686,7 @@ minMax <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
 
-clustering <- function(){
+clustering <- function(normalize = "Mean", min.nc = 2, max.nc = 10){
   # Let's cluster the countries based on their features from the read_data() function
   # We will use the k-means algorithm
   # We will use the elbow method, the silhouette method, and the gap statistic to find the optimal number of clusters
@@ -1694,26 +1694,36 @@ clustering <- function(){
   will_normalise <- FALSE
   features <- read_data()
   
+  # Normalize the data
+  if (normalize == "Mean"){
+    features <- scale(features[-c(1)])
+  } else if (normalize == "MinMax"){
+    features <- minMax(features)
+  } else if (normalize == "None"){
+    will_normalise <- TRUE
+  } else {
+    stop("Invalid normalization method")
+  }
   # Normalize based on Germany
-  # features$Total_energy_supply <- features$Total_energy_supply / features$Total_energy_supply[9]
-  # features$GDPpc <- features$GDPpc / features$GDPpc[9]
-  # features$Population <- features$Population / features$Population[9]
-  # features$Inflation<- features$Inflation / features$Inflation[9]
-  # features$Verified_emissions <- features$Verified_emissions / features$Verified_emissions[9]
-  # features$Agriculture <- features$Agriculture / features$Agriculture[9]
-  # features$Industry <- features$Industry / features$Industry[9]
-  # features$Manufacturing <- features$Manufacturing / features$Manufacturing[9]
+  features$Total_energy_supply <- features$Total_energy_supply / features$Total_energy_supply[9]
+  features$GDPpc <- features$GDPpc / features$GDPpc[9]
+  features$Population <- features$Population / features$Population[9]
+  features$Inflation<- features$Inflation / features$Inflation[9]
+  features$Verified_emissions <- features$Verified_emissions / features$Verified_emissions[9]
+  features$Agriculture <- features$Agriculture / features$Agriculture[9]
+  features$Industry <- features$Industry / features$Industry[9]
+  features$Manufacturing <- features$Manufacturing / features$Manufacturing[9]
   
   # I'll change the values because the clustering produces the error "system is computationally singular: reciprocal condition number = 9.94365e-17"otherwise
-  # Values that are closer fixes the problem
-  # features$Total_energy_supply <- features$Total_energy_supply / 1000
-  # features$GDPpc <- features$GDPpc / 1000 # USD -> thousants USD
-  # features$Population <- features$Population / 1000000 # Millions of people
-  # features$Inflation<- features$Inflation #Sufficiently small
-  # features$Verified_emissions <- features$Verified_emissions / 1000000 # tCO2 equivalent -> ECO2 (exa CO2) equivalent
-  # features$Agriculture <- features$Agriculture 
-  # features$Industry <- features$Industry
-  # features$Manufacturing <- features$Manufacturing 
+  #Values that are closer fixes the problem
+  features$Total_energy_supply <- features$Total_energy_supply / 1000
+  features$GDPpc <- features$GDPpc / 1000 # USD -> thousants USD
+  features$Population <- features$Population / 1000000 # Millions of people
+  features$Inflation<- features$Inflation #Sufficiently small
+  features$Verified_emissions <- features$Verified_emissions / 1000000 # tCO2 equivalent -> ECO2 (exa CO2) equivalent
+  features$Agriculture <- features$Agriculture 
+  features$Industry <- features$Industry
+  features$Manufacturing <- features$Manufacturing 
   
   # Normalize average
   features$Total_energy_supply <- features$Total_energy_supply / mean(features$Total_energy_supply)
@@ -1724,6 +1734,26 @@ clustering <- function(){
   features$Agriculture <- features$Agriculture / mean(features$Agriculture)
   features$Industry <- features$Industry/ mean(features$Industry)
   features$Manufacturing <- features$Manufacturing / mean(features$Manufacturing)
+  
+  # Normalize max
+  features$Total_energy_supply <- features$Total_energy_supply / max(features$Total_energy_supply)
+  features$GDPpc <- features$GDPpc / max(features$GDPpc)
+  features$Population <- features$Population / max(features$Population)
+  features$Inflation<- features$Inflation / max(features$Inflation)
+  features$Verified_emissions <- features$Verified_emissions / max( features$Verified_emissions)
+  features$Agriculture <- features$Agriculture / max(features$Agriculture)
+  features$Industry <- features$Industry/ max(features$Industry)
+  features$Manufacturing <- features$Manufacturing / max(features$Manufacturing)
+  
+  # Normalize min-Max
+  features$Total_energy_supply <- minMax(features$Total_energy_supply)
+  features$GDPpc <- minMax(features$GDPpc)
+  features$Population <-  minMax(features$Population)
+  features$Inflation<-  minMax(features$Inflation)
+  features$Verified_emissions <-  minMax( features$Verified_emissions)
+  features$Agriculture <- minMax(features$Agriculture)
+  features$Industry <-  minMax(features$Industry)
+  features$Manufacturing <-  minMax(features$Manufacturing)  
   
   
   
@@ -1736,8 +1766,8 @@ clustering <- function(){
   #print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
   features$partition <- gg$Best.partition
   
-  gg <- kmeans(features[-c(1)], 3, 20, 30)
-  features$partition <- gg$cluster
+  # gg <- kmeans(features[-c(1)], 3, 20, 30)
+  # features$partition <- gg$cluster
   
   features <- features[order(features$partition),]
   #print(xtable(features[-c(2:9)]), format.args = list(big.mark = ",", decimal.mark = "."))
