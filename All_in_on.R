@@ -25,6 +25,7 @@ will_normalise <- FALSE
 force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
+will_use_energy_intensity <- TRUE
 Manufacturing_Industry_Agriculture_as_percentage <- TRUE
 cached_data <- hash()
 cached_free <- hash()
@@ -69,6 +70,8 @@ read_data_2 <- function(year = 0) {
                   (if(will_use_agriculture) "_agr" else ""),
                   (if(will_use_industry) "_ind" else ""),
                   (if(will_use_manufacturing) "_man" else ""),
+                  (if(will_use_free) "_free" else ""),
+                  (if(will_use_energy_intensity) "_ei" else ""),
                   ".csv", sep = "")
   if(!force_fresh_data & !is.null(cached_data[[text_s]])){
     #print (paste("Using Cached Data from hash for: ", year_for_comparison))
@@ -96,11 +99,41 @@ read_data_2 <- function(year = 0) {
   
   df_1 <- data.frame(list_eur_countries)
   zero_vector <- rep(1, length(list_eur_countries))
-  for (i in 1:9) {
+  for (i in 1:10) {
     df_1 <- cbind(df_1, data.frame(zero_vector))
   }
-  colnames(df_1) <- c("GEO","Total_energy_supply","GDPpc", "Population", "Inflation", "Verified_emissions", "Agriculture", "Industry", "Manufacturing","Free")
+  colnames(df_1) <- c("GEO","Free", "Verified_emissions","Total_energy_supply","GDPpc", "Population", "Inflation", "Agriculture", "Industry", "Manufacturing","Energy_Intensity")
   
+  
+  if (will_use_energy_intensity){
+    # Load Verified data from csv file
+    # Path: Data
+    # File: nrg_ind_ei_linear.csv
+    # Source: https://ec.europa.eu/eurostat/databrowser/view/NRG_IND_EI__custom_5726612/default/table?lang=en
+    # Field in question on nrg_bal is "EI_GDP_PPS"
+    # Country: All countries
+    # Year: 1996 - 2021
+    # Unit: KGOE_TEUR_PPS
+
+    
+    df_ei <- read.csv(file = "./Data/nrg_ind_ei_linear.csv",
+                        header = TRUE,
+                        as.is = TRUE)
+    df_ei <- df_ei[which(df_ei$nrg_bal=="EI_GDP_PPS"),]
+    df_ei <- df_ei[-c(1,2,3,4,5,9)]
+    
+    
+    for (i in 1:nrow(df_1)) {
+      df_ei$geo[i] <- 
+      temp <- df_ei$OBS_VALUE[which(df_ei$geo==countries$eu_abbr2L[which(countries$name==df_1$GEO[i])]  & df_ei$TIME_PERIOD==year_for_comparison)]
+      if (length(temp) == 0){
+        df_1$Energy_Intensity[i] <- 0
+      }
+      else{
+        df_1$Energy_Intensity[i] <- as.numeric(temp)
+      }
+    }
+  }
   if (will_use_verified_emisions){
     # Load Verified data from csv file
     # Path: Data
@@ -121,10 +154,10 @@ read_data_2 <- function(year = 0) {
     for (i in 1:nrow(df_1)) {
         temp <- df_emis$ETS.Information[which(df_emis$Country==df_1$GEO[i] & df_emis$Year==year_for_comparison & df_emis$ETS.information == "2. Verified emissions")]
         if (length(temp) == 0){
-          df_1$Free[i] <- 0
+          df_1$Verified_emissions[i] <- 0
         }
         else{
-          df_1$Free[i] <- as.numeric(temp)
+          df_1$Verified_emissions[i] <- as.numeric(temp)
         }
     }
   }
@@ -1686,88 +1719,51 @@ minMax <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
 
-clustering <- function(normalize = "Mean", min.nc = 2, max.nc = 10){
+clustering <- function(normalize = "Mean", minNc = 2, maxNc = 10){
   # Let's cluster the countries based on their features from the read_data() function
   # We will use the k-means algorithm
   # We will use the elbow method, the silhouette method, and the gap statistic to find the optimal number of clusters
 
   will_normalise <- FALSE
-  features <- read_data()
+  features <- read_data_2()
+  names_of_df <-names(features)
+  for (i in 2:ncol(features)){
+    features[[i]] <- as.numeric(as.character(features[[i]]))
+  }
   
   # Normalize the data
   if (normalize == "Mean"){
-    features <- scale(features[-c(1)])
+    # Normalize average
+    for(i in 2:ncol(features)){
+    features[[i]] <- features[[i]] / mean(features[[i]])
+    }
   } else if (normalize == "MinMax"){
-    features <- minMax(features)
-  } else if (normalize == "None"){
-    will_normalise <- TRUE
-  } else {
-    stop("Invalid normalization method")
+    # Normalize min-Max
+    for(i in 2:ncol(features)){
+      features[[i]] <- minMax(features[[i]])
+    }
+  } else if (normalize == "Germany"){
+    # Normalize based on Germany
+    for(i in 2:ncol(features)){
+      features[[i]] <- features[[i]] / features[[i]][9]
+    }
+  } else if (normalize == "max"){
+    # Normalize max
+    for(i in 2:ncol(features)){
+      features[[i]] <- features[[i]] / max(features[[i]])
+    }
+  } else{
+    print("Invalid normalization method")
   }
-  # Normalize based on Germany
-  features$Total_energy_supply <- features$Total_energy_supply / features$Total_energy_supply[9]
-  features$GDPpc <- features$GDPpc / features$GDPpc[9]
-  features$Population <- features$Population / features$Population[9]
-  features$Inflation<- features$Inflation / features$Inflation[9]
-  features$Verified_emissions <- features$Verified_emissions / features$Verified_emissions[9]
-  features$Agriculture <- features$Agriculture / features$Agriculture[9]
-  features$Industry <- features$Industry / features$Industry[9]
-  features$Manufacturing <- features$Manufacturing / features$Manufacturing[9]
-  
-  # I'll change the values because the clustering produces the error "system is computationally singular: reciprocal condition number = 9.94365e-17"otherwise
-  #Values that are closer fixes the problem
-  features$Total_energy_supply <- features$Total_energy_supply / 1000
-  features$GDPpc <- features$GDPpc / 1000 # USD -> thousants USD
-  features$Population <- features$Population / 1000000 # Millions of people
-  features$Inflation<- features$Inflation #Sufficiently small
-  features$Verified_emissions <- features$Verified_emissions / 1000000 # tCO2 equivalent -> ECO2 (exa CO2) equivalent
-  features$Agriculture <- features$Agriculture 
-  features$Industry <- features$Industry
-  features$Manufacturing <- features$Manufacturing 
-  
-  # Normalize average
-  features$Total_energy_supply <- features$Total_energy_supply / mean(features$Total_energy_supply)
-  features$GDPpc <- features$GDPpc / mean(features$GDPpc)
-  features$Population <- features$Population / mean(features$Population)
-  features$Inflation<- features$Inflation / mean(features$Inflation)
-  features$Verified_emissions <- features$Verified_emissions / mean( features$Verified_emissions)
-  features$Agriculture <- features$Agriculture / mean(features$Agriculture)
-  features$Industry <- features$Industry/ mean(features$Industry)
-  features$Manufacturing <- features$Manufacturing / mean(features$Manufacturing)
-  
-  # Normalize max
-  features$Total_energy_supply <- features$Total_energy_supply / max(features$Total_energy_supply)
-  features$GDPpc <- features$GDPpc / max(features$GDPpc)
-  features$Population <- features$Population / max(features$Population)
-  features$Inflation<- features$Inflation / max(features$Inflation)
-  features$Verified_emissions <- features$Verified_emissions / max( features$Verified_emissions)
-  features$Agriculture <- features$Agriculture / max(features$Agriculture)
-  features$Industry <- features$Industry/ max(features$Industry)
-  features$Manufacturing <- features$Manufacturing / max(features$Manufacturing)
-  
-  # Normalize min-Max
-  features$Total_energy_supply <- minMax(features$Total_energy_supply)
-  features$GDPpc <- minMax(features$GDPpc)
-  features$Population <-  minMax(features$Population)
-  features$Inflation<-  minMax(features$Inflation)
-  features$Verified_emissions <-  minMax( features$Verified_emissions)
-  features$Agriculture <- minMax(features$Agriculture)
-  features$Industry <-  minMax(features$Industry)
-  features$Manufacturing <-  minMax(features$Manufacturing)  
-  
-  
-  
-  names_of_df <-names(features)
-  for (i in 2:length(names_of_df)){
-    features[[i]] <- as.numeric(as.character(features[[i]]))
-  }
-  gg <- NbClust(features[-c(1)], distance = "euclidean", min.nc = 3, max.nc = 10, method = "kmeans", index = "all")
+
+
+  gg <- NbClust(features[-c(1)], distance = "euclidean", min.nc = minNc, max.nc = maxNc, method = "kmeans", index = "all")
 
   #print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
   features$partition <- gg$Best.partition
   
-  # gg <- kmeans(features[-c(1)], 3, 20, 30)
-  # features$partition <- gg$cluster
+   #gg <- kmeans(features[-c(1)], 3, 50, 100)
+   #features$partition <- gg$cluster
   
   features <- features[order(features$partition),]
   #print(xtable(features[-c(2:9)]), format.args = list(big.mark = ",", decimal.mark = "."))
@@ -1888,5 +1884,42 @@ Fotakis_idea <- function(){
     geom_smooth(method = "lm", se = FALSE) +
     xlab("Verified 2008") + 
     ylab("Free") 
+}
+
+Peirama_1 <-function(){
+  temp <- read_data_2(year = 2005)
+  temp$Phase <- "Phase I"
+  temp$year <- 2006
+  for (i in 2006:2007){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase I"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
+  }
+  for (i in 2008:2012){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase II"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
+  }
+  for (i in 2013:2020){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase III"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
+  }
+  temp2 <- clustering(minNc = 3, maxNc = 5)
+  #for (i in 1:nrow(temp)){
+  #  temp$partition[i] <-temp2$partition[which[temp2$GEO==temp$GEO[i]]]
+  #}
+
+  ggplot(temp, aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = Phase)) +
+    geom_smooth(method = "lm", aes(color = Phase), se = FALSE) +
+    xlab("Verified") + 
+    ylab("Free") 
+  
+  
+  
 }
 
