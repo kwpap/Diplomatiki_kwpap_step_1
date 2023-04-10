@@ -11,7 +11,7 @@ library("dplyr")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
-year_for_comparison <- 2017
+year_for_comparison <- 2019
 will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
@@ -96,7 +96,7 @@ read_data_2 <- function(year = 0) {
   dbClearResult(res) # clear result
   country_names <- countries[, 1]
   country_eu_abbr2L <- countries[, 3]
-  
+  dbDisconnect(kanali)
   df_1 <- data.frame(list_eur_countries)
   zero_vector <- rep(1, length(list_eur_countries))
   for (i in 1:10) {
@@ -124,7 +124,10 @@ read_data_2 <- function(year = 0) {
     
     
     for (i in 1:nrow(df_1)) {
-      df_ei$geo[i] <- 
+      if(year_for_comparison == 2020 && df_1$GEO[i] == "United Kingdom"){
+        df_1$Energy_Intensity[i] <- 82.1
+        next
+      }
       temp <- df_ei$OBS_VALUE[which(df_ei$geo==countries$eu_abbr2L[which(countries$name==df_1$GEO[i])]  & df_ei$TIME_PERIOD==year_for_comparison)]
       if (length(temp) == 0){
         df_1$Energy_Intensity[i] <- 0
@@ -306,12 +309,23 @@ read_data_2 <- function(year = 0) {
     # Total energy supply             -> NRGSUP
     # Available for final consumption -> AFC
     
+    
+    # Για το 2019: 66.440000 people * 105,1 GJoule/ capita * 0.0239 (GJ to ktoe) -> 166731180 ktoe
+    # Στη βάση λέει 170540 gtoe δηλαδή 2.2% απόκλιση
+    # Άρα για το 2020: 67.026.292 people * 95,9,9 GJoule/ capita * 0.0239 -> 153624931.52 ktoe -> 153,624.931 gtoe. Άρα το περνώ αυτό καρφωτά στην στον κώδικά.
+    # https://www.iea.org/data-and-statistics?country=UNITED%20KINGDOM&fuel=Energy%20supply&indicator=Totals
+    
     d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
                   header = TRUE)
     d <- d[-c(1, 2, 3, 5, 6, 10)]
     df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
     
     for (i in 1:nrow(df_1)) {
+      #check for UK in 2020
+      if (year_for_comparison == 2020 && df_1$GEO[i]=="United Kingdom"){
+        df_1$Total_energy_supply[i] <- 153624.931
+        next
+      }
       df_1$"Total_energy_supply"[i] <- df_total_energy_supply$OBS_VALUE[which(df_total_energy_supply$TIME_PERIOD == year_for_comparison & df_total_energy_supply$geo == countries$eu_abbr2L[which(countries$name == df_1$"GEO"[i])])]
     }
     df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
@@ -1794,7 +1808,7 @@ clustering_per_capita <-function(){
 }
 
 can_countries_explain_their_own_cluster <-function(){
-  # Για να τρέξει πρέπει πρώτα να έχουμε βάλει όλες τις χώρες ξανά.
+  # ÎÎ¹Î± Î½Î± ÏÏÎ­Î¾ÎµÎ¹ ÏÏÎ­ÏÎµÎ¹ ÏÏÏÏÎ± Î½Î± Î­ÏÎ¿ÏÎ¼Îµ Î²Î¬Î»ÎµÎ¹ ÏÎ»ÎµÏ ÏÎ¹Ï ÏÏÏÎµÏ Î¾Î±Î½Î¬.
   will_normalise <- FALSE
   
   features <- clustering()
@@ -1819,7 +1833,7 @@ can_countries_explain_their_own_cluster <-function(){
   
   
   #list_eur_countries <- gg1$GEO
-  # Αυτό εδώ μπορεί να μας βρει πολύ γρήγορα ποιο είναι το βέλτιστο σετ.
+  # ÎÏÏÏ ÎµÎ´Ï Î¼ÏÎ¿ÏÎµÎ¯ Î½Î± Î¼Î±Ï Î²ÏÎµÎ¹ ÏÎ¿Î»Ï Î³ÏÎ®Î³Î¿ÏÎ± ÏÎ¿Î¹Î¿ ÎµÎ¯Î½Î±Î¹ ÏÎ¿ Î²Î­Î»ÏÎ¹ÏÏÎ¿ ÏÎµÏ.
   #g1 <- find_the_best_combo_with_one()
 
   # graph the linear regration
@@ -1850,7 +1864,7 @@ features_linear_free <- function(){
 }
 
 # Are these correlated?
-gg <-function(){
+simple_lm <-function(){
   g<- read_data()
   ff <- lm(g$Agriculture ~ g$GDPpc)
   summary(ff)
@@ -1908,10 +1922,10 @@ Peirama_1 <-function(){
     temp2$year <- i
     temp <- rbind(temp, temp2)
   }
-  temp2 <- clustering(minNc = 3, maxNc = 5)
-  #for (i in 1:nrow(temp)){
-  #  temp$partition[i] <-temp2$partition[which[temp2$GEO==temp$GEO[i]]]
-  #}
+  
+  for (i in 1:nrow(temp)){
+    temp$partition[i] <-temp2$partition[which[temp2$GEO==temp$GEO[i]]]
+  }
 
   ggplot(temp, aes(x = Verified_emissions, y = Free))+
     geom_point(aes(color = Phase)) +
