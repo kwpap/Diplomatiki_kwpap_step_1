@@ -146,22 +146,25 @@ read_data_2 <- function(year = 0) {
     # Year: 1990 - 2021
     # Unit: K tons of Co2 equivalent
     
-    df_emis <- read.csv(file = "./Data/Historical emissions_data.csv",
+    df_emis <- read.csv(file = "./Data/Historical emissions_data_2.csv",
                         header = TRUE,
                         as.is = TRUE)
+    names(df_emis) <- c("Main.Activity", "Country","Year","ETS.information","Emissions.Unit","ETS.Information")
     # Replace "United Kingdom (excl. NI)" with "United Kingdom" in df_emis$Country
     df_emis <- df_emis %>% mutate(Country = ifelse(Country == "United Kingdom (excl. NI)", "United Kingdom", Country))
     # Replace idiotic values
     # Remove spaces in df_emis$Information
     df_emis$ETS.Information <- gsub(" ", "", df_emis$ETS.Information)
     for (i in 1:nrow(df_1)) {
-        temp <- df_emis$ETS.Information[which(df_emis$Country==df_1$GEO[i] & df_emis$Year==year_for_comparison & df_emis$ETS.information == "2. Verified emissions")]
-        if (length(temp) == 0){
-          df_1$Verified_emissions[i] <- 0
+        aviation <- df_emis$ETS.Information[which(df_emis$Country==df_1$GEO[i] & df_emis$Year==year_for_comparison & df_emis$ETS.information == "2. Verified emissions" & df_emis$Main.Activity == "10 Aviation")]
+        all_stable_installations <- df_emis$ETS.Information[which(df_emis$Country==df_1$GEO[i] & df_emis$Year==year_for_comparison & df_emis$ETS.information == "2. Verified emissions" & df_emis$Main.Activity == "20-99 All stationary installations")]
+        if (length(aviation) == 0){
+          aviation <- 0
         }
-        else{
-          df_1$Verified_emissions[i] <- as.numeric(temp)
+        if (length(all_stable_installations) == 0){
+          all_stable_installations <- 0
         }
+          df_1$Verified_emissions[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
     }
   }
   if (will_use_free){
@@ -176,19 +179,23 @@ read_data_2 <- function(year = 0) {
     df_free <- read.csv(file = "./Data/Historical emissions_data.csv",
                         header = TRUE,
                         as.is = TRUE)
+    names(df_free) <- c("Main.Activity", "Country","Year","ETS.information","Emissions.Unit","ETS.Information")
     # Replace "United Kingdom (excl. NI)" with "United Kingdom" in df_emis$Country
     df_free <- df_emis %>% mutate(Country = ifelse(Country == "United Kingdom (excl. NI)", "United Kingdom", Country))
     # Replace idiotic values
     # Remove spaces in df_emis$Information
     df_free$ETS.Information <- gsub(" ", "", df_emis$ETS.Information)
+    
     for (i in 1:nrow(df_1)) {
-      temp <- df_free$ETS.Information[which(df_free$Country==df_1$GEO[i] & df_free$Year==year_for_comparison & df_free$ETS.information == "1.1 Freely allocated allowances")]
-      if (length(temp) == 0){
-        df_1$Free[i] <- 0
+      aviation <- df_free$ETS.Information[which(df_free$Country==df_1$GEO[i] & df_free$Year==year_for_comparison & df_free$ETS.information == "1.1 Freely allocated allowances" & df_free$Main.Activity == "10 Aviation")]
+      all_stable_installations <- df_free$ETS.Information[which(df_emis$Country==df_1$GEO[i] & df_free$Year==year_for_comparison & df_free$ETS.information == "1.1 Freely allocated allowances" & df_free$Main.Activity == "20-99 All stationary installations")]
+      if (length(aviation) == 0){
+        aviation <- 0
       }
-      else{
-        df_1$Free[i] <- as.numeric(temp)
+      if (length(all_stable_installations) == 0){
+        all_stable_installations <- 0
       }
+      df_1$Verified_emissions[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
     }
   }
   
