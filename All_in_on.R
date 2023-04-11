@@ -8,6 +8,7 @@ library("ggplot2")
 library("factoextra")
 library("NbClust")
 library("dplyr")
+library("lpSolve")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -1959,3 +1960,60 @@ Peirama_1 <-function(){
   
 }
 
+
+Kosta_eisai_vlakas_grapse_to_lp <- function(){
+#create an LP to solve the following problem:
+# max \sum v_{ij}   (GDP_{ij} / verified emissions)_{ij} )  (GDP_{i} correction to PPS currency unit) 
+# s.t. \sum v_{ij} = 1
+#a_1 free(t-1) \leq \sum v_i \leq a_2 free(t-1)
+#a_1 free(t-1) \leq \sum v_j \leq a_2 free(t-1)
+#v_i = \sum_j v_{ij}
+#v_i \approx p_i / Pop_total
+#v_{ij} / v_i \approx GDP_{ij} / GDP_i 
+#Nash welfare \max \product_i v_i
+#v_{ij} = fraction of total free cap of country i in sector j 
+#v_i = fraction of gree in country j
+#v_j = fraction of free in sector j
+#v_{ij} / v_i \approx (sector correction factor) * GDP_{ij} / GDP_i 
+
+  
+  #example LP
+
+  # Set coefficients of the objective function (max 5x_1 + 7x_2)
+  f.obj <- c(5, 7)
+  
+  # Set matrix corresponding to coefficients of constraints by rows
+  # Do not consider the non-negative constraint; it is automatically assumed
+  f.con <- matrix(c(1, 0,
+                    2, 3,
+                    1, 1), nrow = 3, byrow = TRUE)
+  
+  # Set unequality signs
+  f.dir <- c("<=",
+             "<=",
+             "<=")
+  
+  # Set right hand side coefficients
+  f.rhs <- c(16,
+             19,
+             8)
+  
+  # Final value (z)
+  lp("max", f.obj, f.con, f.dir, f.rhs)
+  
+  # Variables final values
+  lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+  
+  # Sensitivities
+  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.from
+  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.to
+  
+  # Dual Values (first dual of the constraints and then dual of the variables)
+  # Duals of the constraints and variables are mixed
+  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals
+  
+  # Duals lower and upper limits
+  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.from
+  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.to
+
+}
