@@ -1949,17 +1949,193 @@ Peirama_1 <-function(){
       }
     }
     }
-
+  theme_set(theme_minimal())
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase I")] ~ temp$Verified_emissions[which(temp$Phase=="Phase I")])
+  summary(ff)
+  ggplot(temp[which(temp$Phase=="Phase I"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "1,Phase I", color = "Cluster")
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase II")] ~ temp$Verified_emissions[which(temp$Phase=="Phase II")])
+  summary(ff)
+  ggplot(temp[which(temp$Phase=="Phase II"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "2,Phase II", color = "Cluster")
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase III")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III")])
+  summary(ff)
   ggplot(temp[which(temp$Phase=="Phase III"),], aes(x = Verified_emissions, y = Free))+
     geom_point(aes(color = partition)) +
-    geom_smooth(method = "lm", se = FALSE) +
-    xlab("Verified") + 
-    ylab("Free") 
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "3,Phase III", color = "Cluster")
   
   
+    ff <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "First")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "First")])
+  summary(ff)
+  f2 <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "Second")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "Second")])
+  summary(f2)
+  f3 <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "Third")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "Third")])
+  summary(f3)
+  ggplot(temp[which(temp$Phase=="Phase III" & temp$partition=="First"),])+
+    geom_point( aes(x = Verified_emissions, y = Free, alpha = year, color = GEO))+ 
+    geom_smooth(aes(x = Verified_emissions, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Verified_emissions, y = Free, color = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Verified emissions in  t CO2 equivalent ") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "4,Phase III First Cluster", color = "Country")
   
-}
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Population, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+  labs(title = "5,year = 2019", color = "Cluster")
 
+
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    xlab("Population") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "6, Phase III", color = "Cluster") 
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Population") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "7, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Population") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",8 All", color = "Cluster")
+  
+  
+  
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = GDPpc, y = Free, color = partition))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "9,year = 2019", color = "Cluster")
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    xlab("GDPpc") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "10, Phase III", color = "Cluster") 
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of GDPpc") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "11, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of GDPpc") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",12 All", color = "Cluster")
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "13,year = 2019", color = "Cluster")
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    xlab("Total_energy_supply") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "14, Phase III", color = "Cluster") 
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "15, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",16 All", color = "Cluster")
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "17,year = 2019", color = "Cluster")
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    xlab("Total_energy_supply*Energy_Intensity") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "18, Phase III", color = "Cluster") 
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply*Energy_Intensity") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "19, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply*Energy_Intensity") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",20 All", color = "Cluster")
+
+}
 
 Kosta_eisai_vlakas_grapse_to_lp <- function(){
 #create an LP to solve the following problem:
