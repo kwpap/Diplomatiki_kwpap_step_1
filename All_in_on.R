@@ -1956,8 +1956,10 @@ Peirama_1 <-function(){
   ggplot(temp[which(temp$Phase=="Phase I"),], aes(x = Verified_emissions, y = Free))+
     geom_point(aes(color = partition)) +
     geom_smooth(method = "lm", se = FALSE, color = "black") +
-    xlab("Verified emissions in  t CO2 equivalent ") + 
-    ylab("Free Allocation in t CO2 equivalent") +
+    xlab("log Verified emissions in  t CO2 equivalent ") + 
+    ylab("log Free Allocation in t CO2 equivalent") +
+    scale_x_log10()+
+    scale_y_log10() +
     labs(title = "1,Phase I", color = "Cluster")
   
   ff <- lm(temp$Free[which(temp$Phase=="Phase II")] ~ temp$Verified_emissions[which(temp$Phase=="Phase II")])
@@ -2000,8 +2002,7 @@ Peirama_1 <-function(){
     geom_point( aes(x = Population, y = Free, color = partition))+ 
     geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
   labs(title = "5,year = 2019", color = "Cluster")
-
-
+  
   ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
     geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
@@ -2080,6 +2081,9 @@ Peirama_1 <-function(){
     xlab("Total_energy_supply") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "14, Phase III", color = "Cluster") 
+  
+  print(summary(lm(temp$Free ~ temp$Population + temp$GDPpc + temp$Energy_Intensity)))
+
   
   ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
@@ -2192,4 +2196,7 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.from
   lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.to
 
+  df_2018 <- read_data_2(year = 2018)
+  df_2019 <- read_data_2(year = 2019)
+  
 }
