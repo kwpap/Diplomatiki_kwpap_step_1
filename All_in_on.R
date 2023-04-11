@@ -2198,5 +2198,6 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
 
   df_2018 <- read_data_2(year = 2018)
   df_2019 <- read_data_2(year = 2019)
+ 
   
 }
