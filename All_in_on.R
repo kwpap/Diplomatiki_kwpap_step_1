@@ -12,7 +12,7 @@ library("lpSolve")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
-year_for_comparison <- 2012
+year_for_comparison <- 2017
 will_use_total_energy_supply <- TRUE
 will_use_inflation <- TRUE
 will_use_GDPpc <- TRUE 
@@ -27,7 +27,7 @@ force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
 will_use_energy_intensity <- TRUE
-Manufacturing_Industry_Agriculture_as_percentage <- TRUE
+Manufacturing_Industry_Agriculture_as_percentage <- FALSE
 cached_data <- hash()
 cached_free <- hash()
 
@@ -2157,47 +2157,140 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
 #v_{ij} / v_i \approx (sector correction factor) * GDP_{ij} / GDP_i 
 
   
-  #example LP
+  # #example LP
 
-  # Set coefficients of the objective function (max 5x_1 + 7x_2)
-  f.obj <- c(5, 7)
+  # # Set coefficients of the objective function (max 5x_1 + 7x_2)
+  # f.obj <- c(5, 7)
   
-  # Set matrix corresponding to coefficients of constraints by rows
-  # Do not consider the non-negative constraint; it is automatically assumed
-  f.con <- matrix(c(1, 0,
-                    2, 3,
-                    1, 1), nrow = 3, byrow = TRUE)
+  # # Set matrix corresponding to coefficients of constraints by rows
+  # # Do not consider the non-negative constraint; it is automatically assumed
+  # f.con <- matrix(c(1, 0,
+  #                   2, 3,
+  #                   1, 1), nrow = 3, byrow = TRUE)
   
-  # Set unequality signs
-  f.dir <- c("<=",
-             "<=",
-             "<=")
+  # # Set unequality signs
+  # f.dir <- c("<=",
+  #            "<=",
+  #            "<=")
   
-  # Set right hand side coefficients
-  f.rhs <- c(16,
-             19,
-             8)
+  # # Set right hand side coefficients
+  # f.rhs <- c(16,
+  #            19,
+  #            8)
   
-  # Final value (z)
-  lp("max", f.obj, f.con, f.dir, f.rhs)
+  # # Final value (z)
+  # lp("max", f.obj, f.con, f.dir, f.rhs)
   
-  # Variables final values
-  lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+  # # Variables final values
+  # lp("max", f.obj, f.con, f.dir, f.rhs)$solution
   
-  # Sensitivities
-  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.from
-  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.to
+  # # Sensitivities
+  # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.from
+  # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$sens.coef.to
   
-  # Dual Values (first dual of the constraints and then dual of the variables)
-  # Duals of the constraints and variables are mixed
-  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals
+  # # Dual Values (first dual of the constraints and then dual of the variables)
+  # # Duals of the constraints and variables are mixed
+  # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals
   
-  # Duals lower and upper limits
-  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.from
-  lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.to
+  # # Duals lower and upper limits
+  # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.from
+  # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.to
+  will_use_a1 <- TRUE
+  will_use_a2 <- TRUE
+  will_use_pop <- TRUE
+  a_1 <- 0.9
+  a_2 <- 1.1
+  a_3 <- 0.2
+  a_4 <- 3
 
-  df_2018 <- read_data_2(year = 2018)
-  df_2019 <- read_data_2(year = 2019)
- 
-  
+
+  df_year <- read_data_2(year = year_for_comparison)
+   df_next_year<- read_data_2(year = year_for_comparison+1)
+   sum_free <- sum(df_year$Free)
+  df_year$Free <- df_year$Free / sum_free
+  sum <- sum(df_next_year$Free)
+  df_next_year$Free <- df_next_year$Free / sum_free
+  df_year$Pop_norm <- df_year$Population / sum(df_year$Population)
+  df_next_year$Pop_norm <- df_next_year$Population / sum(df_next_year$Population)
+  # Let's read the data from GDP per capita PPS 
+  GDPpps <- read.csv("./Data/tec00114_linear.csv", header = TRUE, sep = ",")
+  GDPpps <- GDPpps[-c(1,2,3,4,5,9)]
+  # convert eu 2letter abbriviation to country name
+  eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
+                           eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
+
+  GDPpps <- GDPpps[-which(GDPpps$geo %in% c("BA", "CH", "EA19", "EA20", "EU27_2007","EU27_2020","EU28", "IS", "JP", "ME","MK","NO","RS","TR","US" )),]
+  for (i in 1:nrow(GDPpps)){
+    GDPpps$geo[i] <- eu_2l_name$eu_name[which(eu_2l_name$eu_2l == GDPpps$geo[i])]
+  }
+  GDPpps <- GDPpps[which(GDPpps$TIME_PERIOD == year_for_comparison),]
+  GDPpps <- GDPpps[-c(2)]
+  names(GDPpps) <- c("GEO", "GDPpps")
+  df_year <- merge(df_year, GDPpps, by = "GEO")
+
+f.obj <- c(df_year$GDPpps*df_year$Population/df_year$Verified_emissions)
+
+# repeat 1 for each row
+f.con <- matrix( rep(1, nrow(df_year)), nrow = 1, byrow = TRUE)
+f.dir <- c("=")
+f.rhs <- c(1)
+sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+
+if (will_use_a1){
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+  f.rhs <- c(f.rhs, a_1*df_year$Free)
 }
+if (will_use_a2){
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+  f.rhs <- c(f.rhs, a_2*df_year$Free)
+}
+if (will_use_pop){
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+  f.rhs <- c(f.rhs, a_3*df_year$Pop_norm)
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+  f.rhs <- c(f.rhs, a_4*df_year$Pop_norm)
+}
+
+
+
+
+
+
+sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+
+gg <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]), last_year = df_year$Free[1], actual = df_next_year$Free[1], forecasted =  sol[1])
+for (i in 2:nrow(df_year)){
+  gg <- rbind(gg, data.frame( Country = df_year$GEO[i], efficiency = df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i], last_year = df_year$Free[i],actual = df_next_year$Free[i], forecasted = sol[i]))
+}
+xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
+
+}
+
+
+new_distances <- function(year_for_comparison, country = "Hungary"){
+  country <- "Hungary"
+  data <- read_data_2(year = year_for_comparison)
+  for (i in 2:ncol(data)){
+    data[,i] <- minMax(data[,i])
+  }
+  midle <- data[which(data$GEO == country),]
+  data <- data[-which(data$GEO == country),]
+  for (i in 1:nrow(data)){
+    data$actual_distance[i] <- sqrt((data$Verified_emissions[i] - midle$Verified_emissions)^2 + (data$Population[i] - midle$Population)^2 + (data$Total_energy_supply[i] - midle$Total_energy_supply)^2 +(data$Agriculture[i] - midle$Agriculture)^2 + (data$Industry[i] - midle$Industry)^2 + (data$Manufacturing[i] - midle$Manufacturing)^2 + (data$Energy_Intensity[i] - midle$Energy_Intensi)^2 + (data$Inflation[i] - midle$Inflation)^2 )
+    data$distance_Free[i] <- abs(data$Free[i] - midle$Free)
+  }
+  gg <- lm(data$actual_distance ~ data$distance_Free)
+  #png("distance.png", width = 10, height = 10, units = "in", res = 300)
+  ggplot(data, aes(x = actual_distance, y = distance_Free)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  ggtitle("Distance between countries") + 
+  xlab("Distance between countries in 2018") + ylab("Distance between countries in 2019")
+  ggsave("gg.png")
+  summary(gg)
+}
+
