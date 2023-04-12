@@ -27,7 +27,7 @@ force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
 will_use_energy_intensity <- TRUE
-Manufacturing_Industry_Agriculture_as_percentage <- FALSE
+Manufacturing_Industry_Agriculture_as_percentage <- TRUE
 cached_data <- hash()
 cached_free <- hash()
 
@@ -166,6 +166,8 @@ read_data_2 <- function(year = 0) {
           all_stable_installations <- 0
         }
           df_1$Verified_emissions[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
+          #df_1$Verified_emissions[i] <- as.numeric(all_stable_installations)
+          #print("EXEIS VGALEI TO AVIATION")
     }
   }
   if (will_use_free){
@@ -197,6 +199,8 @@ read_data_2 <- function(year = 0) {
         all_stable_installations <- 0
       }
       df_1$Free[i] <- as.numeric(aviation) + as.numeric(all_stable_installations)
+      #df_1$Free[i] <- as.numeric(all_stable_installations)
+      #print("EXEIS VGALEI TO AVIATION")
     }
   }
   
@@ -1884,7 +1888,7 @@ simple_lm <-function(){
     
 }
 
-Fotakis_idea <- function(){
+Fotakis_s <- function(){
   features <- clustering()
   free <- read_free()
   features <- merge(features, free, by = "GEO")
@@ -1948,8 +1952,15 @@ Peirama_1 <-function(){
         temp$partition[i] <- "Third"
       }
     }
-    }
+  }
+  
+  #Linear for Paper
+  temp$Total_ener_times_EI <- temp$Total_energy_supply&temp$Energy_Intensity
+  temp_phaseIII <- temp[which(temp$Phase=="Phase III"),]
+  Lin <- lm(temp_phaseIII$Free ~ temp_phaseIII$Population + temp_phaseIII$GDPpc + temp_phaseIII$Total_ener_times_EI)
+  summary(Lin)
   theme_set(theme_minimal())
+  
   
   ff <- lm(temp$Free[which(temp$Phase=="Phase I")] ~ temp$Verified_emissions[which(temp$Phase=="Phase I")])
   summary(ff)
@@ -2081,7 +2092,7 @@ Peirama_1 <-function(){
     xlab("Total_energy_supply") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "14, Phase III", color = "Cluster") 
-  
+  ggsave("14_PhaseIII",limitsize = FALSE )
   print(summary(lm(temp$Free ~ temp$Population + temp$GDPpc + temp$Energy_Intensity)))
 
   
@@ -2142,19 +2153,19 @@ Peirama_1 <-function(){
 }
 
 Kosta_eisai_vlakas_grapse_to_lp <- function(){
-#create an LP to solve the following problem:
-# max \sum v_{ij}   (GDP_{ij} / verified emissions)_{ij} )  (GDP_{i} correction to PPS currency unit) 
-# s.t. \sum v_{ij} = 1
-#a_1 free(t-1) \leq \sum v_i \leq a_2 free(t-1)
-#a_1 free(t-1) \leq \sum v_j \leq a_2 free(t-1)
-#v_i = \sum_j v_{ij}
-#v_i \approx p_i / Pop_total
-#v_{ij} / v_i \approx GDP_{ij} / GDP_i 
-#Nash welfare \max \product_i v_i
-#v_{ij} = fraction of total free cap of country i in sector j 
-#v_i = fraction of gree in country j
-#v_j = fraction of free in sector j
-#v_{ij} / v_i \approx (sector correction factor) * GDP_{ij} / GDP_i 
+  #create an LP to solve the following problem:
+  # max \sum v_{ij}   (GDP_{ij} / verified emissions)_{ij} )  (GDP_{i} correction to PPS currency unit) 
+  # s.t. \sum v_{ij} = 1
+  #a_1 free(t-1) \leq \sum v_i \leq a_2 free(t-1)
+  #a_1 free(t-1) \leq \sum v_j \leq a_2 free(t-1)
+  #v_i = \sum_j v_{ij}
+  #v_i \approx p_i / Pop_total
+  #v_{ij} / v_i \approx GDP_{ij} / GDP_i 
+  #Nash welfare \max \product_i v_i
+  #v_{ij} = fraction of total free cap of country i in sector j 
+  #v_i = fraction of gree in country j
+  #v_j = fraction of free in sector j
+  #v_{ij} / v_i \approx (sector correction factor) * GDP_{ij} / GDP_i 
 
   
   # #example LP
@@ -2198,18 +2209,25 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   will_use_a1 <- TRUE
   will_use_a2 <- TRUE
   will_use_pop <- TRUE
-  a_1 <- 0.9
-  a_2 <- 1.1
-  a_3 <- 0.2
-  a_4 <- 3
+  a_1 <- 0.5 # Συντελεστής κάτω ορίου ως προς τα περσινά free
+  a_2 <- 2 # Συντελεστής ανω ορίου ως προς τα περσινά free
+  a_3 <- 0.5 # Συντελεστής κάτω ορίου ως προς το συντελεστή πληθυσμού
+  a_4 <- 2 # Συντελεστής κάτω ορίου ως προς το συντελεστή πληθυσμού
+  # free / total free -> 10%
+  # > a_1* 10% -> 9%
+  # < a_2* 10% -> 11%
+  # pop / total pop -> 14%
+  # >7%
+  # <28%
+
 
 
   df_year <- read_data_2(year = year_for_comparison)
    df_next_year<- read_data_2(year = year_for_comparison+1)
-   sum_free <- sum(df_year$Free)
-  df_year$Free <- df_year$Free / sum_free
-  sum <- sum(df_next_year$Free)
-  df_next_year$Free <- df_next_year$Free / sum_free
+   df_year <-df_year[-c(17),] #Remove Malta
+   df_next_year <-df_next_year[-c(17),]
+  df_year$Free <- df_year$Free / sum(df_year$Free)
+  df_next_year$Free <- df_next_year$Free / sum(df_next_year$Free)
   df_year$Pop_norm <- df_year$Population / sum(df_year$Population)
   df_next_year$Pop_norm <- df_next_year$Population / sum(df_next_year$Population)
   # Let's read the data from GDP per capita PPS 
@@ -2228,45 +2246,47 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   names(GDPpps) <- c("GEO", "GDPpps")
   df_year <- merge(df_year, GDPpps, by = "GEO")
 
-f.obj <- c(df_year$GDPpps*df_year$Population/df_year$Verified_emissions)
+  f.obj <- c(df_year$GDPpps*df_year$Population/df_year$Verified_emissions*df_year$Industry/100)
 
-# repeat 1 for each row
-f.con <- matrix( rep(1, nrow(df_year)), nrow = 1, byrow = TRUE)
-f.dir <- c("=")
-f.rhs <- c(1)
-sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+  # repeat 1 for each row
+  f.con <- matrix( rep(1, nrow(df_year)), nrow = 1, byrow = TRUE)
+  f.dir <- c("=")
+  f.rhs <- c(1)
+  sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
 
-if (will_use_a1){
-  f.con <- rbind(f.con, diag(nrow(df_year)))
-  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
-  f.rhs <- c(f.rhs, a_1*df_year$Free)
-}
-if (will_use_a2){
-  f.con <- rbind(f.con, diag(nrow(df_year)))
-  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
-  f.rhs <- c(f.rhs, a_2*df_year$Free)
-}
-if (will_use_pop){
-  f.con <- rbind(f.con, diag(nrow(df_year)))
-  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
-  f.rhs <- c(f.rhs, a_3*df_year$Pop_norm)
-  f.con <- rbind(f.con, diag(nrow(df_year)))
-  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
-  f.rhs <- c(f.rhs, a_4*df_year$Pop_norm)
-}
-
-
+  if (will_use_a1){
+    f.con <- rbind(f.con, diag(nrow(df_year)))
+    f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+    f.rhs <- c(f.rhs, a_1*df_year$Free)
+  }
+  if (will_use_a2){
+    f.con <- rbind(f.con, diag(nrow(df_year)))
+    f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+    f.rhs <- c(f.rhs, a_2*df_year$Free)
+  }
+  if (will_use_pop){
+    f.con <- rbind(f.con, diag(nrow(df_year)))
+    f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+    f.rhs <- c(f.rhs, a_3*df_year$Pop_norm)
+    f.con <- rbind(f.con, diag(nrow(df_year)))
+    f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+    f.rhs <- c(f.rhs, a_4*df_year$Pop_norm)
+  }
 
 
 
 
-sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
 
-gg <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]), last_year = df_year$Free[1], actual = df_next_year$Free[1], forecasted =  sol[1])
-for (i in 2:nrow(df_year)){
-  gg <- rbind(gg, data.frame( Country = df_year$GEO[i], efficiency = df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i], last_year = df_year$Free[i],actual = df_next_year$Free[i], forecasted = sol[i]))
-}
-xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
+
+  sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+
+  gg <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]*df_year$Industry[1]/100), last_year = df_year$Free[1], low_free = a_1*df_year$Free[1] ,up_free = a_2*df_year$Free[1], pop = df_year$Pop_norm[1], min = df_year$Pop_norm[1]*a_3, max = df_year$Pop_norm[1]*a_4, forecasted =  sol[1], change = paste((sol[1]-df_year$Free[1])/df_year$Free[1]*100, "%"))
+  for (i in 2:nrow(df_year)){
+    gg <- rbind(gg, data.frame(Country =  df_year$GEO[i], efficiency =  (df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i]*df_year$Industry[i]/100), last_year = df_year$Free[i], low_free = a_1*df_year$Free[i] ,up_free = a_2*df_year$Free[i], pop = df_year$Pop_norm[i], min = df_year$Pop_norm[i]*a_3, max = df_year$Pop_norm[i]*a_4, forecasted =  sol[i], change = paste((sol[i]-df_year$Free[i])/df_year$Free[i]*100, "%")))
+  }
+  gg <-gg[order(gg$efficiency, decreasing = TRUE),]
+  gg <- gg[-c()]
+  xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
 
 }
 
