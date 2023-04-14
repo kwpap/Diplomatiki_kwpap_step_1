@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  12 APR 2023 17:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.6)  13 APR 2023 18:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1765,8 +1765,8 @@ nged.
 (rerunfilecheck)             Checksum: 471513E80C21961F5A6745ED716D79AC;11285.
  ) 
 Here is how much of TeX's memory you used:
- 27729 strings out of 476339
- 520860 string characters out of 5787648
+ 27730 strings out of 476339
+ 520876 string characters out of 5787648
  1906340 words of memory out of 5000000
  47451 multiletter control sequences out of 15000+600000
  528122 words of font info for 86 fonts, out of 8000000 for 9000
@@ -1798,9 +1798,9 @@ cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/cbgreek/grxn2074.pfb>
-Output written on second_experiment_and_diary.pdf (51 pages, 1930416 bytes).
+Output written on second_experiment_and_diary.pdf (51 pages, 1931244 bytes).
 PDF statistics:
- 781 PDF objects out of 1000 (max. 8388607)
- 188 named destinations out of 1000 (max. 500000)
+ 782 PDF objects out of 1000 (max. 8388607)
+ 189 named destinations out of 1000 (max. 500000)
  566 words of extra memory for PDF output out of 10000 (max. 10000000)
 

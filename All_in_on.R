@@ -9,6 +9,7 @@ library("factoextra")
 library("NbClust")
 library("dplyr")
 library("lpSolve")
+library("svglite")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -1953,10 +1954,36 @@ Peirama_1 <-function(){
       }
     }
   }
-  temp2 <- temp[which(temp$Phase == "Phase III" & temp$partition =="second")]
+
+  tem <- temp[which(temp$Phase == "Phase III" & temp$partition =="First" ),]
+  tem$actual_agri <- tem$Agriculture*tem$GDPpc*tem$Population
+  tem$actual_ind <- tem$Industry*tem$GDPpc*tem$Population
+  tem$actual_manu <- tem$Manufacturing*tem$GDPpc*tem$Population
+  tem$tot_and_EI <- tem$Total_energy_supply*tem$Energy_Intensity
+  best <- 0
+  ind <- 1
+  for (i in 3:ncol(tem)){
+    if(i == 12 | i == 13 | i == 14){ 
+      next
+    }
+    jjj<-summary(lm(tem$Free ~ tem[,i]))$r.squared
+    if (jjj> best){
+      best <- jjj
+      ind <- i
+    }
+    print(names(tem)[i])
+    print(jjj)
+    rrr[i,4] <- jjj
+  }
+
   
-  ggplot(data=temp[which(temp$Phase == "Phase III" & temp$partition =="second")], aes( y = temp$Free, x = temp$Agriculture))+
-    geom_point()
+  
+  
+  summary(lm(tem$Free ~ tem$Verified))
+  ggplot(data=tem, aes( y = Free, x = Total_energy_supply))+
+    geom_point(aes(color = GEO, alpha = year)) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    geom_smooth(method = "lm", se = FALSE)
   
   
   #Linear for Paper
@@ -2019,13 +2046,25 @@ Peirama_1 <-function(){
     geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
   labs(title = "5,year = 2019", color = "Cluster")
   
-  ggplot(temp[which(temp$Phase == "Phase III"),])+
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  
+  image6 <- ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
-    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
     geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
     xlab("Population") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "6, Phase III", color = "Cluster") 
+  
+  ggsave(file="6.svg", plot=image6, path = "./Paper4pages/graphs", width = 6)
+  
   
   ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
@@ -2056,13 +2095,24 @@ Peirama_1 <-function(){
     labs(title = "9,year = 2019", color = "Cluster")
   
   
-  ggplot(temp[which(temp$Phase == "Phase III"),])+
+  
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  
+  image10 <-ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
-    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
-    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+        geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
     xlab("GDPpc") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "10, Phase III", color = "Cluster") 
+  ggsave(file="10.svg", plot=image10, path = "./Paper4pages/graphs", width = 6)
   
   ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
@@ -2090,15 +2140,25 @@ Peirama_1 <-function(){
     labs(title = "13,year = 2019", color = "Cluster")
   
   
-  ggplot(temp[which(temp$Phase == "Phase III"),])+
+  
+  
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  
+  image14 <- ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
-    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
     geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
     xlab("Total_energy_supply") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "14, Phase III", color = "Cluster") 
-  ggsave("14_PhaseIII",limitsize = FALSE )
-  print(summary(lm(temp$Free ~ temp$Population + temp$GDPpc + temp$Energy_Intensity)))
+  ggsave(file="14.svg", plot=image14, path = "./Paper4pages/graphs", width = 6)
 
   
   ggplot(temp[which(temp$Phase == "Phase III"),])+
@@ -2126,14 +2186,22 @@ Peirama_1 <-function(){
     geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
     labs(title = "17,year = 2019", color = "Cluster")
   
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+
   
-  ggplot(temp[which(temp$Phase == "Phase III"),])+
+  image18 <- ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
-    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), linetype="dashed", size=1)+
     geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
-    xlab("Total_energy_supply*Energy_Intensity") + 
+    xlab("Total_energy_supply Energy_Intensity") + 
     ylab("Free Allocation in t CO2 equivalent") +
     labs(title = "18, Phase III", color = "Cluster") 
+  ggsave(file="18.svg", plot=image18, path = "./Paper4pages/graphs", width = 6)
+  
   
   ggplot(temp[which(temp$Phase == "Phase III"),])+
     geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
@@ -2314,7 +2382,7 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   f.con <- rbind(f.con, diag(nrow(df_year)))
   f.dir <- c(f.dir, rep("<=", nrow(df_year)))
   for (i in 1:nrow(df_year)){
-    f.rhs <- c(f.rhs, max(1+e/2, 1/df_year$b[i]+e)*df_year$Free[i])
+    f.rhs <- c(f.rhs, max(1+e, 1/df_year$b[i])*df_year$Free[i])
   }
   if (will_use_pop){
     f.con <- rbind(f.con, diag(nrow(df_year)))
@@ -2325,13 +2393,15 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
     f.rhs <- c(f.rhs, a_4*df_year$Pop_norm)
   }
   sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
-  gg <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]*df_year$Industry[1]/100), last_year = df_year$Free[1], low_free = a_1*df_year$Free[1] ,up_free = a_2*df_year$Free[1], pop = df_year$Pop_norm[1], min = df_year$Pop_norm[1]*a_3, max = df_year$Pop_norm[1]*a_4, forecasted =  sol[1], change = paste((sol[1]-df_year$Free[1])/df_year$Free[1]*100, "%"))
+  gg2 <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]*df_year$Industry[1]/100), last_year = df_year$Free[1], low_free = a_1*df_year$Free[1] ,up_free = a_2*df_year$Free[1], pop = df_year$Pop_norm[1], min = df_year$Pop_norm[1]*a_3, max = df_year$Pop_norm[1]*a_4, forecasted =  sol[1], change = paste((sol[1]-df_year$Free[1])/df_year$Free[1]*100, "%"))
   for (i in 2:nrow(df_year)){
-    gg <- rbind(gg, data.frame(Country =  df_year$GEO[i], efficiency =  (df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i]*df_year$Industry[i]/100), last_year = df_year$Free[i], low_free = a_1*df_year$Free[i] ,up_free = a_2*df_year$Free[i], pop = df_year$Pop_norm[i], min = df_year$Pop_norm[i]*a_3, max = df_year$Pop_norm[i]*a_4, forecasted =  sol[i], change = paste((sol[i]-df_year$Free[i])/df_year$Free[i]*100, "%")))
-  }
-  gg <-gg[order(gg$efficiency, decreasing = TRUE),]
+    gg2 <- rbind(gg2, data.frame(Country =  df_year$GEO[i], efficiency =  (df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i]*df_year$Industry[i]/100), last_year = df_year$Free[i], low_free = a_1*df_year$Free[i] ,up_free = a_2*df_year$Free[i], pop = df_year$Pop_norm[i], min = df_year$Pop_norm[i]*a_3, max = df_year$Pop_norm[i]*a_4, forecasted =  sol[i], change = paste((sol[i]-df_year$Free[i])/df_year$Free[i]*100, "%")))
+
+    
+    }
+  gg2 <-gg2[order(gg2$efficiency, decreasing = TRUE),]
   xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
-  
+  gg3 <- 
 
 
 }
