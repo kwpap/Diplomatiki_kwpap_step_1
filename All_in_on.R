@@ -2293,7 +2293,7 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   # pop / total pop -> 14%
   # >7%
   # <28%
-
+  
 
 
   df_year <- read_data_2(year = year_for_comparison)
