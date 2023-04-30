@@ -457,12 +457,7 @@
 	Στα γραφήματα \ref{fig:three graphs} φαίνονται κάποιες από τις διαφορές των χωρών σε μία κλίμακα στην οποία το μπλε είνα η μικρότερη απόσταση και το κόκκινο είναι η μεγαλύτερη απόσταση. 
 	\begin{figure}[H]
 		\centering
-		\begin{subfigure}[b]{0.3\textwidth}
-			\centering
-			\includegraphics[width=\textwidth]{images/heatmap_actual_distances.png}
-			\caption{Με βάση τα free.}
-			\label{fig:y equals x}
-		\end{subfigure}
+
 		\hfill
 		\begin{subfigure}[b]{0.3\textwidth}
 			\centering
@@ -1647,6 +1642,39 @@ Bulgaria &   3 \\
 Εδώ λοιπόν φαίνεται πως κάτι πήγε πολύ λάθος. Δεν ξέρω τι κοινό έχει η πρώτη συτστάδα. Μπορώ να δεκτώ πως η Bουλγαρία είναι μία κατηγορία από μόνης της, αλλά τα μπλε δεν ξέρω πώς σχετίζονται. Το περίεργο είναι πως δεν είναι ο πληθυσμός η ειδοποιός διαφορά, καθώς το Λουξεμβούργο, η Μάλτα και η Βουλγαρία είναι σε 3 διαφορετικές ομάδες.
 Σημείωση, αυτή τη φορά 15 από τα 23 κριτήρια πρότειναν τις 3 συστάδες.
 
+\section{Για την 2η Μαΐου}
+Έγιναν τα παρακάτω:
+
+\begin{enumerate}
+	\item Γραφθηκε πιο αναλυτικά το: \href{https://docs.google.com/document/d/1DsLPCfHBB-VgMTFy1a4W95VIDkgvmCDs0IXQk__ijGc/edit?usp=sharing}{LP εδώ}
+	\item Συγκέντρωση των στόχων από εδώ και πέρα
+\end{enumerate}
+
+Επόμενοι αναπάντητα ερωτήματα, στόχοι και πλάνα:
+\begin{enumerate}
+	\item Χρήση Nash Equillibrium για το Allocation, το οποίο όμως θα πρέπει κάπως να προσρμοστεί στο να παίρνει υπόψην του το μέγεθος της χώρας. 
+	\item Τι συμβαίνει στην Γαλλία και στην Πολωνία, κυρίως στα δωρεάν τους. Μήπως αυτά τρώνε μεγάλη αλλαγή; Παίζει ρόλο η πυρηνική ενέργεια;
+	\item Διάβασμα: Κινεζικο σύστημα, paper. \href{https://drive.google.com/file/d/1W-kgF_saksU7svNzT8C-sPA2I0IdUZDN/view?usp=sharing}{A multi-criteria decision analysis model for carbon emission quota
+		allocation in China's east coastal areas: Efficiency and equity}
+	\item Να σουλουπωθεί ο κώδικας. Είναι αίσχος.
+	\item Να χωριστεί το total energy supply σε πράσινο και σε ριπογόνο energy supply. 
+	\item Να δούμε αν κάποιος συνδυασμός με constrains οδηγεί σε κάποιο allocation κοντινό στο πραγματικό. Προφανώς στις πρώτες φάσεις το απλό grandfathering μπορεί να προσομοιωθεί με στενά a1 kai a2, οπότε δεν μας νοιάζει αυτό.
+	\item Υπάρχουν κάποιας μορφής αντιπρόσωποι μέσα στα cluster?
+	\item Όλα τα παραπάνω μπορούν να γίνουν αναφορικά με το δίκτυο;
+	\item Έχει νόημα κάποιο Ιεραρχικό clustering σε αυτό;
+	\item Διάβασμα το "\href{https://drive.google.com/file/d/1GYLMPbl6zlnTY73ovF7P7_sg-epzIKVL/view?usp=sharing}{Cap-and-trade and emissions clustering: A spatial-temporal analysis of the
+		European Union Emissions Trading Scheme}
+	\item Διάβασμα για \href{https://en.wikipedia.org/wiki/Exponential_family_random_graph_models}{ERGM, Exponential family random graph models}
+	\item Διάβασμα για διαφορετικούς τρόπους κανονικοποίησης.
+	\item Τι θα συμβεί εάν επαναλάβουμε τα πειράματα αυτά με δεδομένα μόνο population. total energy supply και Verified emissions με βάρη 1,1,0.5.
+	\item Να γίνει PCA (Principle Component Analysis) στα δεδομένα. 
+	\item Προσθήκη νέων δεδομένων στην βάση. 
+	\item Ποια είναι τα ειδοποιή χαρακτηριστικά των clusters?
+	\item Τι συμβαίνει με τους άλλους stakeholders? Το περιβάλλον, ο μέσος πολίτης κλπ είναι δίκαιο το σύστημα σε αυτούς;
+	\item Να κατανοήσουμε τι συμβαίνει με τα διαφορετικά clusters και τις διαφορές που βλέπουμε στην απόδοση του regression. \item Γιατί κάποιες χώρες παίρνουν παραπάνω ή παρακάτω από την καμπύλη
+	\item Nα χρησιμοποιήσουμε το μαθηματικό μοντέλο που βάζει στο παιχνίδι και την οντότητα του κράτους για να εξισορροπήσουμε τη διανομή και σε επίπεδο κρατών (το benchmarking το επιτυγχάνει αυτό μόνο μεταξύ εταιρειών στο ίδιο sector). 
+	
+\end{enumerate}
 
 
 

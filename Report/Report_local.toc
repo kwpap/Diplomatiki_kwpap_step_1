@@ -50,3 +50,4 @@
 \contentsline {subsubsection}{\numberline {14.1.1}Πλήθος συστάδων}{41}{subsubsection.14.1.1}%
 \contentsline {subsubsection}{\numberline {14.1.2}Βέλτιστες συστάδες}{43}{subsubsection.14.1.2}%
 \contentsline {subsubsection}{\numberline {14.1.3}Συστάδες, αν όλα τα δεδομένα ήταν κατά κεφαλήν και κανονικοποιημένα ύστερα}{43}{subsubsection.14.1.3}%
+\contentsline {section}{\numberline {15}Για την 2η Μαΐου}{44}{section.15}%
