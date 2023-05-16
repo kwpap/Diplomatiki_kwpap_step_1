@@ -2430,3 +2430,41 @@ new_distances <- function(year_for_comparison, country = "Hungary"){
   summary(gg)
 }
 
+check_the_proxy_energy_intensity <- function(){
+  # Load Energy Balance data from csv file
+  # Path: Data
+  # File: nrg_ind_ren_linear.csv
+  # Source: Eurostat
+  # Data tree :  Detailed datasets -> Energy (nrg) -> Energy statistics - quantities (nrg_quant) -> Energy statistics - quantities, annual data (nrg_quanta) -> Share of energy from renewable sources (nrg_ind_share) -> Share of energy from renewable sources (nrg_ind_ren)	 
+  # Data name on Eurostat : Share of energy from renewable sources 
+  # Country: All countries
+  # Year: 2004 - 2020
+  # Unit: Percentage
+  # nrg_ind_ren codes:
+  # Renewable energy sources    		                  -> REN
+  # Renewable energy sources in transport           	-> REN_TRA
+  # Renewable energy sources in electricity           -> REN_ELC
+  # Renewable energy sources in heating and cooling   -> REN_HEAT_CL
+  # Total energy supply             -> NRGSUP
+  # Available for final consumption -> AFC
+  green_percent <- read.csv("./Data/nrg_ind_ren_linear.csv")
+  green_percent <- green_percent[which(green_percent$nrg_bal=="REN"),]
+  green_percent <- green_percent[which (green_percent$TIME_PERIOD == year_for_comparison),]
+  green_percent <- green_percent[-c(1,2,3,4,5,7,9)]
+  
+  other_data <- read_data_2()
+  eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
+                           eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
+
+  green_percent <- green_percent[ green_percent$geo %in% eu_2l_name$eu_2l,] # vgale ta perierga
+  for (i in 1:nrow(green_percent)){
+    green_percent$geo[i] <- eu_2l_name$eu_name[which(eu_2l_name$eu_2l == green_percent$geo[i])]
+  }
+  colnames(green_percent) <- c("GEO", "green_per" )
+  dat <- merge(other_data, green_percent, by = "GEO")
+  dat$Calculated <- dat$Verified_emissions / (100 - dat$green_per) / dat$GDPpc /1000000 * dat$Population
+  
+  ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated)) +
+    geom_point()
+  
+}
