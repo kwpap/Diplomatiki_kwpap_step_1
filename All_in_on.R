@@ -2462,9 +2462,17 @@ check_the_proxy_energy_intensity <- function(){
   }
   colnames(green_percent) <- c("GEO", "green_per" )
   dat <- merge(other_data, green_percent, by = "GEO")
-  dat$Calculated <- dat$Verified_emissions / (100 - dat$green_per) / dat$GDPpc /1000000 * dat$Population
+  dat$Calculated_EI <- dat$Total_energy_supply / dat$GDPpc / dat$Population
+  dat$Calculated_rev_EI <- dat$Verified_emissions / (100-dat$green_per) / dat$GDPpc / dat$Population
+  for (i in 1:nrow(dat)){
+    print(dat$GEO[i])
+    print (format(dat$GDPpc[i]*dat$Population[i]/1000, big.mark = ","))
+  }
   
-  ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated)) +
-    geom_point()
   
+  ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated_EI)) +
+    geom_point(aes(color = GEO))+
+    geom_smooth(method = "lm", se = FALSE)
+  gg <- lm( dat$Calculated_EI ~ dat$Energy_Intensity)
+  summary(gg)
 }
