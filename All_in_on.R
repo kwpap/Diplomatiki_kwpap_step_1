@@ -10,6 +10,7 @@ library("NbClust")
 library("dplyr")
 library("lpSolve")
 library("svglite")
+library("shiny")
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -2475,4 +2476,53 @@ check_the_proxy_energy_intensity <- function(){
     geom_smooth(method = "lm", se = FALSE)
   gg <- lm( dat$Calculated_EI ~ dat$Energy_Intensity)
   summary(gg)
+}
+
+create_second_proxy_for_energy_intensity <- function(){
+  # First let's get the surrendered values from the ETS, seperated by installation type. 
+  # Load Energy Balance data from csv file
+  # Path: Data
+  # File: ETS_Database_v50_Apr23.csv
+  # Source: Eurostat
+  # Data link :  https://www.eea.europa.eu/data-and-maps/data/european-union-emissions-trading-scheme-17  # Country: All countries
+  # Year: 2005 - 2023
+  # Unit: tonne of CO2 equ.
+
+
+# Set the file path to your downloaded CSV file
+file_path <- "./Data/ETS_Database_v50_Apr23.csv"
+text <- read.csv(file_path, sep = "\t", header = TRUE) # I hate \t seperated shit.
+
+summary(na.omit(as.numeric(text$year)))
+
+
+}
+library(shiny)
+
+filter_dataframe <- function(data, column) {
+  # Launch Shiny app
+  shinyApp(
+    ui = fluidPage(
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(inputId = "selected_values", label = "Select values:", choices = unique(data[[column]]), multiple = TRUE),
+          actionButton(inputId = "submit_button", label = "Submit")
+        ),
+        mainPanel(
+          tableOutput(outputId = "filtered_data_table")
+        )
+      )
+    ),
+    server = function(input, output) {
+      # Filter dataframe based on selected values
+      filtered_data <- reactive({
+        data[data[[column]] %in% input$selected_values, ]
+      })
+      
+      # Render filtered data as a table
+      output$filtered_data_table <- renderTable({
+        filtered_data()
+      })
+    }
+  )
 }

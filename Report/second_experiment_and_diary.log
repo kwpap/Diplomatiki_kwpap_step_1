@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  16 MAY 2023 20:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  22 MAY 2023 21:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1745,72 +1745,94 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [50]
-[51]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=669, 1673.25125
+[51] [52]
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=701, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
 <use images/346111264_237886352220554_6402134938597733881_n.jpg>
 Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
-.jpg  used on input line 1992.
+.jpg  used on input line 2027.
 (pdftex.def)             Requested size: 338.58632pt x 212.85414pt.
- [52 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=675, 605.76312pt x 410.031
+ [53 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=710, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
 Package pdftex.def Info: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png  used 
-on input line 2017.
+on input line 2052.
 (pdftex.def)             Requested size: 338.58632pt x 229.18457pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [53 <./images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>] [54]
+ [54 <./images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>] [55]
 (second_experiment_and_diary.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `second_experiment_and_diary.out' has not cha
-nged.
-(rerunfilecheck)             Checksum: C4B520B2D1C9FC40BF76F98DF699D048;12712.
+
+Package rerunfilecheck Warning: File `second_experiment_and_diary.out' has chan
+ged.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `second_experiment_and_diary.out':
+(rerunfilecheck)             Before: C4B520B2D1C9FC40BF76F98DF699D048;12712
+(rerunfilecheck)             After:  9239FA9A7CC177BFD1922D3BA9B3D971;12882.
  ) 
 Here is how much of TeX's memory you used:
- 27813 strings out of 476331
- 523199 string characters out of 5787293
+ 27841 strings out of 476331
+ 523430 string characters out of 5787293
  1906660 words of memory out of 5000000
  47538 multiletter control sequences out of 15000+600000
  528122 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  83i,17n,80p,1585b,952s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcr
-m1000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmbx12.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Kostas/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Kostas/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Kostas/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/K
-ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C
-:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
-10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
-ts/cm/cmr6.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Kostas/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Kostas/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/K
-ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn0900.pfb><C:
-/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn1000
-.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/
-grmn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/cbgreek/grxn2074.pfb>
-Output written on second_experiment_and_diary.pdf (54 pages, 2075950 bytes).
+
+pdfTeX warning (dest): name{subsection.15.4} has been referenced but does not e
+xist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.15.3} has been referenced but does not e
+xist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.15.2} has been referenced but does not e
+xist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.15.1} has been referenced but does not e
+xist, replaced by a fixed one
+
+ <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1
+000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/amsfonts/cm/cmbx12.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Kostas/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Kostas/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/Kos
+tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/
+Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10
+.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
+/cm/cmr6.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Kostas/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Kostas/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/Kos
+tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn0900.pfb><C:/U
+sers/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn1000.p
+fb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/gr
+mn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cb
+greek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/cbgreek/grxn2074.pfb>
+Output written on second_experiment_and_diary.pdf (55 pages, 2084318 bytes).
 PDF statistics:
- 830 PDF objects out of 1000 (max. 8388607)
- 201 named destinations out of 1000 (max. 500000)
+ 876 PDF objects out of 1000 (max. 8388607)
+ 229 named destinations out of 1000 (max. 500000)
  616 words of extra memory for PDF output out of 10000 (max. 10000000)
 
