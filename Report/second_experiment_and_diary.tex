@@ -2088,4 +2088,104 @@ F-statistic: 6.068 on 1 and 22 DF,  p-value: 0.02206
 	\item Να ξεκινήσει το LP ακόμα και με σκατά δεδομένα για να δούμε τι βγάζει!
 \end{itemize}
 
+\section{Για τις 23 Μαΐου}
+
+\subsection{21-99 Cannot be used a proxy}
+Αρχικά κατεβάζοντας από το \url{https://www.eea.europa.eu/data-and-maps/data/european-union-emissions-trading-scheme-17  # Country: All countries
+} τους παραδοδέντες ρίπους, παρατηρούμε πως έχουν αυτήν την κατηγοριοποίηση:
+\begin{verbatim}
+[1] "20 Combustion of fuels"                                     
+[2] "42 Production of bulk chemicals"                            
+[3] "20-99 All stationary installations"                         
+[4] "43 Production of hydrogen and synthesis gas"                
+[5] "25 Production or processing of ferrous metals"              
+[6] "28 Production or processing of non-ferrous metals"          
+[7] "21-99 All industrial installations (excl. combustion)"      
+[8] "23 Metal ore roasting or sintering"                         
+[9] "36 Production of paper or cardboard"                        
+[10] "33 Manufacture of mineral wool"                             
+[11] "10 Aviation"                                                
+[12] "26 Production of primary aluminium"                         
+[13] "27 Production of secondary aluminium"                       
+[14] "29 Production of cement clinker"                            
+[15] "41 Production of ammonia"                                   
+[16] "21  Refining of mineral oil"                                
+[17] "34 Production or processing of gypsum or plasterboard"      
+[18] "35 Production of pulp"                                      
+[19] "38 Production of nitric acid"                               
+[20] "32 Manufacture of ceramics"                                 
+[21] "24  Production of pig iron or steel"                        
+[22] "30 Production of lime, or calcination of dolomite/magnesite"
+[23] "31 Manufacture of glass"                                    
+[24] "45 Capture of greenhouse gases under Directive 2009/31/EC"  
+[25] "99 Other activity opted-in under Art. 24"                   
+[26] "22  Production of coke"                                     
+[27] "44 Production of soda ash and sodium bicarbonate"           
+[28] "37 Production of carbon black"                              
+[29] "39 Production of adipic acid"                               
+[30] "40 Production of glyoxal and glyoxylic acid"  
+\end{verbatim}
+όμως κανένα από αυτά δεν αναφέρεται στην ηλεκτροπαραγωγή συγκεκριμένα. Το πιο κοντινό ίσως είναι τα combustion fluels. Όμως κάνοντας δοκιμές για το συγκεκριμένο, καταλήξουμε πως αφαιρώντας αυτό δεν μπορούμε να καταλήξουμε σε κάποιο χρήσιμο proxy:
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/Calculated_EI_EI_Combustion}
+\end{center}
+
+Συγκεκριμένα διαβάζουμε \cite{Guidance}: \begin{verbatim} "Most installations covered by the EU ETS will be found in the NACE categories C 
+(Mining and quarrying), D (Manufacturing) and E (Electricity, gas and water supply).
+ However, the activity “combustion of fuels” can occur in all types of NACE categories,
+ not only industrial ones. Examples of such non-industrial installations are combustion
+ units in greenhouses, hospitals, universities and office buildings, booster stations
+ in natural gas transport networks etc" \end{verbatim} 
+Επομένως, δεν είναι καθόλυο επρίεργο. Αυτό το οποίο όντως χρειάζεται να μπει σε αυτήν την διαδικασία είναι το Nace code της εταιρείας. Συγκεκριμένα έχουμε \cite{Nace1}:
+\begin{verbatim}
+NACE codes are the standard European nomenclature of productive economic activities.
+They break down the universe of economic activities in such a way that a NACE code can
+be associated with a statistical unit carrying out the activity it designates.
+There is an economic activity when resources – such as capital goods – are combined
+to produce specific goods or services.
+All activity is characterized by the input of resources, a production process and
+an output of products (goods or services).
+\end{verbatim}
+
+\subsection{Χρήση του GDPpps}
+Εδώ βλέπουμε την πρώτη σημαντική βελτίωση στο αποτέλεσμα:
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/Calculated_RI_gdpps}
+\end{center}
+συγκεκριμένα, η βελτίωση είναι της τάξης του:
+\begin{verbatim}
+	Residual standard error: 3.18e-07 on 21 degrees of freedom
+	Multiple R-squared:  0.3127,	Adjusted R-squared:  0.2799 
+	F-statistic: 9.553 on 1 and 21 DF,  p-value: 0.005539
+	ΣΕ
+	Residual standard error: 2.269e-07 on 21 degrees of freedom
+	Multiple R-squared:  0.4208,	Adjusted R-squared:  0.3932 
+	F-statistic: 15.26 on 1 and 21 DF,  p-value: 0.0008128
+\end{verbatim}
+	 Οι πιο έντονοι outliers στο παραπάνω είναι οι 3 πάνω κουκίδες που ανήκουν στην Αυστρία, Λιθουανία και την Φινλαδία από αριστερά προς τα δεξιά.
+
+\subsection{Χωρίς Αυστρία, Λιθουανία και Φινλανδία}
+Εδώ τα πράγματα βελτιώνονται, αλλά δεν είναι τέλεια:
+\begin{center}
+	\includegraphics[width=0.7\linewidth]{images/calculated_without_austria_lithuania_finland}
+\end{center}
+\begin{verbatim}
+	Residual standard error: 1.315e-07 on 18 degrees of freedom
+	Multiple R-squared:  0.6578,	Adjusted R-squared:  0.6388 
+	F-statistic:  34.6 on 1 and 18 DF,  p-value: 1.435e-05
+\end{verbatim}
+
+
+\newpage
+\section{Πηγές, από 23/5/23}
+\begin{thebibliography}{999}
+	
+	\bibitem{Guidance}
+	Guidance on Interpretation of Annex I of the EU ETS Directive (excl. aviation activities),
+	\url{https://www.mase.gov.it/sites/default/files/archivio/allegati/emission_trading/guidance_on_interpretation_annex_I_final.pdf}
+	\bibitem{Nace1}
+	NACE Codes: What Are They and Why Do They Always Matter?
+	\url{https://connects.world/nace-codes/#What_are_NACE_codes_used_for}
+	
+\end{thebibliography}
 \end{document}	

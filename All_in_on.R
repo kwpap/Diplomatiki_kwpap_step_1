@@ -3,6 +3,7 @@ library("xlsx")
 library("xtable") # Load xtable package
 library("stringr")
 library("DBI")
+library("RMariaDB")
 library("RMySQL")
 library("ggplot2")
 library("factoextra")
@@ -2478,25 +2479,6 @@ check_the_proxy_energy_intensity <- function(){
   summary(gg)
 }
 
-create_second_proxy_for_energy_intensity <- function(){
-  # First let's get the surrendered values from the ETS, seperated by installation type. 
-  # Load Energy Balance data from csv file
-  # Path: Data
-  # File: ETS_Database_v50_Apr23.csv
-  # Source: Eurostat
-  # Data link :  https://www.eea.europa.eu/data-and-maps/data/european-union-emissions-trading-scheme-17  # Country: All countries
-  # Year: 2005 - 2023
-  # Unit: tonne of CO2 equ.
-
-
-# Set the file path to your downloaded CSV file
-file_path <- "./Data/ETS_Database_v50_Apr23.csv"
-text <- read.csv(file_path, sep = "\t", header = TRUE) # I hate \t seperated shit.
-
-summary(na.omit(as.numeric(text$year)))
-
-
-}
 library(shiny)
 
 filter_dataframe <- function(data, column) {
@@ -2525,4 +2507,80 @@ filter_dataframe <- function(data, column) {
       })
     }
   )
+}
+
+
+
+create_second_proxy_for_energy_intensity <- function(){
+  # First let's get the surrendered values from the ETS, seperated by installation type. 
+  # Load Energy Balance data from csv file
+  # Path: Data
+  # File: ETS_Database_v50_Apr23.csv
+  # Source: Eurostat
+  # Data link :  https://www.eea.europa.eu/data-and-maps/data/european-union-emissions-trading-scheme-17  # Country: All countries
+  # Year: 2005 - 2023
+  # Unit: tonne of CO2 equ.
+
+
+# Set the file path to your downloaded CSV file
+file_path <- "./Data/ETS_Database_v50_Apr23.csv"
+text <- read.csv(file_path, sep = "\t", header = TRUE) # I hate \t seperated shit.
+
+#filter_dataframe(text, "ETS.information")
+print(unique(text[["ETS.information"]]))
+text <- text[which(text$ETS.information == "4. Total surrendered units"),]
+print(unique(text[["main.activity.sector.name"]]))
+text <- text[which(text$main.activity.sector.name == "21-99 All industrial installations (excl. combustion)"),]
+text <- text[which(text$year == year_for_comparison),]
+View(text)
+
+# Read GDP per capita pps
+#eurostat dataset 
+gdpps <- read.csv("./Data/sdg_10_10__custom_6312863_linear.csv")[-c(1,2,3,4,5,6,10)]
+gdpps <- gdpps[which(gdpps$TIME_PERIOD == year_for_comparison),][-c(2)]
+eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
+                         eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
+gdpps <- gdpps[ gdpps$geo %in% eu_2l_name$eu_2l,]
+for (i in 1:nrow(green_percent)){
+  gdpps$geo[i] <- eu_2l_name$eu_name[which(eu_2l_name$eu_2l == gdpps$geo[i])]
+}
+colnames(gdpps) <- c("GEO", "GDPpps")
+
+
+# Read green Percentage
+green_percent <- read.csv("./Data/nrg_ind_ren_linear.csv")
+green_percent <- green_percent[which(green_percent$nrg_bal=="REN"),]
+green_percent <- green_percent[which (green_percent$TIME_PERIOD == year_for_comparison),]
+green_percent <- green_percent[-c(1,2,3,4,5,7,9)]
+
+other_data <- read_data_2()
+eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
+                         eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
+
+green_percent <- green_percent[ green_percent$geo %in% eu_2l_name$eu_2l,] # vgale ta perierga
+text <- text[text$country %in% eu_2l_name$eu_name,]
+text <- text[-c(2,3,4,5,7)]
+
+for (i in 1:nrow(green_percent)){
+  green_percent$geo[i] <- eu_2l_name$eu_name[which(eu_2l_name$eu_2l == green_percent$geo[i])]
+}
+colnames(green_percent) <- c("GEO", "green_per" )
+colnames(text) <- c("GEO", "Exl.Comb")
+dat <- merge(other_data, green_percent, by = "GEO")
+dat <- merge(dat, text, by = "GEO")
+dat <- merge(dat, gdpps, by = "GEO")
+dat <- dat[- which(dat$GEO %in% c("Finland", "Lithuania", "Austria") ),]
+dat$Calculated_EI <- dat$Exl.Comb / dat$GDPpc / dat$Population
+dat$Calculated_rev_EI <- dat$Exl.Comb / (100-dat$green_per) / dat$GDPpps / dat$Population
+
+
+
+ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated_rev_EI)) +
+  geom_point(aes(color = GEO))+
+  geom_smooth(method = "lm", se = FALSE)
+gg <- lm( dat$Calculated_rev_EI ~ dat$Energy_Intensity)
+summary(gg)
+
+
+
 }
