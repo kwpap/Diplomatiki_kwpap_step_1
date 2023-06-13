@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  13 JUN 2023 15:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  13 JUN 2023 15:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./second_experiment_and_diary.tex
-(second_experiment_and_diary.tex
+**./Ημερολόγιο_από_2023.tex
+(Ημερολόγιο_από_2023.tex
 LaTeX2e <2022-11-01> patch level 1
 L3 programming layer <2023-03-30>
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
@@ -1201,7 +1201,7 @@ ftex.def
 File: l3backend-pdftex.def 2023-03-30 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count331
 \l__pdf_internal_box=\box78
-) (second_experiment_and_diary.aux
+) (Ημερολόγιο_από_2023.aux
 LaTeX Font Info:    Trying to load font information for LGR+cmr on input line 1
 9.
 
@@ -1220,7 +1220,7 @@ LaTeX Warning: Label `sub@fig:boxplot-Verified emissions-vs-country' multiply d
 efined.
 
 )
-\openout1 = `second_experiment_and_diary.aux'.
+\openout1 = `Ημερολόγιο_από_2023.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
 LaTeX Font Info:    ... okay on input line 66.
@@ -1362,24 +1362,26 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring OFF on input line 66.
-(second_experiment_and_diary.out) (second_experiment_and_diary.out)
+(Ημερολόγιο_από_2023.out) (Ημερολόγιο_από_2023.out)
 \@outlinefile=\write4
-\openout4 = `second_experiment_and_diary.out'.
+\openout4 = `Ημερολόγιο_από_2023.out'.
 
 
-(second_experiment_and_diary.toc
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 8.
-
+(Ημερολόγιο_από_2023.toc
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 10
+.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 8.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 10.
+
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 8.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 10.
+
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1388,508 +1390,390 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {C:/Users/Kostas/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}])
 \tf@toc=\write5
-\openout5 = `second_experiment_and_diary.toc'.
+\openout5 = `Ημερολόγιο_από_2023.toc'.
 
  [2]
-[3] [4] [5]
-<images/scatterplot_with_regression_line_ 2015 .png, id=361, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2015 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2015 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2015 .png  us
-ed on input line 238.
-(pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
-
-Overfull \hbox (15.0pt too wide) in paragraph at lines 238--241
-[][]
- []
-
-[6 <./images/scatterplot_with_regression_line_ 2015 .png>]
-<images/scatterplot_with_regression_line_ 2014 .png, id=367, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2014 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2014 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2014 .png  us
-ed on input line 250.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-File: images/scatterplot_with_regression_line_ 2015 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2015 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2015 .png  us
-ed on input line 256.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/scatterplot_with_regression_line_ 2016 .png, id=368, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2016 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2016 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2016 .png  us
-ed on input line 262.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/scatterplot_with_regression_line_ 2017 .png, id=369, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2017 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2017 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2017 .png  us
-ed on input line 267.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/scatterplot_with_regression_line_ 2018 .png, id=370, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2018 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2018 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2018 .png  us
-ed on input line 273.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/scatterplot_with_regression_line_ 2019 .png, id=371, 1003.75pt x 1003.7
-5pt>
-File: images/scatterplot_with_regression_line_ 2019 .png Graphic file (type png
-)
-<use images/scatterplot_with_regression_line_ 2019 .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2019 .png  us
-ed on input line 279.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/scatterplot_with_regression_line_ 2015 _with_all_data_.png, id=372, 100
-3.75pt x 1003.75pt>
-File: images/scatterplot_with_regression_line_ 2015 _with_all_data_.png Graphic
- file (type png)
-<use images/scatterplot_with_regression_line_ 2015 _with_all_data_.png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2015 _with_al
-l_data_.png  used on input line 290.
-(pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
-
-Overfull \hbox (15.0pt too wide) in paragraph at lines 290--291
-[][] 
- []
-
-[7 <./images/scatterplot_with_regression_line_ 2014 .png> <./images/scatterplot
-_with_regression_line_ 2016 .png> <./images/scatterplot_with_regression_line_ 2
-017 .png> <./images/scatterplot_with_regression_line_ 2018 .png> <./images/scat
-terplot_with_regression_line_ 2019 .png>] [8 <./images/scatterplot_with_regress
-ion_line_ 2015 _with_all_data_.png>]
-<images/scatterplot_with_regression_line_ 2015 _with_all_data_and_log= TRUE .pn
-g, id=390, 1003.75pt x 1003.75pt>
-File: images/scatterplot_with_regression_line_ 2015 _with_all_data_and_log= TRU
-E .png Graphic file (type png)
-<use images/scatterplot_with_regression_line_ 2015 _with_all_data_and_log= TRUE
- .png>
-Package pdftex.def Info: images/scatterplot_with_regression_line_ 2015 _with_al
-l_data_and_log= TRUE .png  used on input line 301.
-(pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
-
-Overfull \hbox (15.0pt too wide) in paragraph at lines 301--304
-[][]
- []
-
-[9 <./images/scatterplot_with_regression_line_ 2015 _with_all_data_and_log= TRU
-E .png>]
-<images/heatmap_distances_of_2015with_full_data_and_log=TRUE.png, id=397, 2007.
-5pt x 2007.5pt>
-File: images/heatmap_distances_of_2015with_full_data_and_log=TRUE.png Graphic f
-ile (type png)
-<use images/heatmap_distances_of_2015with_full_data_and_log=TRUE.png>
-Package pdftex.def Info: images/heatmap_distances_of_2015with_full_data_and_log
-=TRUE.png  used on input line 465.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/heatmap_distances_of_2015.png, id=398, 2007.5pt x 2007.5pt>
-File: images/heatmap_distances_of_2015.png Graphic file (type png)
-<use images/heatmap_distances_of_2015.png>
-Package pdftex.def Info: images/heatmap_distances_of_2015.png  used on input li
-ne 472.
-(pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [10]
-[11 <./images/heatmap_distances_of_2015with_full_data_and_log=TRUE.png> <./imag
-es/heatmap_distances_of_2015.png>] [12]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [13]
-[14]
-<images/Hungary 2017.png, id=447, 1003.75pt x 1003.75pt>
+[3] [4]
+<images/Hungary 2017.png, id=307, 1003.75pt x 1003.75pt>
 File: images/Hungary 2017.png Graphic file (type png)
 <use images/Hungary 2017.png>
-Package pdftex.def Info: images/Hungary 2017.png  used on input line 586.
+Package pdftex.def Info: images/Hungary 2017.png  used on input line 205.
 (pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [15]
-[16 <./images/Hungary 2017.png>]
-<images/Malta 2017.png, id=459, 1003.75pt x 1003.75pt>
+ [5]
+[6 <./images/Hungary 2017.png>]
+<images/Malta 2017.png, id=320, 1003.75pt x 1003.75pt>
 File: images/Malta 2017.png Graphic file (type png)
 <use images/Malta 2017.png>
-Package pdftex.def Info: images/Malta 2017.png  used on input line 597.
+Package pdftex.def Info: images/Malta 2017.png  used on input line 216.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Greece 2017.png, id=460, 1003.75pt x 1003.75pt>
+<images/Greece 2017.png, id=321, 1003.75pt x 1003.75pt>
 File: images/Greece 2017.png Graphic file (type png)
 <use images/Greece 2017.png>
-Package pdftex.def Info: images/Greece 2017.png  used on input line 604.
+Package pdftex.def Info: images/Greece 2017.png  used on input line 223.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Germany 2017.png, id=461, 1003.75pt x 1003.75pt>
+<images/Germany 2017.png, id=322, 1003.75pt x 1003.75pt>
 File: images/Germany 2017.png Graphic file (type png)
 <use images/Germany 2017.png>
-Package pdftex.def Info: images/Germany 2017.png  used on input line 611.
+Package pdftex.def Info: images/Germany 2017.png  used on input line 230.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
- [17 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 201
-7.png>]
-<images/2017 r^2 vs GDP.png, id=471, 1003.75pt x 1003.75pt>
+ [7 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 2017
+.png>]
+<images/2017 r^2 vs GDP.png, id=334, 1003.75pt x 1003.75pt>
 File: images/2017 r^2 vs GDP.png Graphic file (type png)
 <use images/2017 r^2 vs GDP.png>
-Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 653.
+Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 272.
 (pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
- [18 <./images/2017 r^2 vs GDP.png>]
-[19]
-<images/plot.jpg, id=493, 601.4972pt x 644.4075pt>
+ [8 <./images/2017 r^2 vs GDP.png>]
+[9]
+<images/plot.jpg, id=356, 601.4972pt x 644.4075pt>
 File: images/plot.jpg Graphic file (type jpg)
 <use images/plot.jpg>
-Package pdftex.def Info: images/plot.jpg  used on input line 750.
+Package pdftex.def Info: images/plot.jpg  used on input line 369.
 (pdftex.def)             Requested size: 483.69687pt x 518.2209pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20]
+ [10]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21 <./images/plot.jpg>] [22]
+ [11 <./images/plot.jpg>] [12]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 825.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 825.
+(hyperref)                removing `math shift' on input line 444.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 825.
+(hyperref)                removing `superscript' on input line 444.
 
-[23]
-Underfull \hbox (badness 10000) in paragraph at lines 890--891
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 444.
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 509--510
 
  []
 
-[24]
-<images/Boxplot Population Normalized vs Country.png, id=529, 440.39531pt x 316
+[14]
+<images/Boxplot Population Normalized vs Country.png, id=395, 440.39531pt x 316
 .93407pt>
 File: images/Boxplot Population Normalized vs Country.png Graphic file (type pn
 g)
 <use images/Boxplot Population Normalized vs Country.png>
 Package pdftex.def Info: images/Boxplot Population Normalized vs Country.png  u
-sed on input line 951.
+sed on input line 570.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Boxplot Population in Millions vs Country.png, id=530, 440.39531pt x 31
+<images/Boxplot Population in Millions vs Country.png, id=396, 440.39531pt x 31
 6.93407pt>
 File: images/Boxplot Population in Millions vs Country.png Graphic file (type p
 ng)
 <use images/Boxplot Population in Millions vs Country.png>
 Package pdftex.def Info: images/Boxplot Population in Millions vs Country.png  
-used on input line 956.
+used on input line 575.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 1112) has occurred while \output is active []
 
- [25]
+ [15]
 Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
-[26 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
+[16 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
 opulation in Millions vs Country.png>]
-<images/boxplot_inflation_raw.png, id=544, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_raw.png, id=409, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_raw.png Graphic file (type png)
 <use images/boxplot_inflation_raw.png>
-Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 1
-012.
+Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 6
+31.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_inflation_normalized.png, id=545, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_normalized.png, id=410, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_normalized.png Graphic file (type png)
 <use images/boxplot_inflation_normalized.png>
 Package pdftex.def Info: images/boxplot_inflation_normalized.png  used on input
- line 1017.
+ line 636.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [27]
+ [17]
 Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
-[28 <./images/boxplot_inflation_raw.png> <./images/boxplot_inflation_normalized
+[18 <./images/boxplot_inflation_raw.png> <./images/boxplot_inflation_normalized
 .png>]
 Underfull \vbox (badness 1675) has occurred while \output is active []
 
- [29]
+ [19]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [30]
-<images/Boxplot_Verified.png, id=568, 440.39531pt x 316.93407pt>
+ [20]
+<images/Boxplot_Verified.png, id=434, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Verified.png Graphic file (type png)
 <use images/Boxplot_Verified.png>
-Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 1161.
+Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 780.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_verified_log.png, id=569, 440.39531pt x 316.93407pt>
+<images/boxplot_verified_log.png, id=435, 440.39531pt x 316.93407pt>
 File: images/boxplot_verified_log.png Graphic file (type png)
 <use images/boxplot_verified_log.png>
-Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 11
-67.
+Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 78
+6.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [31]
+ [21]
 Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
-[32 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
-<images/Boxplot_Agriculture.png, id=582, 440.39531pt x 316.93407pt>
+[22 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
+<images/Boxplot_Agriculture.png, id=447, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Agriculture.png Graphic file (type png)
 <use images/Boxplot_Agriculture.png>
-Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 122
-0.
+Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 839
+.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [33]
-[34 <./images/Boxplot_Agriculture.png>] [35]
-<images/boxplot_Manufacturing.png, id=599, 440.39531pt x 316.93407pt>
+ [23]
+[24 <./images/Boxplot_Agriculture.png>] [25]
+<images/boxplot_Manufacturing.png, id=465, 440.39531pt x 316.93407pt>
 File: images/boxplot_Manufacturing.png Graphic file (type png)
 <use images/boxplot_Manufacturing.png>
-Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 1
-319.
+Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 9
+38.
 (pdftex.def)             Requested size: 241.84843pt x 174.0483pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [36 <./images/boxplot_Manufacturing.png>] [37]
-Underfull \hbox (badness 10000) in paragraph at lines 1383--1384
+ [26 <./images/boxplot_Manufacturing.png>] [27]
+Underfull \hbox (badness 10000) in paragraph at lines 1002--1003
 
  []
 
-[38] [39] [40]
-Underfull \hbox (badness 10000) in paragraph at lines 1501--1510
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1511--1512
+[28] [29] [30]
+Underfull \hbox (badness 10000) in paragraph at lines 1120--1129
 
  []
 
 
-Overfull \hbox (36.79974pt too wide) in paragraph at lines 1518--1533
+Underfull \hbox (badness 10000) in paragraph at lines 1130--1131
+
+ []
+
+
+Overfull \hbox (36.79974pt too wide) in paragraph at lines 1137--1152
  [][] 
  []
 
 
-Overfull \hbox (45.60533pt too wide) in paragraph at lines 1537--1552
+Overfull \hbox (45.60533pt too wide) in paragraph at lines 1156--1171
  [][] 
  []
 
-<images/Clustering.png, id=627, 811.3512pt x 716.1957pt>
+<images/Clustering.png, id=492, 811.3512pt x 716.1957pt>
 File: images/Clustering.png Graphic file (type png)
 <use images/Clustering.png>
-Package pdftex.def Info: images/Clustering.png  used on input line 1558.
+Package pdftex.def Info: images/Clustering.png  used on input line 1177.
 (pdftex.def)             Requested size: 314.40001pt x 277.52296pt.
 
 Underfull \vbox (badness 2564) has occurred while \output is active []
 
- [41]
+ [31]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [42]
-<images/Clustering_per_capita.png, id=639, 749.9217pt x 753.0534pt>
+ [32]
+<images/Clustering_per_capita.png, id=505, 749.9217pt x 753.0534pt>
 File: images/Clustering_per_capita.png Graphic file (type png)
 <use images/Clustering_per_capita.png>
 Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
-607.
+226.
 (pdftex.def)             Requested size: 314.40001pt x 315.71722pt.
 
-[43 <./images/Clustering.png>] [44 <./images/Clustering_per_capita.png>]
-<images/Distances from Lithuania.png, id=657, 440.39531pt x 316.93407pt>
+[33 <./images/Clustering.png>] [34 <./images/Clustering_per_capita.png>]
+<images/Distances from Lithuania.png, id=522, 440.39531pt x 316.93407pt>
 File: images/Distances from Lithuania.png Graphic file (type png)
 <use images/Distances from Lithuania.png>
 Package pdftex.def Info: images/Distances from Lithuania.png  used on input lin
-e 1744.
+e 1363.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Denmark, third Cluster.png, id=658, 440.39531pt x 316.93
+<images/Distances from Denmark, third Cluster.png, id=523, 440.39531pt x 316.93
 407pt>
 File: images/Distances from Denmark, third Cluster.png Graphic file (type png)
 <use images/Distances from Denmark, third Cluster.png>
 Package pdftex.def Info: images/Distances from Denmark, third Cluster.png  used
- on input line 1747.
+ on input line 1366.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Italy.png, id=659, 440.39531pt x 316.93407pt>
+<images/Distances from Italy.png, id=524, 440.39531pt x 316.93407pt>
 File: images/Distances from Italy.png Graphic file (type png)
 <use images/Distances from Italy.png>
-Package pdftex.def Info: images/Distances from Italy.png  used on input line 17
-53.
+Package pdftex.def Info: images/Distances from Italy.png  used on input line 13
+72.
 (pdftex.def)             Requested size: 483.69687pt x 348.11108pt.
 
 Underfull \vbox (badness 4927) has occurred while \output is active []
 
- [45]
+ [35]
 Overfull \vbox (10.44368pt too high) has occurred while \output is active []
 
 
-[46 <./images/Distances from Lithuania.png> <./images/Distances from Denmark, t
+[36 <./images/Distances from Lithuania.png> <./images/Distances from Denmark, t
 hird Cluster.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [47 <./images/Distances from Italy.png>] [48]
-Overfull \hbox (16.754pt too wide) in paragraph at lines 1921--1951
+ [37 <./images/Distances from Italy.png>] [38]
+Overfull \hbox (16.754pt too wide) in paragraph at lines 1540--1570
  [][] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [49]
+ [39]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [50]
-[51] [52]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=736, 1673.25125
+ [40]
+[41] [42]
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=601, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
 <use images/346111264_237886352220554_6402134938597733881_n.jpg>
 Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
-.jpg  used on input line 2028.
+.jpg  used on input line 1647.
 (pdftex.def)             Requested size: 338.58632pt x 212.85414pt.
- [53 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=742, 605.76312pt x 410.031
+ [43 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=608, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
 Package pdftex.def Info: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png  used 
-on input line 2053.
+on input line 1672.
 (pdftex.def)             Requested size: 338.58632pt x 229.18457pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [54 <./images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>]
-Overfull \hbox (118.90921pt too wide) in paragraph at lines 2095--2097
+ [44 <./images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>]
+Overfull \hbox (118.90921pt too wide) in paragraph at lines 1714--1716
 []\LGR/cmr/m/n/10 Arqik� kate-b�-zon-tac ap� to []$\OT1/cmtt/m/n/10 https : / /
  www . eea . europa . eu / data-[]and-[]maps / data / european-[]union-[]emissi
 ons-[]trading-[]scheme-[]17 #
  []
 
-[55]
-<images/Calculated_EI_EI_Combustion.png, id=760, 465.23813pt x 349.305pt>
+[45]
+<images/Calculated_EI_EI_Combustion.png, id=625, 465.23813pt x 349.305pt>
 File: images/Calculated_EI_EI_Combustion.png Graphic file (type png)
 <use images/Calculated_EI_EI_Combustion.png>
 Package pdftex.def Info: images/Calculated_EI_EI_Combustion.png  used on input 
-line 2131.
+line 1750.
 (pdftex.def)             Requested size: 338.58632pt x 254.223pt.
- [56 <./images/Calculated_EI_EI_Combustion.png>]
-<images/Calculated_RI_gdpps.png, id=770, 616.55344pt x 349.305pt>
+ [46 <./images/Calculated_EI_EI_Combustion.png>]
+<images/Calculated_RI_gdpps.png, id=635, 616.55344pt x 349.305pt>
 File: images/Calculated_RI_gdpps.png Graphic file (type png)
 <use images/Calculated_RI_gdpps.png>
-Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 215
-4.
+Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 177
+3.
 (pdftex.def)             Requested size: 338.58632pt x 191.83052pt.
 LaTeX Font Info:    Trying to load font information for LGR+cmtt on input line 
-2161.
+1780.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmtt.fd
 File: lgrcmtt.fd 2017/07/29 v1.2 Greek European Computer Typewriter
 )
-<images/calculated_without_austria_lithuania_finland.png, id=771, 611.28375pt x
+<images/calculated_without_austria_lithuania_finland.png, id=636, 611.28375pt x
  349.305pt>
 File: images/calculated_without_austria_lithuania_finland.png Graphic file (typ
 e png)
 <use images/calculated_without_austria_lithuania_finland.png>
 Package pdftex.def Info: images/calculated_without_austria_lithuania_finland.pn
-g  used on input line 2171.
+g  used on input line 1790.
 (pdftex.def)             Requested size: 338.58632pt x 193.47748pt.
 
 Underfull \vbox (badness 1460) has occurred while \output is active []
 
- [57 <./images/Calculated_RI_gdpps.png>] [58 <./images/calculated_without_austr
+ [47 <./images/Calculated_RI_gdpps.png>] [48 <./images/calculated_without_austr
 ia_lithuania_finland.png>]
-Overfull \hbox (25.54869pt too wide) in paragraph at lines 2186--2187
+Overfull \hbox (25.54869pt too wide) in paragraph at lines 1805--1806
 \OT1/cmtt/m/n/10 com / spreadsheets / d / 1mwmZSr8PBiFgsxemVE _ FFEdaZS0dOeX3 /
  edit ? usp = sharing & ouid = 105915891653467891041 &
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2188--2191
+Underfull \hbox (badness 10000) in paragraph at lines 1807--1810
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2188--2191
+Underfull \hbox (badness 10000) in paragraph at lines 1807--1810
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2188--2191
+Underfull \hbox (badness 10000) in paragraph at lines 1807--1810
 
  []
 
 
-Overfull \hbox (22.85947pt too wide) in paragraph at lines 2192--2211
+Overfull \hbox (22.85947pt too wide) in paragraph at lines 1811--1830
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2192--2211
+Underfull \hbox (badness 10000) in paragraph at lines 1811--1830
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2192--2211
+Underfull \hbox (badness 10000) in paragraph at lines 1811--1830
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2192--2211
+Underfull \hbox (badness 10000) in paragraph at lines 1811--1830
 
  []
 
 
-Overfull \hbox (46.55399pt too wide) in paragraph at lines 2212--2242
+Overfull \hbox (46.55399pt too wide) in paragraph at lines 1831--1861
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2212--2242
+Underfull \hbox (badness 10000) in paragraph at lines 1831--1861
 
  []
 
 
-Underfull \hbox (badness 2368) in paragraph at lines 2275--2277
+Underfull \hbox (badness 2368) in paragraph at lines 1894--1896
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2275--2277
+Underfull \hbox (badness 10000) in paragraph at lines 1894--1896
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
 
-[59] [60] (second_experiment_and_diary.aux)
+[49] [50] (Ημερολόγιο_από_2023.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `second_experiment_and_diary.out' has not cha
-nged.
-(rerunfilecheck)             Checksum: 01E8D9CC93BF584B6BDD3D795B7B35C6;14127.
+Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
+t changed.
+(rerunfilecheck)             Checksum: 3D20E738080AE8ED2C222814A56A2821;12491.
  ) 
 Here is how much of TeX's memory you used:
- 28082 strings out of 476331
- 527999 string characters out of 5787293
- 1906660 words of memory out of 5000000
- 47759 multiletter control sequences out of 15000+600000
- 528601 words of font info for 87 fonts, out of 8000000 for 9000
+ 27948 strings out of 476331
+ 523203 string characters out of 5787293
+ 1897660 words of memory out of 5000000
+ 47672 multiletter control sequences out of 15000+600000
+ 526551 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,17n,80p,1585b,952s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,17n,80p,1091b,952s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcr
 m1000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -1901,25 +1785,24 @@ Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/K
 ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C
 :/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
 10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
-ts/cm/cmr6.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Kostas/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Kostas/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/K
-ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn0900.pfb><C:
-/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn1000
+ts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/publi
+c/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/typ
+e1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Kostas/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Kostas/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Users/Kostas/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn1000.pfb><C:/Users/K
+ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn1200.pfb><C:
+/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn1000
 .pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/
-grmn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
-KTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb>
-Output written on second_experiment_and_diary.pdf (60 pages, 2145120 bytes).
+grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/cbgreek/gttn1000.pfb>
+Output written on Ημερολόγιο_από_2023.pdf (50 pages, 1921674 bytes
+).
 PDF statistics:
- 951 PDF objects out of 1000 (max. 8388607)
- 238 named destinations out of 1000 (max. 500000)
- 687 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 801 PDF objects out of 1000 (max. 8388607)
+ 206 named destinations out of 1000 (max. 500000)
+ 541 words of extra memory for PDF output out of 10000 (max. 10000000)
 

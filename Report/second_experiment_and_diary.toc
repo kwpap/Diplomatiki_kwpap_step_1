@@ -64,4 +64,5 @@
 \contentsline {subsection}{\numberline {17.1}21-99 Cannot be used a proxy}{55}{subsection.17.1}%
 \contentsline {subsection}{\numberline {17.2}Χρήση του GDPpps}{57}{subsection.17.2}%
 \contentsline {subsection}{\numberline {17.3}Χωρίς Αυστρία, Λιθουανία και Φινλανδία}{57}{subsection.17.3}%
-\contentsline {section}{\numberline {18}Πηγές, από 23/5/23}{59}{section.18}%
+\contentsline {section}{\numberline {18}Για τη 13η Μαΐου}{59}{section.18}%
+\contentsline {section}{\numberline {19}Πηγές, από 23/5/23}{60}{section.19}%

@@ -2580,7 +2580,5 @@ ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated_rev_EI)) +
   geom_smooth(method = "lm", se = FALSE)
 gg <- lm( dat$Calculated_rev_EI ~ dat$Energy_Intensity)
 summary(gg)
-
-
-
 }
+
