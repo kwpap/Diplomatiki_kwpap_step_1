@@ -53,4 +53,7 @@
 \contentsline {subsection}{\numberline {11.2}Χρήση του GDPpps}{47}{subsection.11.2}%
 \contentsline {subsection}{\numberline {11.3}Χωρίς Αυστρία, Λιθουανία και Φινλανδία}{47}{subsection.11.3}%
 \contentsline {section}{\numberline {12}Για τη 13η Μαΐου}{49}{section.12}%
-\contentsline {section}{\numberline {13}Πηγές, από 23/5/23}{50}{section.13}%
+\contentsline {subsection}{\numberline {12.1}Το πρόβλημα με το πλασματικό energy Intensity}{49}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Clustering se sectors}{50}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Τι ειπώθηκε στην κλίση}{51}{subsection.12.3}%
+\contentsline {section}{\numberline {13}Πηγές, από 23/5/23}{52}{section.13}%

@@ -1800,6 +1800,7 @@ an output of products (goods or services).
 
 
 \section{Για τη 13η Μαΐου}
+\subsection{Το πρόβλημα με το πλασματικό energy Intensity}
 Υπήρξε ένα σημαντικό κενό εδώ λόγω διαφόρων προσωπικών υποχρεώσεων. 
 
 Αρχικά. Σχετικά με την αποδόμηση των sector των ρύπων: Έγινε αυτή η αντιστοίχιση \url{https://docs.google.com/spreadsheets/d/1mwmZSr8PBiFgsxemVE_FFEdaZS0dOeX3/edit?usp=sharing&ouid=105915891653467891041&rtpof=true&sd=truee} Το οποίο δείχνει με αρκετή σαφήνεια πως οι δύο τρόποι κατηγοριοποίησης των επιχειρήσεων είναι πολύ διαφορετικές. 
@@ -1859,6 +1860,105 @@ an output of products (goods or services).
 \end{tabular} \\  \\
 Εδώ έχουμε ένα σενάριο στο οποίο όχι μόνο δεν ταιριάζουν όλα απόλυτα, αλλά ακόμα και να την αριστερή στήλη σε ένα για να την ταυτίσουμε με την δεξιά, θα υπάρχουν κατηγορίες τις οποίες αφήσαμε απ' έξω.
 
+\subsection{Clustering se sectors}
+Querry για να πάρουμε τις Surrendered άδειες ανά sector για το 2016. 
+\begin{verbatim}
+	SELECT SUM(trnew.NbOfUnits), concat(mat.kwdikos , ' ' , mat.onoma) as ActivityType
+	FROM transactions_new AS trnew
+	JOIN eutl_accountholders AS ah ON trnew.TransferringAccountHolder = ah.holderName
+	JOIN eutl_accounts AS a ON ah.rawCode = a.rawCode
+	JOIN eutl_installations_orair AS io ON io.account = a.rawCode
+	JOIN mainactivitytype AS mat ON io.mainActivity = mat.kwdikos
+	WHERE trnew.TransactionType LIKE '%%-2' AND YEAR(trnew.TransactionDate) = 2016
+	GROUP BY mat.onoma
+	ORDER BY mat.kwdikos
+\end{verbatim}
+To οποίο επιστρέφει: \\ \\
+\begin{tabular}{|c|c|}
+	\hline
+	Surrendered & ActivityType \\
+	\hline
+	178093310 & 1 Combustion installations with a rated thermal in... \\
+	\hline
+	287282477 & 10 Aircraft operator activities \\
+	\hline
+	4028607 & 2 Mineral oil refineries \\
+	\hline
+	697984775 & 20 Combustion of fuels \\
+	\hline
+	6795214 & 21 Refining of mineral oil \\
+	\hline
+	187557 & 22 Production of coke \\
+	\hline
+	179735 & 23 Metal ore roasting or sintering \\
+	\hline
+	98482418 & 24 Production of pig iron or steel \\
+	\hline
+	21458739 & 25 Production or processing of ferrous metals \\
+	\hline
+	806566 & 26 Production of primary aluminium \\
+	\hline
+	2287866 & 27 Production of secondary aluminium \\
+	\hline
+	16525496 & 28 Production or processing of non-ferrous metals \\
+	\hline
+	9283720 & 29 Production of cement clinker \\
+	\hline
+	29011461 & 30 Production of lime, or calcination of dolomite/... \\
+	\hline
+	28483791 & 31 Manufacture of glass \\
+	\hline
+	113925371 & 32 Manufacture of ceramics \\
+	\hline
+	855132 & 33 Manufacture of mineral wool \\
+	\hline
+	2350152 & 34 Production or processing of gypsum or plasterbo... \\
+	\hline
+	34482572 & 35 Production of pulp \\
+	\hline
+	120320357 & 36 Production of paper or cardboard \\
+	\hline
+	3530168 & 37 Production of carbon black \\
+	\hline
+	10773361 & 38 Production of nitric acid \\
+	\hline
+	3665 & 39 Production of adipic acid \\
+	\hline
+	205592 & 40 Production of glyoxal and glyoxylic acid \\
+	\hline
+	518707 & 41 Production of ammonia \\
+	\hline
+	51838556 & 42 Production of bulk chemicals \\
+	\hline
+	8355618 & 43 Production of hydrogen and synthesis gas \\
+	\hline
+	4930431 & 44 Production of soda ash and sodium bicarbonate \\
+	\hline
+	10617 & 46 Transport of greenhouse gases under Directive 2... \\
+	\hline
+	1853546 & 5 Installations for the production o...ion) includ... \\
+	\hline
+	12267703 & 6 Installations for the production o...rotary kiln... \\
+	\hline
+	1787688 & 7 Installations for the manufacture of glass inclu... \\
+	\hline
+	18284476 & 8 Installations for the manufacture ...ks, tiles, ... \\
+	\hline
+	21850482 & 9 Industrial plants for the producti...ous materia... \\
+	\hline
+	42185334 & 99 Other activity opted-in pursuant to Article 24 ... \\
+	\hline
+\end{tabular}
+
+\subsection{Τι ειπώθηκε στην κλίση}
+Στην κλίση τέθηκαν οι παρακάτω στόχοι:
+\begin{itemize}
+	\item Να γίνει το LP χρησιμοποιώντας τους 5 sectors έτσι όπως έγιναν λόγω των περιορισμών των δεδομένων. Άρα όπως είναι στο excel τα διαφορετικά χρώματα:  \url{https://docs.google.com/spreadsheets/d/1mwmZSr8PBiFgsxemVE_FFEdaZS0dOeX3/edit?usp=sharing&ouid=105915891653467891041&rtpof=true&sd=truee}
+	\item Να γίνει clustering  στους διαφορετικούς sectors. Χρησιμοποίησε Querries σαν αυτό που ανέφερες λίγο παραπάνω για να αποκτήσεις δεδομένα για τους διαφορετικούς κλάδους της οικονομίας. Παραδείγματα: Verified, Free, no of companies, avg transactions per company, μέγεθος εταιρειών 
+	\item Να προσπαθήσεις να δεις γιατί κάποιες χώρες δεν αντιστοιχίζονται τέλεια στα διαγράμματα τα οποία υποβάλαμε στο paper. Μερικές πιθανές συσχετίσεις: ποσοστό service στο ακαθάριστο προϊόν, πυκνότητα σε εταιρείες με πολύ μεγάλο ή πολύ μικρό P(carbon leackage). 
+	\item Να ξαναγίνει η μελέτη που γίνεται στο paper μόνο για έναν από τους sectors της οικονομίας και να δούμε αν αυτό μιδενίζει τις διαφορές μεταξύ των χωρών. 
+	\item Διάβασμα τo paper: Pollution Permits: Efficiency by Design \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4453956}
+\end{itemize}
 
 
 
