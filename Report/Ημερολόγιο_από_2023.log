@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  15 JUN 2023 18:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  15 AUG 2023 21:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1762,13 +1762,13 @@ e . com / spreadsheets / d / 1mwmZSr8PBiFgsxemVE _
  []
 
 [51]
-Underfull \hbox (badness 2368) in paragraph at lines 1994--1996
+Underfull \hbox (badness 2368) in paragraph at lines 2003--2005
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1994--1996
+Underfull \hbox (badness 10000) in paragraph at lines 2003--2005
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
@@ -1777,13 +1777,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 1994--1996
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
-t changed.
-(rerunfilecheck)             Checksum: FEF018FA0D3462822AE08E4316D2EF17;13273.
+
+Package rerunfilecheck Warning: File `Ημερολόγιο_από_2023.out' has
+ changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Ημερολόγιο_από_2023.ou
+t':
+(rerunfilecheck)             Before: FEF018FA0D3462822AE08E4316D2EF17;13273
+(rerunfilecheck)             After:  03AFA1DEB7D2E9D3BF81BF88595514B8;14208.
  ) 
 Here is how much of TeX's memory you used:
- 27956 strings out of 476331
- 523313 string characters out of 5787293
+ 27960 strings out of 476331
+ 523363 string characters out of 5787293
  1896660 words of memory out of 5000000
  47675 multiletter control sequences out of 15000+600000
  526551 words of font info for 80 fonts, out of 8000000 for 9000
@@ -1814,10 +1821,10 @@ grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/cbgreek/gttn1000.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (52 pages, 1932319 bytes
+Output written on Ημερολόγιο_από_2023.pdf (52 pages, 1934688 bytes
 ).
 PDF statistics:
- 829 PDF objects out of 1000 (max. 8388607)
- 211 named destinations out of 1000 (max. 500000)
+ 833 PDF objects out of 1000 (max. 8388607)
+ 215 named destinations out of 1000 (max. 500000)
  565 words of extra memory for PDF output out of 10000 (max. 10000000)
 
