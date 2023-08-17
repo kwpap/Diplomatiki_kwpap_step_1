@@ -59,5 +59,6 @@
 \contentsline {section}{\numberline {13}Παύση Καλοκαιριού}{52}{section.13}%
 \contentsline {section}{\numberline {14}Επανεκκίνηση Μετά την παύση του καλοκαιριού}{52}{section.14}%
 \contentsline {subsection}{\numberline {14.1}Polution Permits: Efficiency by Design}{52}{subsection.14.1}%
-\contentsline {subsection}{\numberline {14.2}1 sector}{52}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.2}Παρουσίαση για το paper}{52}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}1 sector}{52}{subsection.14.3}%
 \contentsline {section}{\numberline {15}Πηγές, από 23/5/23}{52}{section.15}%
