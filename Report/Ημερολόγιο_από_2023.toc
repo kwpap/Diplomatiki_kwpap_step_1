@@ -1,0 +1,63 @@
+\babel@toc {english}{}\relax 
+\babel@toc {greek}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {greek}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Επανεκίνηση μετά τα Χριστούγεννα}{3}{section.1}%
+\contentsline {section}{\numberline {2}Δοκιμές για διαφορετικά βάρη στις παραμέτρους}{3}{section.2}%
+\contentsline {section}{\numberline {3}Για τη 31η Γενάρη}{4}{section.3}%
+\contentsline {section}{\numberline {4}ΓιΑ την 28η Φεβρουαρίου}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Αλλαγή 1}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Μεσαία χώρα ανά τα έτη}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Όλες οι χώρες για όλα τα έτη}{10}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Για τη 14η Μαρτίου}{13}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Πίνακας $r^2$ με βέλτιστα επιλεγμένα βάρη}{13}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Οπτικοποίηση δεδομένων}{15}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Πληθυσμός}{15}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Πληθωρισμός}{17}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Total energy Supply}{19}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}GDP per capita}{19}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Verified emissions}{20}{subsubsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.6}Agriculture}{23}{subsubsection.5.2.6}%
+\contentsline {subsubsection}{\numberline {5.2.7}Industry}{25}{subsubsection.5.2.7}%
+\contentsline {subsubsection}{\numberline {5.2.8}Manufacturing}{25}{subsubsection.5.2.8}%
+\contentsline {section}{\numberline {6}Για την 21η Μαρτίου}{27}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Γιατί η Πολωνία και η Γαλλία αποτυγχάνουν να εξηγήσουν τις άλλες πριν το 2012;}{27}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Τα βέλτιστα βάρη για όλα τα σενάρια}{28}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Για την 28η Μαρτίου}{29}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Τι όντως έκανα}{29}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}PPS (Purchasing Power Standards)}{29}{subsection.7.2}%
+\contentsline {subsubsection}{\numberline {7.2.1}Χρήση PPS}{29}{subsubsection.7.2.1}%
+\contentsline {subsubsection}{\numberline {7.2.2}Υπολογισμός}{29}{subsubsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.3}Power Intensity}{30}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Για την επόμενη φορά}{30}{subsection.7.4}%
+\contentsline {subsubsection}{\numberline {7.4.1}Σε δεύτερo χρόνο}{30}{subsubsection.7.4.1}%
+\contentsline {subsubsection}{\numberline {7.4.2}Άμεσα, για το τετρασέλιδο}{31}{subsubsection.7.4.2}%
+\contentsline {section}{\numberline {8}Για τις 4 Απριλίου}{31}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Συσταδοποίηση (έπρεπε...)}{31}{subsection.8.1}%
+\contentsline {subsubsection}{\numberline {8.1.1}Πλήθος συστάδων}{31}{subsubsection.8.1.1}%
+\contentsline {subsubsection}{\numberline {8.1.2}Βέλτιστες συστάδες}{33}{subsubsection.8.1.2}%
+\contentsline {subsubsection}{\numberline {8.1.3}Συστάδες, αν όλα τα δεδομένα ήταν κατά κεφαλήν και κανονικοποιημένα ύστερα}{33}{subsubsection.8.1.3}%
+\contentsline {subsection}{\numberline {8.2}Ικανότητα εξήγησης υπολοίπων μέσα στην ίδια συστάδα}{34}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Υπάρχει κάποια εύκολη σχέση μεταξύ των δωρεάν αδειών και κάποιου feature;}{35}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Ύστερα από αλλαγή στον τρόπο της κανονικοποίησης}{37}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}To do list}{38}{subsection.8.5}%
+\contentsline {section}{\numberline {9}Για την 2η Μαΐου}{42}{section.9}%
+\contentsline {section}{\numberline {10}Για τις 16 Μαΐου}{43}{section.10}%
+\contentsline {subsection}{\numberline {10.1}To do}{43}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Δεν μοιάζει να μπορεί να προσομοιωθεί απλά το Energy Intensity}{43}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Διαφορετικά μέτρα απόδοσης / αποτελεσματικότητας}{45}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Για την επόμενη φορά}{45}{subsection.10.4}%
+\contentsline {section}{\numberline {11}Για τις 23 Μαΐου}{45}{section.11}%
+\contentsline {subsection}{\numberline {11.1}21-99 Cannot be used a proxy}{45}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Χρήση του GDPpps}{47}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Χωρίς Αυστρία, Λιθουανία και Φινλανδία}{47}{subsection.11.3}%
+\contentsline {section}{\numberline {12}Για τη 13η Μαΐου}{49}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Το πρόβλημα με το πλασματικό energy Intensity}{49}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Clustering se sectors}{50}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Τι ειπώθηκε στην κλίση}{51}{subsection.12.3}%
+\contentsline {section}{\numberline {13}Παύση Καλοκαιριού}{52}{section.13}%
+\contentsline {section}{\numberline {14}Επανεκκίνηση Μετά την παύση του καλοκαιριού}{52}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Polution Permits: Efficiency by Design}{52}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}1 sector}{52}{subsection.14.2}%
+\contentsline {section}{\numberline {15}Πηγές, από 23/5/23}{52}{section.15}%

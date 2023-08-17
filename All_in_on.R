@@ -2580,7 +2580,14 @@ ggplot(data = dat, aes(x = Energy_Intensity, y = Calculated_rev_EI)) +
   geom_smooth(method = "lm", se = FALSE)
 gg <- lm( dat$Calculated_rev_EI ~ dat$Energy_Intensity)
 summary(gg)
-
-
-
 }
+
+# SELECT SUM(trnew.NbOfUnits), concat(mat.kwdikos , ' ' , mat.onoma) as ActivityType
+# FROM transactions_new AS trnew
+# JOIN eutl_accountholders AS ah ON trnew.TransferringAccountHolder = ah.holderName
+# JOIN eutl_accounts AS a ON ah.rawCode = a.rawCode
+# JOIN eutl_installations_orair AS io ON io.account = a.rawCode
+# JOIN mainactivitytype AS mat ON io.mainActivity = mat.kwdikos
+# WHERE trnew.TransactionType LIKE '%%-2' AND YEAR(trnew.TransactionDate) = 2016
+# GROUP BY mat.onoma
+# ORDER BY mat.kwdikos
