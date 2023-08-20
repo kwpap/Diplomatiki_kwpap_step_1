@@ -2591,3 +2591,40 @@ summary(gg)
 # WHERE trnew.TransactionType LIKE '%%-2' AND YEAR(trnew.TransactionDate) = 2016
 # GROUP BY mat.onoma
 # ORDER BY mat.kwdikos
+
+dummy_function_for_graph_for_presentation <- function(){
+  dat <- read.csv(file = "./Data/sdg_13_10_page_linear_for_small_graph.csv",
+                    header = TRUE,
+                    as.is = TRUE)
+  dat <- dat[-c(1,2,3,4,5,6,7,10)]
+  dat <- dat[which(dat[1] > 2003),]
+  dat$OBS_VALUE <- dat$OBS_VALUE/dat$OBS_VALUE[1]*100
+  my_plot <- ggplot(dat, aes(x = TIME_PERIOD, y = OBS_VALUE))+
+    geom_rect(
+      xmin = -Inf, xmax = 2005, ymin = -Inf, ymax = Inf,
+      fill = "white", alpha = 0.09)+
+    geom_rect(
+      xmin = 2005, xmax = 2008, ymin = -Inf, ymax = Inf,
+      fill = rgb(1,0.8,0.8), alpha = 0.09)+
+    geom_rect(
+      xmin = 2008, xmax = 2013, ymin = -Inf, ymax = Inf,
+      fill = rgb(0.8,1,0.8), alpha = 0.09)+
+    geom_rect(
+      xmin = 2013, xmax = 2021, ymin = -Inf, ymax = Inf,
+      fill = rgb(0.8,0.8,1), alpha = 0.09)+
+    geom_point(color = rgb(50/255, 50/255, 50/255)) +
+       xlab("Year") + 
+    ylab(bquote("Net greenhouse gas emissions"[(source: EEA)])) +
+     labs(title = "GHG emissions on EU", color = "Cluster")+ 
+    theme(panel.background = element_rect(fill = rgb(220/255, 220/255, 220/255)),
+          axis.title.x = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          axis.title.y = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          title = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"))+
+    geom_vline(xintercept = 2005, linetype="dotted", size = 0.3) +
+    geom_vline(xintercept = 2008, linetype="dotted", size = 0.3) +
+    geom_vline(xintercept = 2013, linetype="dotted", size = 0.3) +
+    geom_text(aes(x=2008, label="\nPHASE II", y=75), colour="black", angle=90) +
+    geom_text(aes(x=2013, label="\nPHASE III", y=75), colour="black", angle=90) +
+    geom_text(aes(x=2005, label="\nPHASE I", y=75), colour="black", angle=90)
+  ggsave(filename = "./4σέλιδο/total GHG Emissions.svg", plot = my_plot, device = "svg")
+}
