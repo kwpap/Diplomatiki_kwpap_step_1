@@ -1914,11 +1914,15 @@ Fotakis_s <- function(){
     xlab("Verified 2008") + 
     ylab("Free") 
 }
-
+#-------------------------------------------------------------------------------------------------------------
 Peirama_1 <-function(){
-  temp <- read_data_2(year = 2005)
-  temp$Phase <- "Phase I"
-  temp$year <- 2006
+  temp <- read_data_2(year = 2004)
+  temp$Phase <- "0"
+  temp$year <- 2004
+  temp2 <- read_data_2(year = 2005)
+  temp2$Phase <- "Phase I"
+  temp2$year <- 2005
+  temp <- rbind(temp, temp2)
   for (i in 2006:2007){
     temp2 <- read_data_2(year = i)
     temp2$Phase <- "Phase I"
@@ -1957,13 +1961,30 @@ Peirama_1 <-function(){
     }
   }
 
-  tem <- temp[which(temp$Phase == "Phase III" & temp$partition =="First" ),]
-  tem$actual_agri <- tem$Agriculture*tem$GDPpc*tem$Population
-  tem$actual_ind <- tem$Industry*tem$GDPpc*tem$Population
-  tem$actual_manu <- tem$Manufacturing*tem$GDPpc*tem$Population
-  tem$tot_and_EI <- tem$Total_energy_supply*tem$Energy_Intensity
+
+  temp$actual_agri <- temp$Agriculture*temp$GDPpc*temp$Population
+  temp$actual_ind <- temp$Industry*temp$GDPpc*temp$Population
+  temp$actual_manu <- temp$Manufacturing*temp$GDPpc*temp$Population
+  temp$tot_and_EI <- temp$Total_energy_supply*temp$Energy_Intensity
+
+temp$last_verified <- 0
+for (i in 1:nrow(temp)){
+  a <- temp[i,]
+  for (j in 1:nrow(temp)){
+    b <- temp[j,]
+    if (a$GEO == b$GEO & a$year == b$year + 1){
+      temp$last_verified[i] <- b$Verified_emissions
+    }
+  }
+}
+temp[which(temp$GEO == "Greece"),][c(1,2,3,13,19)]
+
   best <- 0
   ind <- 1
+  tem <- temp[which(temp$Phase == "Phase III" & temp$partition =="First" ),]
+  
+
+
   for (i in 3:ncol(tem)){
     if(i == 12 | i == 13 | i == 14){ 
       next
@@ -1977,6 +1998,7 @@ Peirama_1 <-function(){
     print(jjj)
     rrr[i,4] <- jjj
   }
+
 
   
   
@@ -2224,7 +2246,50 @@ Peirama_1 <-function(){
     xlab("Log 10 of Total_energy_supply*Energy_Intensity") + 
     ylab("Log 10 of Free Allocation in t CO2 equivalent") +
     labs(title = ",20 All", color = "Cluster")
-
+  
+  
+  tep <- temp[-which(temp$Free == 0),]
+  tep <- tep[-which(tep$last_verified == 0),]  
+  tep$year <- as.integer(tep$year)
+  lm1 <- lm(tep$Free[which(tep$Phase == "Phase I")] ~tep$last_verified[which(tep$Phase == "Phase I")])
+  lm2 <- lm(tep$Free[which(tep$Phase == "Phase II")] ~tep$last_verified[which(tep$Phase == "Phase II")])
+  lm3 <- lm(tep$Free[which(tep$Phase == "Phase III" & tep$GEO != "Malta")] ~tep$last_verified[which(tep$Phase == "Phase III" & tep$GEO != "Malta")])
+  
+  summary(lm3)
+  my_plot <- ggplot(tep[which(tep$Phase == "Phase III" & tep$GEO != "Malta"),])+
+  labs(title = "Phase III of EU ETS")+
+    scale_x_log10()+
+    scale_y_log10() +
+  geom_point( aes(x = last_verified, y = Free, alpha = factor(year)))+
+  geom_smooth(aes(x = last_verified, y = Free),method = "lm", se = FALSE, color = "black", size =0.5)+
+  geom_line(aes(x = last_verified, y = Free, group = GEO, alpha = factor(year)))+
+    scale_alpha_discrete(name = "Year")+
+    annotate(
+      "text",
+      x = max(tep$last_verified),  # Set x to the maximum x-value
+      y = min(tep$Free),  # Set y to the minimum y-value
+      label = "Multiple R-squared:  0.9058
+      Adjusted R-squared:  0.9053
+      p-value: < 2.2e-16",
+      vjust = 0,  # Adjust vertical alignment
+      hjust = 1   # Adjust horizontal alignment
+    )+
+    xlab("Last year's verified emissions (log)") + 
+    ylab("Free Allocation in t CO2 equivalent (log)") +
+    theme(panel.background = element_rect(fill = rgb(220/255, 220/255, 220/255)),
+          axis.title.x = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          axis.title.y = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          title = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"))
+  ggsave(filename = "./4σέλιδο/Phase_III.svg", plot = my_plot, device = "svg")
+  
+  
+   
+  ggplot(temp[which(temp$Phase == "Phase I"),])+
+    labs(title = "Presentation 2", color = "Cluster")+
+    geom_point( aes(x = Verified_emissions, y = Free, color = partition, alpha = year))+
+    geom_smooth(aes(x = Verified_emissions, y = Free),method = "lm", se = FALSE, color = "black", size =0.5)+
+    geom_line(aes(x = Verified_emissions, y = Free, color = partition, group = GEO, alpha = year))
+  
 }
 
 Kosta_eisai_vlakas_grapse_to_lp <- function(){
@@ -2403,7 +2468,6 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
     }
   gg2 <-gg2[order(gg2$efficiency, decreasing = TRUE),]
   xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
-  gg3 <- 
 
 
 }
