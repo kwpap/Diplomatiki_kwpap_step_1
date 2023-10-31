@@ -1,0 +1,20 @@
+will_use_log <- FALSE
+year_for_comparison <- 2017
+will_use_total_energy_supply <- TRUE
+will_use_inflation <- TRUE
+will_use_GDPpc <- TRUE 
+will_use_population <- TRUE
+will_use_agriculture <- TRUE
+will_use_verified_emisions <- TRUE
+will_use_  <- TRUE
+will_use_industry <- TRUE
+will_use_manufacturing <- TRUE
+will_normalise <- FALSE
+force_fresh_data <- TRUE
+use_mean_for_missing_data <- TRUE
+will_use_free <- TRUE
+will_use_energy_intensity <- TRUE
+Manufacturing_Industry_Agriculture_as_percentage <- TRUE
+cached_data <- hash()
+cached_free <- hash()
+
