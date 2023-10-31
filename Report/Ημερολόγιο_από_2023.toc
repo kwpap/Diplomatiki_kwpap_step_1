@@ -61,4 +61,7 @@
 \contentsline {subsection}{\numberline {14.1}Polution Permits: Efficiency by Design}{52}{subsection.14.1}%
 \contentsline {subsection}{\numberline {14.2}Παρουσίαση για το paper}{52}{subsection.14.2}%
 \contentsline {subsection}{\numberline {14.3}1 sector}{52}{subsection.14.3}%
-\contentsline {section}{\numberline {15}Πηγές, από 23/5/23}{52}{section.15}%
+\contentsline {section}{\numberline {15}Συνάντηση στο ΜΟΠ 10/10/23}{52}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Προεκκύπτοντα ερωτήματα}{52}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Προτεινόμενοι στόχοι}{52}{subsection.15.2}%
+\contentsline {section}{\numberline {16}Πηγές, από 23/5/23}{53}{section.16}%
