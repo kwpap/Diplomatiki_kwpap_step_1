@@ -1,15 +1,15 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.8.17)  14 NOV 2023 17:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.5.16)  12 DEC 2023 13:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./Ημερολόγιο_από_2023.tex
 (Ημερολόγιο_από_2023.tex
-LaTeX2e <2023-06-01> patch level 1
-L3 programming layer <2023-06-30>
+LaTeX2e <2022-11-01> patch level 1
+L3 programming layer <2023-03-30>
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
-File: size10.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+File: size10.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
 \c@section=\count186
@@ -34,7 +34,7 @@ Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks17
+\KV@toks@=\toks16
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
@@ -91,7 +91,7 @@ Package: array 2022/09/04 v2.5g Tabular extension package (FMi)
 \col@sep=\dimen143
 \ar@mcellbox=\box52
 \extrarowheight=\dimen144
-\NC@list=\toks18
+\NC@list=\toks17
 \extratabsurround=\skip61
 \backup@length=\skip62
 \ar@cellbox=\box53
@@ -102,10 +102,10 @@ Package: array 2022/09/04 v2.5g Tabular extension package (FMi)
 \TX@target=\dimen148
 \TX@delta=\dimen149
 \TX@cols=\count196
-\TX@ftn=\toks19
+\TX@ftn=\toks18
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
-Package: amsmath 2023/05/13 v2.17o AMS math features
+Package: amsmath 2022/04/08 v2.17n AMS math features
 \@mathmargin=\skip63
 
 For additional information on amsmath, use the `?' option.
@@ -114,7 +114,7 @@ Package: amstext 2021/08/26 v2.01 AMS text
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks20
+\@emptytoks=\toks19
 \ex@=\dimen150
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
@@ -154,21 +154,21 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \dotsspace@=\muskip16
 \c@parentequation=\count270
 \dspbrk@lvl=\count271
-\tag@help=\toks21
+\tag@help=\toks20
 \row@=\count272
 \column@=\count273
 \maxfields@=\count274
-\andhelp@=\toks22
+\andhelp@=\toks21
 \eqnshift@=\dimen153
 \alignsep@=\dimen154
 \tagshift@=\dimen155
 \tagwidth@=\dimen156
 \totwidth@=\dimen157
 \lineht@=\dimen158
-\@envbody=\toks23
+\@envbody=\toks22
 \multlinegap=\skip64
 \multlinetaggap=\skip65
-\mathdisplay@stack=\toks24
+\mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
 )
@@ -196,17 +196,17 @@ Package color Info: Driver file: pdftex.def on input line 149.
 Package: enumitem 2019/06/20 v3.9 Customized lists
 \labelindent=\skip66
 \enit@outerparindent=\dimen159
-\enit@toks=\toks25
+\enit@toks=\toks24
 \enit@inbox=\box56
 \enit@count@id=\count275
 \enitdp@description=\count276
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty
 Package: inputenc 2021/02/14 v1.3d Input encoding file
-\inpenc@prehook=\toks26
-\inpenc@posthook=\toks27
+\inpenc@prehook=\toks25
+\inpenc@posthook=\toks26
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
-Package: babel 2023/07/15 v3.92 The Babel package
+Package: babel 2023/03/28 3.87 The Babel package
 \babel@savecnt=\count277
 \U@D=\dimen160
 \l@unhyphenated=\language79
@@ -223,7 +223,7 @@ File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
  babel
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/babel-greek\greek.ldf
-Language: greek 2023-06-01 1.13.2 Greek support for the babel system
+Language: greek 2023/03/17 1.13.1 Greek support for the babel system
 \bbl@monogreek=\count279
 \bbl@polygreek=\count280
 \bbl@ancientgreek=\count281
@@ -589,7 +589,8 @@ File: lgrenc.dfu 2023-03-21 1.9 UTF-8 support for Greek
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\greek-fo
 ntenc.def
-File: greek-fontenc.def 2023-06-01 2.3 Common Greek font encoding definitions
+File: greek-fontenc.def 2023/03/08 2.2.1 Common Greek font encoding definitions
+
 )))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/babel-english\english.
 ldf
@@ -627,7 +628,7 @@ er Verdier <olivier.verdier@gmail.com>
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
 \lst@mode=\count282
 \lst@gtempboxa=\box57
-\lst@token=\toks28
+\lst@token=\toks27
 \lst@length=\count283
 \lst@currlwidth=\dimen161
 \lst@column=\count284
@@ -671,7 +672,7 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1376.
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.st
 y
-Package: tcolorbox 2023/06/19 version 6.0.4 text color boxes
+Package: tcolorbox 2023/03/17 version 6.0.3 text color boxes
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
 
@@ -679,7 +680,7 @@ Package: tcolorbox 2023/06/19 version 6.0.4 text color boxes
 ty
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
 l-common.tex
-\pgfutil@everybye=\toks29
+\pgfutil@everybye=\toks28
 \pgfutil@tempdima=\dimen165
 \pgfutil@tempdimb=\dimen166
 )
@@ -705,12 +706,12 @@ Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
 s.code.tex
-\pgfkeys@pathtoks=\toks30
-\pgfkeys@temptoks=\toks31
+\pgfkeys@pathtoks=\toks29
+\pgfkeys@temptoks=\toks30
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
 slibraryfiltered.code.tex
-\pgfkeys@tmptoks=\toks32
+\pgfkeys@tmptoks=\toks31
 ))
 \pgf@x=\dimen167
 \pgf@y=\dimen168
@@ -728,9 +729,9 @@ slibraryfiltered.code.tex
 \c@pgf@countb=\count291
 \c@pgf@countc=\count292
 \c@pgf@countd=\count293
-\t@pgf@toka=\toks33
-\t@pgf@tokb=\toks34
-\t@pgf@tokc=\toks35
+\t@pgf@toka=\toks32
+\t@pgf@tokb=\toks33
+\t@pgf@tokc=\toks34
 \pgf@sys@id@count=\count294
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
@@ -770,9 +771,9 @@ er.code.tex
 \pgfmath@dimen=\dimen177
 \pgfmath@count=\count297
 \pgfmath@box=\box60
-\pgfmath@toks=\toks36
-\pgfmath@stack@operand=\toks37
-\pgfmath@stack@operation=\toks38
+\pgfmath@toks=\toks35
+\pgfmath@stack@operand=\toks36
+\pgfmath@stack@operation=\toks37
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
 tions.code.tex)
@@ -920,8 +921,8 @@ Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
 Package: verbatim 2022-07-02 v1.5u LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks39
-\verbatim@line=\toks40
+\every@verbatim=\toks38
+\verbatim@line=\toks39
 \verbatim@in@stream=\read4
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
@@ -949,9 +950,9 @@ Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count306
-\float@exts=\toks41
+\float@exts=\toks40
 \float@box=\box74
-\@float@everytoks=\toks42
+\@float@everytoks=\toks41
 \@floatcapt=\box75
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
@@ -974,18 +975,18 @@ Package: iftex 2022/02/03 v1.0f TeX engine tests
 \Gm@layoutheight=\dimen265
 \Gm@layouthoffset=\dimen266
 \Gm@layoutvoffset=\dimen267
-\Gm@dimlist=\toks43
+\Gm@dimlist=\toks42
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.sty
 Package: colortbl 2022/06/20 v1.0f Color table columns (DPC)
-\everycr=\toks44
+\everycr=\toks43
 \minrowclearance=\skip67
 \rownum=\count310
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tools\afterpage.sty
 Package: afterpage 2014/10/28 v1.08 After-Page Package (DPC)
-\AP@output=\toks45
+\AP@output=\toks44
 \AP@partial=\box76
 \AP@footins=\box77
 )
@@ -1022,7 +1023,7 @@ Package caption Info: New subtype `subtable' on input line 239.
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \rotheadsize=\dimen276
 \c@nlinenum=\count315
-\TeXr@lab=\toks46
+\TeXr@lab=\toks45
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.st
 y
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
@@ -1045,7 +1046,7 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisrulewidth=\dimen289
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
-Package: hyperref 2023-07-08 v7.01b Hypertext links for LaTeX
+Package: hyperref 2023-02-07 v7.00v Hypertext links for LaTeX
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
@@ -1086,7 +1087,7 @@ Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
 Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
-Package: nameref 2023-08-07 v2.53 Cross-referencing by name of section
+Package: nameref 2022-05-17 v2.50 Cross-referencing by name of section
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
@@ -1106,44 +1107,43 @@ Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 \Hy@pagecounter=\count322
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
-File: pd1enc.def 2023-07-08 v7.01b Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2023-02-07 v7.00v Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/etexcmds\etexcmds.st
+y
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
 \Hy@SavedSpaceFactor=\count323
-(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
-File: puenc.def 2023-07-08 v7.01b Hyperref: PDF Unicode definition (HO)
+ (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2023-02-07 v7.00v Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 
-(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\puenc-gr
-eek.def
-File: puenc-greek.def 2023/03/08 2.2.1 Greek LICRs for PDF strings
-
-(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\greek-fo
-ntenc.def
-File: greek-fontenc.def 2023-06-01 2.3 Common Greek font encoding definitions
-)))
-Package hyperref Info: Option `unicode' set `true' on input line 4050.
-Package hyperref Info: Hyper figures OFF on input line 4167.
-Package hyperref Info: Link nesting OFF on input line 4172.
-Package hyperref Info: Hyper index ON on input line 4175.
-Package hyperref Info: Plain pages OFF on input line 4182.
-Package hyperref Info: Backreferencing OFF on input line 4187.
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc-greekba
+sic.def
+File: puenc-greekbasic.def 2023-02-07 v7.00v Hyperref: PDF Unicode definition (
+greek block) (HO)
+))
+Package hyperref Info: Option `unicode' set `true' on input line 4060.
+Package hyperref Info: Hyper figures OFF on input line 4177.
+Package hyperref Info: Link nesting OFF on input line 4182.
+Package hyperref Info: Hyper index ON on input line 4185.
+Package hyperref Info: Plain pages OFF on input line 4192.
+Package hyperref Info: Backreferencing OFF on input line 4197.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
-Package hyperref Info: Bookmarks ON on input line 4434.
+Package hyperref Info: Bookmarks ON on input line 4425.
 \c@Hy@tempcnt=\count324
-
-(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+ (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-LaTeX Info: Redefining \url on input line 4772.
+LaTeX Info: Redefining \url on input line 4763.
 \XeTeXLinkMargin=\dimen291
-
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 
@@ -1155,13 +1155,13 @@ Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 \Fld@menulength=\count325
 \Field@Width=\dimen292
 \Fld@charsize=\dimen293
-Package hyperref Info: Hyper figures OFF on input line 6051.
-Package hyperref Info: Link nesting OFF on input line 6056.
-Package hyperref Info: Hyper index ON on input line 6059.
-Package hyperref Info: backreferencing OFF on input line 6066.
-Package hyperref Info: Link coloring OFF on input line 6071.
-Package hyperref Info: Link coloring with OCG OFF on input line 6076.
-Package hyperref Info: PDF/A mode OFF on input line 6081.
+Package hyperref Info: Hyper figures OFF on input line 6042.
+Package hyperref Info: Link nesting OFF on input line 6047.
+Package hyperref Info: Hyper index ON on input line 6050.
+Package hyperref Info: backreferencing OFF on input line 6057.
+Package hyperref Info: Link coloring OFF on input line 6062.
+Package hyperref Info: Link coloring with OCG OFF on input line 6067.
+Package hyperref Info: PDF/A mode OFF on input line 6072.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
@@ -1173,7 +1173,7 @@ package with kernel methods
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
  (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
-File: hpdftex.def 2023-07-08 v7.01b Hyperref driver for pdfTeX
+File: hpdftex.def 2023-02-07 v7.00v Hyperref driver for pdfTeX
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
@@ -1198,7 +1198,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
 ftex.def
-File: l3backend-pdftex.def 2023-04-19 L3 backend support: PDF output (pdfTeX)
+File: l3backend-pdftex.def 2023-03-30 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count331
 \l__pdf_internal_box=\box78
 ) (Ημερολόγιο_από_2023.aux
@@ -1251,12 +1251,12 @@ kii
 \scratchbox=\box79
 \nofMPsegments=\count333
 \nofMParguments=\count334
-\everyMPshowfont=\toks47
+\everyMPshowfont=\toks46
 \MPscratchCnt=\count335
 \MPscratchDim=\dimen295
 \MPnumerator=\count336
 \makeMPintoPDFobject=\count337
-\everyMPtoPDFconversion=\toks48
+\everyMPtoPDFconversion=\toks47
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
 base.sty
@@ -1267,6 +1267,15 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.
 cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\puenc-gr
+eek.def
+File: puenc-greek.def 2023/03/08 2.2.1 Greek LICRs for PDF strings
+
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\greek-fo
+ntenc.def
+File: greek-fontenc.def 2023/03/08 2.2.1 Common Greek font encoding definitions
+
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/greek-fontenc\alphabet
 a-lgr.def
@@ -1385,7 +1394,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 
 [3] [4] [5]
-<images/Hungary 2017.png, id=446, 1003.75pt x 1003.75pt>
+<images/Hungary 2017.png, id=456, 1003.75pt x 1003.75pt>
 File: images/Hungary 2017.png Graphic file (type png)
 <use images/Hungary 2017.png>
 Package pdftex.def Info: images/Hungary 2017.png  used on input line 205.
@@ -1395,31 +1404,31 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
 [7 <./images/Hungary 2017.png>]
-<images/Malta 2017.png, id=460, 1003.75pt x 1003.75pt>
+<images/Malta 2017.png, id=470, 1003.75pt x 1003.75pt>
 File: images/Malta 2017.png Graphic file (type png)
 <use images/Malta 2017.png>
 Package pdftex.def Info: images/Malta 2017.png  used on input line 216.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Greece 2017.png, id=461, 1003.75pt x 1003.75pt>
+<images/Greece 2017.png, id=471, 1003.75pt x 1003.75pt>
 File: images/Greece 2017.png Graphic file (type png)
 <use images/Greece 2017.png>
 Package pdftex.def Info: images/Greece 2017.png  used on input line 223.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Germany 2017.png, id=462, 1003.75pt x 1003.75pt>
+<images/Germany 2017.png, id=472, 1003.75pt x 1003.75pt>
 File: images/Germany 2017.png Graphic file (type png)
 <use images/Germany 2017.png>
 Package pdftex.def Info: images/Germany 2017.png  used on input line 230.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
  [8 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 2017
 .png>]
-<images/2017 r^2 vs GDP.png, id=473, 1003.75pt x 1003.75pt>
+<images/2017 r^2 vs GDP.png, id=483, 1003.75pt x 1003.75pt>
 File: images/2017 r^2 vs GDP.png Graphic file (type png)
 <use images/2017 r^2 vs GDP.png>
 Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 272.
 (pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
  [9 <./images/2017 r^2 vs GDP.png>]
 [10]
-<images/plot.jpg, id=495, 601.4972pt x 644.4075pt>
+<images/plot.jpg, id=505, 601.4972pt x 644.4075pt>
 File: images/plot.jpg Graphic file (type jpg)
 <use images/plot.jpg>
 Package pdftex.def Info: images/plot.jpg  used on input line 369.
@@ -1449,7 +1458,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 509--510
  []
 
 [15]
-<images/Boxplot Population Normalized vs Country.png, id=534, 440.39531pt x 316
+<images/Boxplot Population Normalized vs Country.png, id=544, 440.39531pt x 316
 .93407pt>
 File: images/Boxplot Population Normalized vs Country.png Graphic file (type pn
 g)
@@ -1457,7 +1466,7 @@ g)
 Package pdftex.def Info: images/Boxplot Population Normalized vs Country.png  u
 sed on input line 570.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Boxplot Population in Millions vs Country.png, id=535, 440.39531pt x 31
+<images/Boxplot Population in Millions vs Country.png, id=545, 440.39531pt x 31
 6.93407pt>
 File: images/Boxplot Population in Millions vs Country.png Graphic file (type p
 ng)
@@ -1474,13 +1483,13 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 [17 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
 opulation in Millions vs Country.png>]
-<images/boxplot_inflation_raw.png, id=548, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_raw.png, id=558, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_raw.png Graphic file (type png)
 <use images/boxplot_inflation_raw.png>
 Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 6
 31.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_inflation_normalized.png, id=549, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_normalized.png, id=559, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_normalized.png Graphic file (type png)
 <use images/boxplot_inflation_normalized.png>
 Package pdftex.def Info: images/boxplot_inflation_normalized.png  used on input
@@ -1501,12 +1510,12 @@ Underfull \vbox (badness 1675) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [21]
-<images/Boxplot_Verified.png, id=573, 440.39531pt x 316.93407pt>
+<images/Boxplot_Verified.png, id=583, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Verified.png Graphic file (type png)
 <use images/Boxplot_Verified.png>
 Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 780.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_verified_log.png, id=574, 440.39531pt x 316.93407pt>
+<images/boxplot_verified_log.png, id=584, 440.39531pt x 316.93407pt>
 File: images/boxplot_verified_log.png Graphic file (type png)
 <use images/boxplot_verified_log.png>
 Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 78
@@ -1520,7 +1529,7 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
 [23 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
-<images/Boxplot_Agriculture.png, id=586, 440.39531pt x 316.93407pt>
+<images/Boxplot_Agriculture.png, id=596, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Agriculture.png Graphic file (type png)
 <use images/Boxplot_Agriculture.png>
 Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 839
@@ -1531,7 +1540,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [24]
 [25 <./images/Boxplot_Agriculture.png>] [26]
-<images/boxplot_Manufacturing.png, id=604, 440.39531pt x 316.93407pt>
+<images/boxplot_Manufacturing.png, id=614, 440.39531pt x 316.93407pt>
 File: images/boxplot_Manufacturing.png Graphic file (type png)
 <use images/boxplot_Manufacturing.png>
 Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 9
@@ -1565,7 +1574,7 @@ Overfull \hbox (45.60533pt too wide) in paragraph at lines 1156--1171
  [][] 
  []
 
-<images/Clustering.png, id=632, 811.3512pt x 716.1957pt>
+<images/Clustering.png, id=642, 811.3512pt x 716.1957pt>
 File: images/Clustering.png Graphic file (type png)
 <use images/Clustering.png>
 Package pdftex.def Info: images/Clustering.png  used on input line 1177.
@@ -1577,7 +1586,7 @@ Underfull \vbox (badness 2564) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [33]
-<images/Clustering_per_capita.png, id=644, 749.9217pt x 753.0534pt>
+<images/Clustering_per_capita.png, id=654, 749.9217pt x 753.0534pt>
 File: images/Clustering_per_capita.png Graphic file (type png)
 <use images/Clustering_per_capita.png>
 Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
@@ -1585,20 +1594,20 @@ Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
 (pdftex.def)             Requested size: 314.40001pt x 315.71722pt.
 
 [34 <./images/Clustering.png>] [35 <./images/Clustering_per_capita.png>]
-<images/Distances from Lithuania.png, id=661, 440.39531pt x 316.93407pt>
+<images/Distances from Lithuania.png, id=671, 440.39531pt x 316.93407pt>
 File: images/Distances from Lithuania.png Graphic file (type png)
 <use images/Distances from Lithuania.png>
 Package pdftex.def Info: images/Distances from Lithuania.png  used on input lin
 e 1363.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Denmark, third Cluster.png, id=662, 440.39531pt x 316.93
+<images/Distances from Denmark, third Cluster.png, id=672, 440.39531pt x 316.93
 407pt>
 File: images/Distances from Denmark, third Cluster.png Graphic file (type png)
 <use images/Distances from Denmark, third Cluster.png>
 Package pdftex.def Info: images/Distances from Denmark, third Cluster.png  used
  on input line 1366.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Italy.png, id=663, 440.39531pt x 316.93407pt>
+<images/Distances from Italy.png, id=673, 440.39531pt x 316.93407pt>
 File: images/Distances from Italy.png Graphic file (type png)
 <use images/Distances from Italy.png>
 Package pdftex.def Info: images/Distances from Italy.png  used on input line 13
@@ -1628,7 +1637,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [41]
 [42] [43]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=741, 1673.25125
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=751, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
@@ -1637,7 +1646,7 @@ Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
 .jpg  used on input line 1647.
 (pdftex.def)             Requested size: 338.58632pt x 212.85414pt.
  [44 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=747, 605.76312pt x 410.031
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=757, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
@@ -1655,14 +1664,14 @@ ons-[]trading-[]scheme-[]17 #
  []
 
 [46]
-<images/Calculated_EI_EI_Combustion.png, id=764, 465.23813pt x 349.305pt>
+<images/Calculated_EI_EI_Combustion.png, id=774, 465.23813pt x 349.305pt>
 File: images/Calculated_EI_EI_Combustion.png Graphic file (type png)
 <use images/Calculated_EI_EI_Combustion.png>
 Package pdftex.def Info: images/Calculated_EI_EI_Combustion.png  used on input 
 line 1750.
 (pdftex.def)             Requested size: 338.58632pt x 254.223pt.
  [47 <./images/Calculated_EI_EI_Combustion.png>]
-<images/Calculated_RI_gdpps.png, id=774, 616.55344pt x 349.305pt>
+<images/Calculated_RI_gdpps.png, id=784, 616.55344pt x 349.305pt>
 File: images/Calculated_RI_gdpps.png Graphic file (type png)
 <use images/Calculated_RI_gdpps.png>
 Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 177
@@ -1674,7 +1683,7 @@ LaTeX Font Info:    Trying to load font information for LGR+cmtt on input line
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmtt.fd
 File: lgrcmtt.fd 2017/07/29 v1.2 Greek European Computer Typewriter
 )
-<images/calculated_without_austria_lithuania_finland.png, id=775, 611.28375pt x
+<images/calculated_without_austria_lithuania_finland.png, id=785, 611.28375pt x
  349.305pt>
 File: images/calculated_without_austria_lithuania_finland.png Graphic file (typ
 e png)
@@ -1759,39 +1768,41 @@ LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
 
 LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
 
-[55] [56]
-Underfull \hbox (badness 2368) in paragraph at lines 2160--2162
+[55] [56] [57]
+Underfull \hbox (badness 2368) in paragraph at lines 2184--2186
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2160--2162
+Underfull \hbox (badness 10000) in paragraph at lines 2184--2186
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
 
-[57] [58] (Ημερολόγιο_από_2023.aux)
- ***********
-LaTeX2e <2023-06-01> patch level 1
-L3 programming layer <2023-06-30>
- ***********
-
+[58] (Ημερολόγιο_από_2023.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
-t changed.
-(rerunfilecheck)             Checksum: 3E204DD3126385D2264B337A63758D38;18918.
+
+Package rerunfilecheck Warning: File `Ημερολόγιο_από_2023.out' has
+ changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Ημερολόγιο_από_2023.ou
+t':
+(rerunfilecheck)             Before: FBB804EC5F6D4B2AB12EDA4CC2B5BD8C;19468
+(rerunfilecheck)             After:  26D5A699EB984749139BBE2D5323FD49;19673.
  ) 
 Here is how much of TeX's memory you used:
- 27938 strings out of 475550
- 519064 string characters out of 5762061
- 1963238 words of memory out of 5000000
- 48424 multiletter control sequences out of 15000+600000
- 572333 words of font info for 84 fonts, out of 8000000 for 9000
+ 28050 strings out of 476331
+ 524441 string characters out of 5787293
+ 1896660 words of memory out of 5000000
+ 47703 multiletter control sequences out of 15000+600000
+ 526551 words of font info for 80 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,17n,87p,1091b,955s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,17n,80p,1091b,953s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcr
 m1000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -1819,10 +1830,10 @@ cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1
 ts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Programs/Mi
 KTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/Users/Kostas/AppData/Local/Pro
 grams/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (58 pages, 1997500 bytes
+Output written on Ημερολόγιο_από_2023.pdf (58 pages, 2001696 bytes
 ).
 PDF statistics:
- 1029 PDF objects out of 1200 (max. 8388607)
- 269 named destinations out of 1000 (max. 500000)
- 757 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1049 PDF objects out of 1200 (max. 8388607)
+ 277 named destinations out of 1000 (max. 500000)
+ 773 words of extra memory for PDF output out of 10000 (max. 10000000)
 
