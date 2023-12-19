@@ -93,4 +93,3 @@ total_cap <- 10000  # Total cap of the system
     }
 
 # Solve the convex optimization problem for each company to find the optimal abatement and production level
-

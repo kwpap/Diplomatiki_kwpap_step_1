@@ -1,0 +1,1 @@
+#  Here, you create instances of your Firm class, potentially using data from data_generation.R, and set up your market model.
