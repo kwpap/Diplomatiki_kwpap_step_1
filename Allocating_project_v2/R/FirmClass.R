@@ -17,9 +17,9 @@ Company <- R6Class("Company",
         bau_production = NULL,
         new_production = NULL,
         pollution_func = NULL,
+        new_emissions = NULL,  # New field
 
-        # Initialize the company with necessary attributes
-        initialize = function(name, sector, country, bau_emissions, free_allocation, prod_cost_func, abate_cost_func, abate_cost_func_str, bau_production, new_production, pollution_func) {
+        initialize = function(name, sector, country, bau_emissions, free_allocation, prod_cost_func, abate_cost_func, abate_cost_func_str, bau_production, new_production, pollution_func, new_emissions) {
             self$name <- name
             self$sector <- sector
             self$country <- country
@@ -31,15 +31,16 @@ Company <- R6Class("Company",
             self$bau_production <- bau_production
             self$new_production <- new_production
             self$pollution_func <- pollution_func
+            self$new_emissions <- new_emissions  # Initialize new field
         },
 
-        # Method to show company details
-        show_details = function() {
+        show = function() {
             cat("Company Name:", self$name, "\n")
             cat("Sector:", self$sector, "\n")
             cat("Country:", self$country, "\n")
             cat("Free Allocation:", self$free_allocation, "\n")
             cat("BAU Emissions:", self$bau_emissions, "\n")
+            cat("New Emissions:", self$new_emissions, "\n")  # Show new field
             cat("Production Cost Function:", deparse(self$prod_cost_func), "\n")
             cat("Abatement Cost Function:", self$abate_cost_func_str, "\n")
             cat("Production:", self$bau_production, "\n")
@@ -47,11 +48,9 @@ Company <- R6Class("Company",
             cat("Pollution Function:", deparse(self$pollution_func), "\n")
             cat("Pollution:", self$pollution_func(10)/10, " * x", "\n")
         }
-
-        # Other methods as required...
     )
 )
 
 # Example of how to create an instance of the Company class
-example_company <- Company$new(name = "Company A", sector = "Energy", country = "Country X", bau_emissions = 1000, free_allocation = 500, prod_cost_func = function(x) x^2, abate_cost_func = function(x) 2*x, abate_cost_func_str = "2 * x", bau_production = 100, new_production = 120, pollution_func = function(x) 0.1*x)
-example_company$show_details()
+example_company <- Company$new(name = "Company A", sector = "Energy", country = "Country X", bau_emissions = 1000, free_allocation = 500, prod_cost_func = function(x) x^2, abate_cost_func = function(x) 2*x, abate_cost_func_str = "2 * x", bau_production = 100, new_production = 120, pollution_func = function(x) 0.1*x, new_emissions = 900)
+example_company

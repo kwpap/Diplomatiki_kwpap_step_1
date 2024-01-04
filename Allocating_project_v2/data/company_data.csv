@@ -1,0 +1,3 @@
+name,sector,country,bau_emissions,free_allocation,prod_cost_func_str,abate_cost_func_str,bau_production,new_production,pollution_func_str
+Company A,Energy,Greece,1000,500,function(x) { return(0) },function(x) { return(100 * x^2 + 50 * x) },10000,0,function(x) { return(1 * x) }
+Company B,Energy,Greece,2000,1000,function(x) { return(0) },function(x) { return(150 * x^2) },20000,0,function(x) { return(1.1 * x) }

@@ -8,7 +8,7 @@ AllowanceDistributor <- R6Class("AllowanceDistributor",
 
         # Initialize with total cap
         initialize = function(total_cap) {
-            self$total_cap = total_cap
+            self$total_cap <- total_cap
         },
 
         # Method to allocate free allowances
@@ -25,5 +25,5 @@ AllowanceDistributor <- R6Class("AllowanceDistributor",
 )
 
 # Example of using the AllowanceDistributor
-distributor <- AllowanceDistributor$new(total_cap = 10000)
-distributor$allocate_free_allowances(company_list) # company_list should be a list of Company objects
+#distributor <- AllowanceDistributor$new(total_cap = 10000)
+#distributor$allocate_free_allowances(company_list) # company_list should be a list of Company objects
