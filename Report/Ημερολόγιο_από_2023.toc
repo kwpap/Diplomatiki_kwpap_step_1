@@ -83,4 +83,7 @@
 \contentsline {section}{\numberline {19}Συνάντηση 14 Νοεμβρίου 2023 στο ΜΟΠ}{58}{section.19}%
 \contentsline {section}{\numberline {20}Συνάντηση 28 Νοεμβρίου 2023}{58}{section.20}%
 \contentsline {section}{\numberline {21}Συνάντηση στις 12/12/23}{58}{section.21}%
-\contentsline {section}{\numberline {22}Πηγές, από 23/5/23}{58}{section.22}%
+\contentsline {section}{\numberline {22}Συνάντηση στις 19/12/23}{58}{section.22}%
+\contentsline {section}{\numberline {23}Διαδικτυακή συνάντηση 27/2/24}{58}{section.23}%
+\contentsline {section}{\numberline {24}Επανεκκίνηση 22/4/24}{59}{section.24}%
+\contentsline {section}{\numberline {25}Πηγές, από 23/5/23}{59}{section.25}%
