@@ -1,0 +1,111 @@
+# Database Configuration
+db:
+  host: "localhost"
+  port: 3306
+  dbname: "eu_ets"
+  user: "root"
+  password: ""
+
+# Path Configurations
+paths:
+  base_dir: ".."  # Relative path going up one level from the R directory
+  data_dir: "../data"
+  raw_data_dir: "../data/raw"
+  processed_data_dir: "../data/processed"
+  output_dir: "../output"
+  results_dir: "../results"
+  figures_dir: "../results/figures"
+  tables_dir: "../results/tables"
+  docs_dir: "../docs"
+  config_dir: "../config"
+  tests_dir: "../tests"
+
+# Global Flags
+flags:
+  use_total_energy_supply: true
+  use_GDPpc: false
+  use_population: true
+  use_inflation: true
+  use_verified_emissions: false
+  use_agriculture: true
+  use_industry: true
+  use_manufacturing: true
+
+# Reporting Configurations
+reporting:
+  figures_dir: "../results/figures"
+  tables_dir: "../results/tables"
+
+# List of Countries with Data
+countries:
+  list_eur_countries:
+    - Austria
+    - Belgium
+    - Bulgaria
+    - Cyprus
+    - Denmark
+    - Estonia
+    - Finland
+    - France
+    - Germany
+    - Greece
+    - Hungary
+    - Ireland
+    - Italy
+    - Latvia
+    - Lithuania
+    - Luxembourg
+    - Malta
+    - Netherlands
+    - Poland
+    - Portugal
+    - Romania
+    - Slovenia
+    - Spain
+    - Sweden
+    - United Kingdom
+
+# Clustering on Features
+clusters:
+  - - France
+    - Germany
+    - Italy
+    - Poland
+    - Spain
+    - United Kingdom
+  - - Bulgaria
+    - Estonia
+    - Hungary
+    - Latvia
+    - Lithuania
+    - Romania
+  - - Austria
+    - Belgium
+    - Cyprus
+    - Denmark
+    - Finland
+    - Greece
+    - Ireland
+    - Luxembourg
+    - Malta
+    - Netherlands
+    - Portugal
+    - Slovenia
+    - Sweden
+
+#   # LIST OF COUNTRIES WITH DATA
+  
+# list_eur_countries <- c("Austria","Belgium", "Bulgaria","Cyprus",        
+#  "Denmark","Estonia", "Finland","France",   
+#  "Germany","Greece", "Hungary","Ireland",
+#  "Italy", "Latvia", "Lithuania","Luxembourg",   
+#  "Malta", "Netherlands", "Poland", "Portugal",
+#  "Romania", "Slovenia", "Spain", "Sweden",     
+#  "United Kingdom")
+  
+#   #Clustering on features as derived from the 2017 features.
+
+# clusters <- list(c("France","Germany","Italy","Poland","Spain","United Kingdom"), 
+#               c("Bulgaria","Estonia","Hungary","Latvia","Lithuania","Romania"), 
+#               c("Austria","Belgium","Cyprus","Denmark","Finland","Greece","Ireland",
+#                 "Luxembourg","Malta","Netherlands","Portugal","Slovenia","Sweden" ))
