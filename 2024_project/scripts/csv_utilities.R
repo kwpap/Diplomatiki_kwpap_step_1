@@ -2,7 +2,7 @@ library(readr)
 library(dplyr)
 
 # Function to read and process CSV files
-read_and_process_csv <- function(file_name, path = "../data", columns = NULL, rows = NULL, skip = 0, transpose = FALSE, rename_cols = NULL) {
+read_and_process_csv <- function(file_name, path = "./data/raw", columns = NULL, rows = NULL, skip = 0, transpose = FALSE, rename_cols = NULL) {
   # Construct the full file path
   full_path <- file.path(path, file_name)
   
@@ -32,3 +32,4 @@ read_and_process_csv <- function(file_name, path = "../data", columns = NULL, ro
   
   return(data)
 }
+

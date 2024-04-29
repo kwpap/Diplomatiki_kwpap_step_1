@@ -14,3 +14,4 @@ R_tests.R
 Data/Created_csvs/*.csv
 *.txt
 
+.Rproj.user
