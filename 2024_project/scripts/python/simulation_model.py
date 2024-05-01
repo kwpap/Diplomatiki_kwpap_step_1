@@ -1,12 +1,13 @@
 import sympy as sp
 
 class Sector:
-    def __init__(self, pollution_rate_expr, demand_curve_expr, abatement_cost_expr, production_cost_expr):
+    def __init__(self, pollution_rate_expr, demand_curve_expr, abatement_cost_expr, production_cost_expr, market):
         x = sp.symbols('x')
         self.pollution_rate_expr = pollution_rate_expr
         self.demand_curve_expr = demand_curve_expr
         self.abatement_cost_expr = abatement_cost_expr
         self.production_cost_expr = production_cost_expr
+        self.market = market
 
 
         self.pollution_rate_func = sp.lambdify(x, pollution_rate_expr, 'numpy')
@@ -22,17 +23,16 @@ class Sector:
 
 
 class Firm:
-    def __init__(self, sector, country, production_output, custom_exprs=None):
+    def __init__(self, sector, country, market, production_output, custom_exprs=None):
         # production_output q_i
         # emissions = x_i
         # free_allocation = \Phi(q_i)
         self.sector = sector
         self.country = country
         self.production_output = production_output
+        self.market = market
         self.free_allocation = 0
         self.emissions = 0
-
-
 
         x = sp.symbols('x')
 
@@ -53,6 +53,9 @@ class Firm:
         self.demand_curve_func = sp.lambdify(x, self.demand_curve_expr, 'numpy')
         self.abatement_cost_func = sp.lambdify(x, self.abatement_cost_expr, 'numpy')
         self.production_cost_func = sp.lambdify(x, self.production_cost_expr, 'numpy')
+
+    def free_allocation_setter(self, a):
+        self.free_allocation = a
 
     def calculate_emissions(self):
         return self.pollution_rate_func(self.production_output)
@@ -77,18 +80,21 @@ class Firm:
         pass
 
 class Market:
-    def __init__(self):
-        self.companies = []
-        self.sectors = []
+    def __init__(self, regulator=None):
+        self.firms = []
+        self.sectors = set()
+        self.regulator = regulator
+        if regulator:
+            regulator.set_market(self)
         self.market_prices = {}
-        permmit_price = 0
+        self.permmit_price = 0
 
     def add_firm(self, firm):
-        self.companies.append(firm)
-        self.update_sectors()
+        self.firms.append(firm)
+        self.sectors.add(firm.sector)
 
     def update_sectors(self):
-        self.sectors = list(set([firm.sector for firm in self.companies]))
+        self.sectors = set(firm.sector for firm in self.firms)
 
 
 
@@ -111,6 +117,7 @@ class Market:
 
     def update_market_conditions(self):
         # Sequentially update market and permit prices and notify firms to adjust their outputs and emissions.
+        pass
 
     def run_optimization(self):
         # Define the objective function or constraints based on market needs
@@ -145,12 +152,24 @@ class Country:
         self.name = name
 
 class Regulator:
-    def __init__(self):
-        self.permit_allocation_strategy = None
+    def __init__(self, emission_cap = 1000, permit_allocation_strategy = 'linear', linear_coefficient = 0.1):
+        self.permit_allocation_strategy = permit_allocation_strategy
+        self.free_allocation = {}
+        self.productions = {}
+        self.emission_cap = emission_cap
+        self.linear_coefficient = linear_coefficient
+
+    def set_market(self, market):
+        self.market = market
+
 
     def allocate_permits(self):
-        # Allocate permits based on the strategy
-        pass
+        for firm in self.market.firms:
+            production_output = firm.production_output
+            allocation = self.linear_coefficient * production_output
+            firm.free_allocation = allocation
+            print(f"Allocated {allocation} permits to {firm.country.name}")
+
     def adjust_permit_policy(self):
         # Adjust permit policy based on market conditions
         pass
@@ -158,12 +177,20 @@ class Regulator:
 
 
 # Example usage
-x = sp.symbols('x')
-steel_sector = Sector(pollution_rate_expr=x**2, demand_curve_expr=-x + 50, abatement_cost_expr=2*x, production_cost_expr=x**2 + x + 1)
-usa = Country("USA")
-steel_firm = Firm(sector=steel_sector, country=usa)
 market = Market()
+regulator = Regulator()
+market.regulator = regulator
+regulator.set_market(market)
+
+x = sp.symbols('x')
+steel_sector = Sector(pollution_rate_expr=x**2, demand_curve_expr=-x + 50, abatement_cost_expr=2*x, production_cost_expr=x**2 + x + 1, market=market)
+usa = Country("USA")
+gr = Country("Greece")
+steel_firm = Firm(sector=steel_sector, country=usa, production_output=10, market=market)
+steel_firm2 = Firm(sector=steel_sector, country=gr, production_output=20, market=market)
 market.add_firm(steel_firm)
-market.run_optimization()
-market.show_companies()
-market.show_market_details()
+market.add_firm(steel_firm2)
+regulator.allocate_permits()
+# market.run_optimization()
+# market.show_companies()
+# market.show_market_details()
