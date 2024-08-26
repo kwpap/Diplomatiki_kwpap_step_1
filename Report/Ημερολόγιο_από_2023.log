@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  26 AUG 2024 17:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  26 AUG 2024 18:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1853,13 +1853,13 @@ LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
 [57]
 
 [58]
-Underfull \hbox (badness 2368) in paragraph at lines 2227--2229
+Underfull \hbox (badness 2368) in paragraph at lines 2231--2233
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2227--2229
+Underfull \hbox (badness 10000) in paragraph at lines 2231--2233
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
@@ -1882,10 +1882,10 @@ t changed.
 (rerunfilecheck)             Checksum: ED757481F84B36296D9055FA383EDFEF;20502.
  ) 
 Here is how much of TeX's memory you used:
- 28403 strings out of 473899
- 547686 string characters out of 5726028
+ 28404 strings out of 473899
+ 547714 string characters out of 5726028
  1972960 words of memory out of 5000000
- 50515 multiletter control sequences out of 15000+600000
+ 50516 multiletter control sequences out of 15000+600000
  572333 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,17n,107p,1091b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1917,7 +1917,7 @@ nts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Pr
 ograms/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/Users/Kostas/AppData/
 Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (60 pages, 2024897 bytes
+Output written on Ημερολόγιο_από_2023.pdf (60 pages, 2024993 bytes
 ).
 PDF statistics:
  1126 PDF objects out of 1200 (max. 8388607)
