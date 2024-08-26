@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  26 AUG 2024 20:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  26 AUG 2024 21:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1189,19 +1189,7 @@ ftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count336
 \l__pdf_internal_box=\box82
-) (Ημερολόγιο_από_2023.aux
-
-LaTeX Warning: Label `fig:/2017 r^2 vs GDP' multiply defined.
-
-
-LaTeX Warning: Label `fig:boxplot-Verified emissions-vs-country' multiply defin
-ed.
-
-
-LaTeX Warning: Label `sub@fig:boxplot-Verified emissions-vs-country' multiply d
-efined.
-
-)
+) (Ημερολόγιο_από_2023.aux)
 \openout1 = `Ημερολόγιο_από_2023.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
@@ -1221,7 +1209,8 @@ LaTeX Font Info:    ... okay on input line 66.
 LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 66.
 LaTeX Font Info:    Trying to load font information for LGR+cmr on input line 6
 6.
- (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmr.fd
+
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmr.fd
 File: lgrcmr.fd 2017/07/29 v1.2 Greek European Computer Regular
 )
 LaTeX Font Info:    ... okay on input line 66.
@@ -1382,7 +1371,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [4]
 
 [5]
-<images/Hungary 2017.png, id=482, 1003.75pt x 1003.75pt>
+<images/Hungary 2017.png, id=493, 1003.75pt x 1003.75pt>
 File: images/Hungary 2017.png Graphic file (type png)
 <use images/Hungary 2017.png>
 Package pdftex.def Info: images/Hungary 2017.png  used on input line 205.
@@ -1395,17 +1384,17 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [6]
 
 [7 <./images/Hungary 2017.png>]
-<images/Malta 2017.png, id=496, 1003.75pt x 1003.75pt>
+<images/Malta 2017.png, id=507, 1003.75pt x 1003.75pt>
 File: images/Malta 2017.png Graphic file (type png)
 <use images/Malta 2017.png>
 Package pdftex.def Info: images/Malta 2017.png  used on input line 216.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Greece 2017.png, id=497, 1003.75pt x 1003.75pt>
+<images/Greece 2017.png, id=508, 1003.75pt x 1003.75pt>
 File: images/Greece 2017.png Graphic file (type png)
 <use images/Greece 2017.png>
 Package pdftex.def Info: images/Greece 2017.png  used on input line 223.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Germany 2017.png, id=498, 1003.75pt x 1003.75pt>
+<images/Germany 2017.png, id=509, 1003.75pt x 1003.75pt>
 File: images/Germany 2017.png Graphic file (type png)
 <use images/Germany 2017.png>
 Package pdftex.def Info: images/Germany 2017.png  used on input line 230.
@@ -1414,7 +1403,7 @@ Package pdftex.def Info: images/Germany 2017.png  used on input line 230.
 
 [8 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 2017.
 png>]
-<images/2017 r^2 vs GDP.png, id=509, 1003.75pt x 1003.75pt>
+<images/2017 r^2 vs GDP.png, id=520, 1003.75pt x 1003.75pt>
 File: images/2017 r^2 vs GDP.png Graphic file (type png)
 <use images/2017 r^2 vs GDP.png>
 Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 272.
@@ -1424,7 +1413,7 @@ Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 272.
 [9 <./images/2017 r^2 vs GDP.png>]
 
 [10]
-<images/plot.jpg, id=531, 601.4972pt x 644.4075pt>
+<images/plot.jpg, id=542, 601.4972pt x 644.4075pt>
 File: images/plot.jpg Graphic file (type jpg)
 <use images/plot.jpg>
 Package pdftex.def Info: images/plot.jpg  used on input line 369.
@@ -1464,7 +1453,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 509--510
 
 
 [15]
-<images/Boxplot Population Normalized vs Country.png, id=570, 440.39531pt x 316
+<images/Boxplot Population Normalized vs Country.png, id=581, 440.39531pt x 316
 .93407pt>
 File: images/Boxplot Population Normalized vs Country.png Graphic file (type pn
 g)
@@ -1472,7 +1461,7 @@ g)
 Package pdftex.def Info: images/Boxplot Population Normalized vs Country.png  u
 sed on input line 570.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Boxplot Population in Millions vs Country.png, id=571, 440.39531pt x 31
+<images/Boxplot Population in Millions vs Country.png, id=582, 440.39531pt x 31
 6.93407pt>
 File: images/Boxplot Population in Millions vs Country.png Graphic file (type p
 ng)
@@ -1492,13 +1481,13 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 [17 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
 opulation in Millions vs Country.png>]
-<images/boxplot_inflation_raw.png, id=584, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_raw.png, id=595, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_raw.png Graphic file (type png)
 <use images/boxplot_inflation_raw.png>
 Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 6
 31.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_inflation_normalized.png, id=585, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_normalized.png, id=596, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_normalized.png Graphic file (type png)
 <use images/boxplot_inflation_normalized.png>
 Package pdftex.def Info: images/boxplot_inflation_normalized.png  used on input
@@ -1526,12 +1515,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [21]
-<images/Boxplot_Verified.png, id=609, 440.39531pt x 316.93407pt>
+<images/Boxplot_Verified.png, id=620, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Verified.png Graphic file (type png)
 <use images/Boxplot_Verified.png>
 Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 780.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_verified_log.png, id=610, 440.39531pt x 316.93407pt>
+<images/boxplot_verified_log.png, id=621, 440.39531pt x 316.93407pt>
 File: images/boxplot_verified_log.png Graphic file (type png)
 <use images/boxplot_verified_log.png>
 Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 78
@@ -1548,7 +1537,7 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
 [23 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
-<images/Boxplot_Agriculture.png, id=622, 440.39531pt x 316.93407pt>
+<images/Boxplot_Agriculture.png, id=633, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Agriculture.png Graphic file (type png)
 <use images/Boxplot_Agriculture.png>
 Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 839
@@ -1564,7 +1553,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [25 <./images/Boxplot_Agriculture.png>]
 
 [26]
-<images/boxplot_Manufacturing.png, id=640, 440.39531pt x 316.93407pt>
+<images/boxplot_Manufacturing.png, id=651, 440.39531pt x 316.93407pt>
 File: images/boxplot_Manufacturing.png Graphic file (type png)
 <use images/boxplot_Manufacturing.png>
 Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 9
@@ -1608,7 +1597,7 @@ Overfull \hbox (45.60533pt too wide) in paragraph at lines 1156--1171
  [][] 
  []
 
-<images/Clustering.png, id=668, 811.3512pt x 716.1957pt>
+<images/Clustering.png, id=679, 811.3512pt x 716.1957pt>
 File: images/Clustering.png Graphic file (type png)
 <use images/Clustering.png>
 Package pdftex.def Info: images/Clustering.png  used on input line 1177.
@@ -1624,7 +1613,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [33]
-<images/Clustering_per_capita.png, id=680, 749.9217pt x 753.0534pt>
+<images/Clustering_per_capita.png, id=691, 749.9217pt x 753.0534pt>
 File: images/Clustering_per_capita.png Graphic file (type png)
 <use images/Clustering_per_capita.png>
 Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
@@ -1635,20 +1624,20 @@ Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
 [34 <./images/Clustering.png>]
 
 [35 <./images/Clustering_per_capita.png>]
-<images/Distances from Lithuania.png, id=697, 440.39531pt x 316.93407pt>
+<images/Distances from Lithuania.png, id=708, 440.39531pt x 316.93407pt>
 File: images/Distances from Lithuania.png Graphic file (type png)
 <use images/Distances from Lithuania.png>
 Package pdftex.def Info: images/Distances from Lithuania.png  used on input lin
 e 1363.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Denmark, third Cluster.png, id=698, 440.39531pt x 316.93
+<images/Distances from Denmark, third Cluster.png, id=709, 440.39531pt x 316.93
 407pt>
 File: images/Distances from Denmark, third Cluster.png Graphic file (type png)
 <use images/Distances from Denmark, third Cluster.png>
 Package pdftex.def Info: images/Distances from Denmark, third Cluster.png  used
  on input line 1366.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Italy.png, id=699, 440.39531pt x 316.93407pt>
+<images/Distances from Italy.png, id=710, 440.39531pt x 316.93407pt>
 File: images/Distances from Italy.png Graphic file (type png)
 <use images/Distances from Italy.png>
 Package pdftex.def Info: images/Distances from Italy.png  used on input line 13
@@ -1692,7 +1681,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [42]
 
 [43]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=777, 1673.25125
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=788, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
@@ -1703,7 +1692,7 @@ Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
 
 
 [44 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=783, 605.76312pt x 410.031
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=794, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
@@ -1725,7 +1714,7 @@ ons-[]trading-[]scheme-[]17 #
 
 
 [46]
-<images/Calculated_EI_EI_Combustion.png, id=800, 465.23813pt x 349.305pt>
+<images/Calculated_EI_EI_Combustion.png, id=811, 465.23813pt x 349.305pt>
 File: images/Calculated_EI_EI_Combustion.png Graphic file (type png)
 <use images/Calculated_EI_EI_Combustion.png>
 Package pdftex.def Info: images/Calculated_EI_EI_Combustion.png  used on input 
@@ -1734,7 +1723,7 @@ line 1750.
 
 
 [47 <./images/Calculated_EI_EI_Combustion.png>]
-<images/Calculated_RI_gdpps.png, id=810, 616.55344pt x 349.305pt>
+<images/Calculated_RI_gdpps.png, id=821, 616.55344pt x 349.305pt>
 File: images/Calculated_RI_gdpps.png Graphic file (type png)
 <use images/Calculated_RI_gdpps.png>
 Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 177
@@ -1746,7 +1735,7 @@ LaTeX Font Info:    Trying to load font information for LGR+cmtt on input line
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmtt.fd
 File: lgrcmtt.fd 2017/07/29 v1.2 Greek European Computer Typewriter
 )
-<images/calculated_without_austria_lithuania_finland.png, id=811, 611.28375pt x
+<images/calculated_without_austria_lithuania_finland.png, id=822, 611.28375pt x
  349.305pt>
 File: images/calculated_without_austria_lithuania_finland.png Graphic file (typ
 e png)
@@ -1855,47 +1844,40 @@ LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
 [58]
 
 [59]
-Underfull \hbox (badness 2368) in paragraph at lines 2249--2251
+
+[60]
+Underfull \hbox (badness 2368) in paragraph at lines 2295--2297
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2249--2251
+Underfull \hbox (badness 10000) in paragraph at lines 2295--2297
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
 
 
 
-[60] (Ημερολόγιο_από_2023.aux)
+[61]
+
+[62] (Ημερολόγιο_από_2023.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
-
-Package rerunfilecheck Warning: File `Ημερολόγιο_από_2023.out' has
- changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Ημερολόγιο_από_2023.ou
-t':
-(rerunfilecheck)             Before: ED757481F84B36296D9055FA383EDFEF;20502
-(rerunfilecheck)             After:  0CE3319FD918725FC668A2568AC77232;21157.
+Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
+t changed.
+(rerunfilecheck)             Checksum: 192E9B1E87E097315733600F2BE97877;21434.
  ) 
 Here is how much of TeX's memory you used:
- 28410 strings out of 473899
- 547926 string characters out of 5726028
+ 28414 strings out of 473899
+ 547896 string characters out of 5726028
  1972960 words of memory out of 5000000
- 50521 multiletter control sequences out of 15000+600000
+ 50522 multiletter control sequences out of 15000+600000
  572333 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,17n,107p,1091b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 98i,17n,107p,1242b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcr
 m1000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -1924,10 +1906,10 @@ nts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Pr
 ograms/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/Users/Kostas/AppData/
 Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (60 pages, 2025883 bytes
+Output written on Ημερολόγιο_από_2023.pdf (62 pages, 2039165 bytes
 ).
 PDF statistics:
- 1127 PDF objects out of 1200 (max. 8388607)
- 308 named destinations out of 1000 (max. 500000)
- 813 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1146 PDF objects out of 1200 (max. 8388607)
+ 311 named destinations out of 1000 (max. 500000)
+ 829 words of extra memory for PDF output out of 10000 (max. 10000000)
 
