@@ -2323,11 +2323,22 @@ $$ p_s (\sum {q_j^*} \forall j | S(j) = S(i))- \tau (x_i^* - \Phi_i)- pr_i(q_i*)
 			
 		\end{lstlisting}
 		\item \lbrack x \rbrack Εκθέτες μεγαλύτεροι του 2 και πιο αναλυτικές βάσεις. (πάλι δεν έγινε ευθεία, ήθελε addGenConstrPow()). \textbf{ Αφού έγινε αυτό, γίνεται όλο και πιο ενδιαφέρουσα η χρήση των σειρών Taylor για να λυθεί το πρόβλημα.} Ειλικρινά θα αφαιρέσουν πολύ πολυπλοκότητα από εμένα που κάθομαι και προσπαθώ να φτιάξω έναν compiler από το πουθενά :Ρ
-		\item \lbrack\_\rbrack 
+		\item \lbrack\_\rbrack Κλάσματα προς το παρόν τα κάνει πανηλίθια. Για παράδειγμα το $\max \frac{x+3}{x}$ έγινε ένα τρομακτικό:
+		$$ 
+		$$
+		\begin{gather*}
+			\max_{x}\quad 3 \cdot aux\_1 + \frac{2 \cdot x \cdot aux\_0}{2} \\
+			\begin{aligned}
+				\textup{s.t.}\quad x + aux\_0  &==  0\\
+				\textup{General Const.} \quad aux\_1  &=  POW(aux\_0, -1) \\
+			\end{aligned}
+		\end{gather*}
+		Το οποίο μάλιστα υπολογίστηκε εντελώς λάθος. Νομίζω αυτό από μόνο του είναι ένας καλός περιορισμός για να μην χρησιμοποιηθούν κλάσματα στην διαδικασία όσο αυτό είναι εφικτό. 
 	\end{itemize}
 	
 	\item \lbrack\_\rbrack Είναι σημαντικό εδώ να τεθεί ο περιορισμός ότι μπορεί κάτι πολύ δύσκολο να πρέπει να λυθεί με προσέγγιση της πραγματικότητας με δεύτερου βαθμού σειρές Taylor γιατί όλα δείχνουν να αποτυγχάνουν στο gurobi, αλλά αυτό δεν μου αρέσει καθόλου, γιατί τότε δεν έχουν καμία εγγύηση πως δεν βρίσκομαι κολλημένος σε τοπικό μέγιστο αντί για τη σωστή λύση.
 	Γενικά πλέον μπορεί να προσεγγιστεί κάτι εκθετικό και λογαριθμικό, αλλά όχι κάτι που να περιλαμβάνει κάτι παραπάνω από τρίτου βαθμού μονώνυμο. Επίσης, αν η αντικειμενική συνάρτηση πάρει τιμή πάνω από 1 εκατομμύριο, τότε πάει λάθος. 
+	\item \lbrack x \rbrack \textbf{Αποφασίζω λοιπόν πως όλα θα γίνουν με κλιμάκωση ώστε οι τιμές τους να μην είναι ούτε κοντά στο 1 εκατομμύριο.}
 	\item \lbrack\_\rbrack Δες τα παλιά που έχετε πει. 
 	\item \lbrack\_\rbrack
 	\item \lbrack\_\rbrack
@@ -2372,131 +2383,147 @@ $$ p_s (\sum {q_j^*} \forall j | S(j) = S(i))- \tau (x_i^* - \Phi_i)- pr_i(q_i*)
 Ας αρχίσω να έχω και τέτοια για να φαίνεται πιο μεγάλη αυτή η αναφορά.
 Παραπομπή στον κώδικα της συνάρτησης sympy\_to\_gyrobi()
 \begin{lstlisting}[language=Python, caption=Python example]
-	import sympy as sp
-	from gurobipy import Model, LinExpr, QuadExpr, GRB
+import sympy as sp
+from gurobipy import Model, LinExpr, QuadExpr, GRB
+
+# Define a function to convert SymPy expression to Gurobi expression
+def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
+	"""
+	Recursively convert a SymPy expression to a Gurobi expression, 
+	handling exponentials, powers, divisions, and other complex expressions with auxiliary variables and constraints.
 	
-	# Define a function to convert SymPy expression to Gurobi expression
-	def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
-		"""
-		Recursively convert a SymPy expression to a Gurobi expression, 
-		handling exponentials and other complex expressions with auxiliary variables and constraints.
+	Parameters:
+		sympy_expr (sp.Expr): SymPy expression to convert.
+		symbol_map (dict): Mapping from SymPy symbols to Gurobi variables.
+		model (gurobipy.Model): Gurobi model to add constraints for complex expressions.
+		aux_var_count (list): A list to keep track of the auxiliary variable count.
 		
-		Parameters:
-			sympy_expr (sp.Expr): SymPy expression to convert.
-			symbol_map (dict): Mapping from SymPy symbols to Gurobi variables.
-			model (gurobipy.Model): Gurobi model to add constraints for complex expressions.
-			aux_var_count (list): A list to keep track of the auxiliary variable count.
-			
-		Returns:
-			Gurobi expression (LinExpr, QuadExpr, or constant).
-		"""
-		if isinstance(sympy_expr, sp.Symbol):
-			return symbol_map[sympy_expr]
-		
-		elif isinstance(sympy_expr, sp.Add):
-			return sum(sympy_to_gurobi(arg, symbol_map, model, aux_var_count) for arg in sympy_expr.args)
-		
-		elif isinstance(sympy_expr, sp.Mul):
-			result = 1
-			for arg in sympy_expr.args:
-				result *= sympy_to_gurobi(arg, symbol_map, model, aux_var_count)
-			return result
-		
-		elif isinstance(sympy_expr, sp.Pow):
-			base, exp = sympy_expr.args
-			if exp == 2:
-				base_expr = sympy_to_gurobi(base, symbol_map, model, aux_var_count)
-				return QuadExpr(base_expr * base_expr)
-			else:
-				raise ValueError("Non-quadratic powers are not supported by Gurobi.")
-		
-		elif isinstance(sympy_expr, sp.exp):
-			# Decompose the argument of the exponential function
-			arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
-			
-			# Introduce an auxiliary variable for the argument expression
-			aux_var_name = f"exp_aux_{aux_var_count[0]}"
-			aux_var_count[0] += 1  # Increment the counter for unique naming
-			arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg",lb = 0, vtype=GRB.CONTINUOUS)
-			model.addConstr(arg_aux_var == arg_expr)
-			
-			# Create the auxiliary variable for the exponential function
-			exp_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-			model.addGenConstrExp(arg_aux_var, exp_aux_var)
-			
-			return exp_aux_var
-		
-		elif isinstance(sympy_expr, sp.log):
-			# Decompose the argument of the logarithm function
-			arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
-			
-			# Introduce an auxiliary variable for the argument expression
-			aux_var_name = f"log_aux_{aux_var_count[0]}"
-			aux_var_count[0] += 1
-			arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
-			model.addConstr(arg_aux_var == arg_expr)
-			
-			# Create the auxiliary variable for the logarithm function
-			log_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-			model.addGenConstrLog(arg_aux_var, log_aux_var)
-		
-			return log_aux_var
+	Returns:
+		Gurobi expression (LinExpr, QuadExpr, or constant).
+	"""
+	if isinstance(sympy_expr, sp.Symbol):
+		return symbol_map[sympy_expr]
 	
-		elif isinstance(sympy_expr, sp.sin):
-			# Decompose the argument of the sine function
-			arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
-			
-			# Introduce an auxiliary variable for the argument expression
-			aux_var_name = f"sin_aux_{aux_var_count[0]}"
-			aux_var_count[0] += 1
-			arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
-			model.addConstr(arg_aux_var == arg_expr)
-			
-			# Handle sine using a piecewise linear approximation or other methods
-			sin_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-			# You can add piecewise constraints here for approximation
-			
-			return sin_aux_var
+	elif isinstance(sympy_expr, sp.Add):
+		return sum(sympy_to_gurobi(arg, symbol_map, model, aux_var_count) for arg in sympy_expr.args)
 	
-		elif isinstance(sympy_expr, sp.cos):
-			# Decompose the argument of the cosine function
-			arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
-			
-			# Introduce an auxiliary variable for the argument expression
-			aux_var_name = f"cos_aux_{aux_var_count[0]}"
-			aux_var_count[0] += 1
-			arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
-			model.addConstr(arg_aux_var == arg_expr)
-			
-			# Handle cosine using a piecewise linear approximation or other methods
-			cos_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-			# You can add piecewise constraints here for approximation
-			
-			return cos_aux_var
-		elif isinstance(sympy_expr, sp.tan):
-			# Decompose the argument of the tangent function
-			arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
-			
-			# Introduce an auxiliary variable for the argument expression
-			aux_var_name = f"tan_aux_{aux_var_count[0]}"
-			aux_var_count[0] += 1
-			arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
-			model.addConstr(arg_aux_var == arg_expr)
-			
-			# Handle tangent using a piecewise linear approximation or other methods
-			tan_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-			# You can add piecewise constraints here for approximation
-			
-			return tan_aux_var
+	elif isinstance(sympy_expr, sp.Mul):
+		result = 1
+		for arg in sympy_expr.args:
+			result *= sympy_to_gurobi(arg, symbol_map, model, aux_var_count)
+		return result
 	
-	
-	
-		elif isinstance(sympy_expr, sp.Number):
-			return float(sympy_expr)
+	elif isinstance(sympy_expr, sp.Pow):
+		base, exp = sympy_expr.args
 		
+		# Always create an auxiliary variable for the base
+		base_expr = sympy_to_gurobi(base, symbol_map, model, aux_var_count)
+		aux_var_name = f"pow_base_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		base_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addConstr(base_aux_var == base_expr)
+		
+		if exp == 2:
+			# Handle quadratic expression
+			return QuadExpr(base_aux_var * base_aux_var)
 		else:
-			raise ValueError(f"Unsupported SymPy expression: {sympy_expr}")
+			# Handle non-quadratic powers using general constraints
+			exp_value = float(exp)
+			aux_var_name = f"pow_aux_{aux_var_count[0]}"
+			aux_var_count[0] += 1
+			pow_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+			model.addGenConstrPow(base_aux_var, pow_aux_var, exp_value)
+			return pow_aux_var
 	
+	elif isinstance(sympy_expr, sp.exp):
+		arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+		aux_var_name = f"exp_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", lb=0, vtype=GRB.CONTINUOUS)
+		model.addConstr(arg_aux_var == arg_expr)
+		exp_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addGenConstrExp(arg_aux_var, exp_aux_var)
+		return exp_aux_var
+	
+	elif isinstance(sympy_expr, sp.log):
+		arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+		aux_var_name = f"log_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
+		model.addConstr(arg_aux_var == arg_expr)
+		log_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addGenConstrLog(arg_aux_var, log_aux_var)
+		return log_aux_var
+
+	elif isinstance(sympy_expr, sp.sin):
+		arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+		aux_var_name = f"sin_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
+		model.addConstr(arg_aux_var == arg_expr)
+		sin_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		# Add piecewise constraints here for approximation
+		return sin_aux_var
+
+	elif isinstance(sympy_expr, sp.cos):
+		arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+		aux_var_name = f"cos_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
+		model.addConstr(arg_aux_var == arg_expr)
+		cos_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		# Add piecewise constraints here for approximation
+		return cos_aux_var
+
+	elif isinstance(sympy_expr, sp.tan):
+		arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+		aux_var_name = f"tan_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
+		model.addConstr(arg_aux_var == arg_expr)
+		tan_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+		# Add piecewise constraints here for approximation
+		return tan_aux_var
+
+	elif isinstance(sympy_expr, sp.Mul) and any(isinstance(arg, sp.Pow) and arg.exp == -1 for arg in sympy_expr.args):
+		# Handling division by separating numerator and denominator
+		numerator = 1
+		denominator = 1
+		for arg in sympy_expr.args:
+			if isinstance(arg, sp.Pow) and arg.exp == -1:
+				denominator *= arg.base
+			else:
+				numerator *= arg
+		
+		# Handle numerator
+		num_expr = sympy_to_gurobi(numerator, symbol_map, model, aux_var_count)
+		num_aux_var_name = f"num_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		num_aux_var = model.addVar(name=num_aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addConstr(num_aux_var == num_expr)
+		
+		# Handle denominator
+		denom_expr = sympy_to_gurobi(denominator, symbol_map, model, aux_var_count)
+		denom_aux_var_name = f"denom_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		denom_aux_var = model.addVar(name=denom_aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addConstr(denom_aux_var == denom_expr)
+		
+		# Create the auxiliary variable for the inverse of the denominator
+		inv_denom_aux_var_name = f"inv_denom_aux_{aux_var_count[0]}"
+		aux_var_count[0] += 1
+		inv_denom_aux_var = model.addVar(name=inv_denom_aux_var_name, vtype=GRB.CONTINUOUS)
+		model.addConstr(inv_denom_aux_var * denom_aux_var == 1)
+		
+		# Final expression: numerator * (1/denominator)
+		return num_aux_var * inv_denom_aux_var
+
+	elif isinstance(sympy_expr, sp.Number):
+		return float(sympy_expr)
+	
+	else:
+		raise ValueError(f"Unsupported SymPy expression: {sympy_expr}")
+
 \end{lstlisting}
 
 

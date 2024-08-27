@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  27 AUG 2024 14:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  27 AUG 2024 18:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1884,26 +1884,27 @@ on-tac bo-hjhtik� metabl-ht� kai thn enswmatwm�nh
 
 
 [61]
-Underfull \hbox (badness 2368) in paragraph at lines 2350--2352
+Underfull \hbox (badness 2368) in paragraph at lines 2361--2363
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2350--2352
+Underfull \hbox (badness 10000) in paragraph at lines 2361--2363
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
 
+
+
+[62]
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2024/05/25 1.10b listings language file
 )
-
-[62]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 2374.
+nput line 2385.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2375.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2386.
 
 
 
@@ -1913,8 +1914,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [64]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[65] (Ημερολόγιο_από_2023.aux)
+
+
+[65]
+
+[66] (Ημερολόγιο_από_2023.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
@@ -1924,10 +1930,10 @@ t changed.
 (rerunfilecheck)             Checksum: E0EA074F6783BC991BC4F5A4667C241A;21269.
  ) 
 Here is how much of TeX's memory you used:
- 30381 strings out of 473898
- 574220 string characters out of 5726007
- 2305960 words of memory out of 5000000
- 52328 multiletter control sequences out of 15000+600000
+ 30416 strings out of 473898
+ 574835 string characters out of 5726007
+ 2308960 words of memory out of 5000000
+ 52346 multiletter control sequences out of 15000+600000
  572668 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,17n,107p,1242b,2183s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1962,10 +1968,10 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kos
 tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/U
 sers/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/m
 sbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (65 pages, 2105363 bytes
+Output written on Ημερολόγιο_από_2023.pdf (66 pages, 2112890 bytes
 ).
 PDF statistics:
- 1336 PDF objects out of 1440 (max. 8388607)
- 456 named destinations out of 1000 (max. 500000)
+ 1360 PDF objects out of 1440 (max. 8388607)
+ 473 named destinations out of 1000 (max. 500000)
  821 words of extra memory for PDF output out of 10000 (max. 10000000)
 
