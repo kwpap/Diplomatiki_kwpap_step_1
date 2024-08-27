@@ -2303,8 +2303,27 @@ $$ p_s (\sum {q_j^*} \forall j | S(j) = S(i))- \tau (x_i^* - \Phi_i)- pr_i(q_i*)
 		\item \lbrack x \rbrack Υποστήριξη για εκθετικά. Στο gurobi αυτό λύνεται βάζοντας βοηθητική μεταβλητή και την ενσωματωμένη μεταβλητή. Αν ο εκθέτης δεν είναι απλή μεταβλητή, τότε πρέπει να μπει και άλλη βοηθητική μεταβλητή.
 		\item \lbrack x \rbrack sin, cos, tan (aux + builtIn)
 		\item \lbrack x \rbrack log (aux + builtIn)
-		\item \lbrack\_\rbrack κλάσματα (πάλι με βοηθητική μεταβλητή και γινόμενο ίσο με την μονάδα)
-		\item \lbrack\_\rbrack
+		\item \lbrack\_\rbrack κλάσματα (πάλι με βοηθητική μεταβλητή και γινόμενο ίσο με την μονάδα) πρέπει δηλαδή να γίνει κάπως έτσι:
+		\begin{lstlisting}
+			# Create a new model to maximize (x - 3)/(x + 3)
+			opt_mod = Model(name="Linear Programming Example")
+			
+			# Create decision variables
+			x = opt_mod.addVar(name="x", vtype=GRB.CONTINUOUS, lb=0)
+			y = opt_mod.addVar(name="y", vtype=GRB.CONTINUOUS, lb=0)
+			z = opt_mod.addVar(name="z", vtype=GRB.CONTINUOUS, lb=0)  # Auxiliary variable
+			
+			# Set the objective function
+			obj_fn = (x - 3) * y
+			opt_mod.setObjective(obj_fn, GRB.MAXIMIZE)
+			
+			# Add constraints
+			opt_mod.addConstr(z == x + 3, "auxiliary_constraint")
+			opt_mod.addConstr(y * z == 1, "reformulated_constraint")
+			
+		\end{lstlisting}
+		\item \lbrack x \rbrack Εκθέτες μεγαλύτεροι του 2 και πιο αναλυτικές βάσεις. (πάλι δεν έγινε ευθεία, ήθελε addGenConstrPow()). \textbf{ Αφού έγινε αυτό, γίνεται όλο και πιο ενδιαφέρουσα η χρήση των σειρών Taylor για να λυθεί το πρόβλημα.} Ειλικρινά θα αφαιρέσουν πολύ πολυπλοκότητα από εμένα που κάθομαι και προσπαθώ να φτιάξω έναν compiler από το πουθενά :Ρ
+		\item \lbrack\_\rbrack 
 	\end{itemize}
 	
 	\item \lbrack\_\rbrack Είναι σημαντικό εδώ να τεθεί ο περιορισμός ότι μπορεί κάτι πολύ δύσκολο να πρέπει να λυθεί με προσέγγιση της πραγματικότητας με δεύτερου βαθμού σειρές Taylor γιατί όλα δείχνουν να αποτυγχάνουν στο gurobi, αλλά αυτό δεν μου αρέσει καθόλου, γιατί τότε δεν έχουν καμία εγγύηση πως δεν βρίσκομαι κολλημένος σε τοπικό μέγιστο αντί για τη σωστή λύση.

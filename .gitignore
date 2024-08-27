@@ -26,3 +26,5 @@ Report/Ημερολόγιο_από_2023.toc
 *.gz
 *.out
 *.aux
+*.aux
+*.gz
