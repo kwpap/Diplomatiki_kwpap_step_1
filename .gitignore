@@ -22,3 +22,7 @@ Report/Ημερολόγιο_από_2023.log
 Report/Ημερολόγιο_από_2023.out
 Report/Ημερολόγιο_από_2023.synctex.gz
 Report/Ημερολόγιο_από_2023.toc
+*.toc
+*.gz
+*.out
+*.aux

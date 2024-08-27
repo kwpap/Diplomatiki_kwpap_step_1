@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  26 AUG 2024 21:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  27 AUG 2024 10:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -578,6 +578,33 @@ File: greek-fontenc.def 2023-09-12 2.5 Common Greek font encoding definitions
 ))
    defining Unicode char U+00B5 (decimal 181)
 ))
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count286
+\lst@gtempboxa=\box58
+\lst@token=\toks28
+\lst@length=\count287
+\lst@currlwidth=\dimen161
+\lst@column=\count288
+\lst@pos=\count289
+\lst@lostspace=\dimen162
+\lst@width=\dimen163
+\lst@newlines=\count290
+\lst@lineno=\count291
+\lst@maxwidth=\dimen164
+
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
+File: lstpatch.sty 2024/05/25 1.10b (Carsten Heinz)
+) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2024/05/25 1.10b (Carsten Heinz)
+\c@lstnumber=\count292
+\lst@skipnumbers=\count293
+\lst@framebox=\box59
+) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cf
+g
+File: listings.cfg 2024/05/25 1.10b listings configuration
+))
+Package: listings 2024/05/25 1.10b (Carsten Heinz)
+
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.st
 y
 Package: tcolorbox 2024/07/10 version 6.3.0 text color boxes
@@ -590,13 +617,13 @@ Package: tcolorbox 2024/07/10 version 6.3.0 text color boxes
 ty
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
 l-common.tex
-\pgfutil@everybye=\toks28
-\pgfutil@tempdima=\dimen161
-\pgfutil@tempdimb=\dimen162
+\pgfutil@everybye=\toks29
+\pgfutil@tempdima=\dimen165
+\pgfutil@tempdimb=\dimen166
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
 l-latex.def
-\pgfutil@abb=\box58
+\pgfutil@abb=\box60
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs
 .code.tex
@@ -616,33 +643,33 @@ Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
 s.code.tex
-\pgfkeys@pathtoks=\toks29
-\pgfkeys@temptoks=\toks30
+\pgfkeys@pathtoks=\toks30
+\pgfkeys@temptoks=\toks31
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
 slibraryfiltered.code.tex
-\pgfkeys@tmptoks=\toks31
+\pgfkeys@tmptoks=\toks32
 ))
-\pgf@x=\dimen163
-\pgf@y=\dimen164
-\pgf@xa=\dimen165
-\pgf@ya=\dimen166
-\pgf@xb=\dimen167
-\pgf@yb=\dimen168
-\pgf@xc=\dimen169
-\pgf@yc=\dimen170
-\pgf@xd=\dimen171
-\pgf@yd=\dimen172
+\pgf@x=\dimen167
+\pgf@y=\dimen168
+\pgf@xa=\dimen169
+\pgf@ya=\dimen170
+\pgf@xb=\dimen171
+\pgf@yb=\dimen172
+\pgf@xc=\dimen173
+\pgf@yc=\dimen174
+\pgf@xd=\dimen175
+\pgf@yd=\dimen176
 \w@pgf@writea=\write3
 \r@pgf@reada=\read2
-\c@pgf@counta=\count286
-\c@pgf@countb=\count287
-\c@pgf@countc=\count288
-\c@pgf@countd=\count289
-\t@pgf@toka=\toks32
-\t@pgf@tokb=\toks33
-\t@pgf@tokc=\toks34
-\pgf@sys@id@count=\count290
+\c@pgf@counta=\count294
+\c@pgf@countb=\count295
+\c@pgf@countc=\count296
+\c@pgf@countd=\count297
+\t@pgf@toka=\toks33
+\t@pgf@tokb=\toks34
+\t@pgf@tokc=\toks35
+\pgf@sys@id@count=\count298
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
 cfg
@@ -661,8 +688,8 @@ File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
 yssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfsyssoftpath@smallbuffer@items=\count291
-\pgfsyssoftpath@bigbuffer@items=\count292
+\pgfsyssoftpath@smallbuffer@items=\count299
+\pgfsyssoftpath@bigbuffer@items=\count300
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
 ysprotocol.code.tex
@@ -699,12 +726,12 @@ e.tex
 .code.tex)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathpars
 er.code.tex
-\pgfmath@dimen=\dimen173
-\pgfmath@count=\count293
-\pgfmath@box=\box59
-\pgfmath@toks=\toks35
-\pgfmath@stack@operand=\toks36
-\pgfmath@stack@operation=\toks37
+\pgfmath@dimen=\dimen177
+\pgfmath@count=\count301
+\pgfmath@box=\box61
+\pgfmath@toks=\toks36
+\pgfmath@stack@operand=\toks37
+\pgfmath@stack@operation=\toks38
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
 tions.code.tex)
@@ -728,59 +755,59 @@ tions.integerarithmetics.code.tex)
 .code.tex)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloa
 t.code.tex
-\c@pgfmathroundto@lastzeros=\count294
+\c@pgfmathroundto@lastzeros=\count302
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code
 .tex)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 repoints.code.tex
 File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@picminx=\dimen174
-\pgf@picmaxx=\dimen175
-\pgf@picminy=\dimen176
-\pgf@picmaxy=\dimen177
-\pgf@pathminx=\dimen178
-\pgf@pathmaxx=\dimen179
-\pgf@pathminy=\dimen180
-\pgf@pathmaxy=\dimen181
-\pgf@xx=\dimen182
-\pgf@xy=\dimen183
-\pgf@yx=\dimen184
-\pgf@yy=\dimen185
-\pgf@zx=\dimen186
-\pgf@zy=\dimen187
+\pgf@picminx=\dimen178
+\pgf@picmaxx=\dimen179
+\pgf@picminy=\dimen180
+\pgf@picmaxy=\dimen181
+\pgf@pathminx=\dimen182
+\pgf@pathmaxx=\dimen183
+\pgf@pathminy=\dimen184
+\pgf@pathmaxy=\dimen185
+\pgf@xx=\dimen186
+\pgf@xy=\dimen187
+\pgf@yx=\dimen188
+\pgf@yy=\dimen189
+\pgf@zx=\dimen190
+\pgf@zy=\dimen191
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 repathconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@path@lastx=\dimen188
-\pgf@path@lasty=\dimen189
+\pgf@path@lastx=\dimen192
+\pgf@path@lasty=\dimen193
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 repathusage.code.tex
 File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@shorten@end@additional=\dimen190
-\pgf@shorten@start@additional=\dimen191
+\pgf@shorten@end@additional=\dimen194
+\pgf@shorten@start@additional=\dimen195
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 rescopes.code.tex
 File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfpic=\box60
-\pgf@hbox=\box61
-\pgf@layerbox@main=\box62
-\pgf@picture@serial@count=\count295
+\pgfpic=\box62
+\pgf@hbox=\box63
+\pgf@layerbox@main=\box64
+\pgf@picture@serial@count=\count303
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 regraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgflinewidth=\dimen192
+\pgflinewidth=\dimen196
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 retransformations.code.tex
 File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@pt@x=\dimen193
-\pgf@pt@y=\dimen194
-\pgf@pt@temp=\dimen195
+\pgf@pt@x=\dimen197
+\pgf@pt@y=\dimen198
+\pgf@pt@temp=\dimen199
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 requick.code.tex
@@ -797,14 +824,14 @@ File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 rearrows.code.tex
 File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowsep=\dimen196
+\pgfarrowsep=\dimen256
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 reshade.code.tex
 File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@max=\dimen197
-\pgf@sys@shading@range@num=\count296
-\pgf@shadingcount=\count297
+\pgf@max=\dimen257
+\pgf@sys@shading@range@num=\count304
+\pgf@shadingcount=\count305
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 reimage.code.tex
@@ -813,7 +840,7 @@ File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 reexternal.code.tex
 File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfexternal@startupbox=\box63
+\pgfexternal@startupbox=\box65
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
 relayers.code.tex
@@ -834,7 +861,7 @@ File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
 eshapes.code.tex
 File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfnodeparttextbox=\box64
+\pgfnodeparttextbox=\box66
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
 eplot.code.tex
@@ -843,8 +870,8 @@ File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
 omp-version-0-65.sty
 Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
-\pgf@nodesepstart=\dimen198
-\pgf@nodesepend=\dimen199
+\pgf@nodesepstart=\dimen258
+\pgf@nodesepend=\dimen259
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
 omp-version-1-18.sty
@@ -862,10 +889,10 @@ e.tex))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor
 .code.tex
 Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
-\pgffor@iter=\dimen256
-\pgffor@skip=\dimen257
-\pgffor@stack=\toks38
-\pgffor@toks=\toks39
+\pgffor@iter=\dimen260
+\pgffor@skip=\dimen261
+\pgffor@stack=\toks39
+\pgffor@toks=\toks40
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
 kz\tikz.code.tex
@@ -874,34 +901,34 @@ Package: tikz 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
 raryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@plot@mark@count=\count298
-\pgfplotmarksize=\dimen258
+\pgf@plot@mark@count=\count306
+\pgfplotmarksize=\dimen262
 )
-\tikz@lastx=\dimen259
-\tikz@lasty=\dimen260
-\tikz@lastxsaved=\dimen261
-\tikz@lastysaved=\dimen262
-\tikz@lastmovetox=\dimen263
-\tikz@lastmovetoy=\dimen264
-\tikzleveldistance=\dimen265
-\tikzsiblingdistance=\dimen266
-\tikz@figbox=\box65
-\tikz@figbox@bg=\box66
-\tikz@tempbox=\box67
-\tikz@tempbox@bg=\box68
-\tikztreelevel=\count299
-\tikznumberofchildren=\count300
-\tikznumberofcurrentchild=\count301
-\tikz@fig@count=\count302
+\tikz@lastx=\dimen263
+\tikz@lasty=\dimen264
+\tikz@lastxsaved=\dimen265
+\tikz@lastysaved=\dimen266
+\tikz@lastmovetox=\dimen267
+\tikz@lastmovetoy=\dimen268
+\tikzleveldistance=\dimen269
+\tikzsiblingdistance=\dimen270
+\tikz@figbox=\box67
+\tikz@figbox@bg=\box68
+\tikz@tempbox=\box69
+\tikz@tempbox@bg=\box70
+\tikztreelevel=\count307
+\tikznumberofchildren=\count308
+\tikznumberofcurrentchild=\count309
+\tikz@fig@count=\count310
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
 ematrix.code.tex
 File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfmatrixcurrentrow=\count303
-\pgfmatrixcurrentcolumn=\count304
-\pgf@matrix@numberofcolumns=\count305
+\pgfmatrixcurrentrow=\count311
+\pgfmatrixcurrentcolumn=\count312
+\pgf@matrix@numberofcolumns=\count313
 )
-\tikz@expandcount=\count306
+\tikz@expandcount=\count314
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
 kz/libraries\tikzlibrarytopaths.code.tex
@@ -909,8 +936,8 @@ File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
 )))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
 Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks40
-\verbatim@line=\toks41
+\every@verbatim=\toks41
+\verbatim@line=\toks42
 \verbatim@in@stream=\read3
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
@@ -922,28 +949,28 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 ))
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count307
+\etb@tempcnta=\count315
 )
-\tcb@titlebox=\box69
-\tcb@upperbox=\box70
-\tcb@lowerbox=\box71
-\tcb@phantombox=\box72
-\c@tcbbreakpart=\count308
-\c@tcblayer=\count309
-\c@tcolorbox@number=\count310
-\l__tcobox_tmpa_box=\box73
-\l__tcobox_tmpa_dim=\dimen267
-\tcb@temp=\box74
-\tcb@temp=\box75
+\tcb@titlebox=\box71
+\tcb@upperbox=\box72
+\tcb@lowerbox=\box73
+\tcb@phantombox=\box74
+\c@tcbbreakpart=\count316
+\c@tcblayer=\count317
+\c@tcolorbox@number=\count318
+\l__tcobox_tmpa_box=\box75
+\l__tcobox_tmpa_dim=\dimen271
 \tcb@temp=\box76
 \tcb@temp=\box77
+\tcb@temp=\box78
+\tcb@temp=\box79
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count311
-\float@exts=\toks42
-\float@box=\box78
-\@float@everytoks=\toks43
-\@floatcapt=\box79
+\c@float@type=\count319
+\float@exts=\toks43
+\float@box=\box80
+\@float@everytoks=\toks44
+\@floatcapt=\box81
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
@@ -954,31 +981,31 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 ))
-\Gm@cnth=\count312
-\Gm@cntv=\count313
-\c@Gm@tempcnt=\count314
-\Gm@bindingoffset=\dimen268
-\Gm@wd@mp=\dimen269
-\Gm@odd@mp=\dimen270
-\Gm@even@mp=\dimen271
-\Gm@layoutwidth=\dimen272
-\Gm@layoutheight=\dimen273
-\Gm@layouthoffset=\dimen274
-\Gm@layoutvoffset=\dimen275
-\Gm@dimlist=\toks44
+\Gm@cnth=\count320
+\Gm@cntv=\count321
+\c@Gm@tempcnt=\count322
+\Gm@bindingoffset=\dimen272
+\Gm@wd@mp=\dimen273
+\Gm@odd@mp=\dimen274
+\Gm@even@mp=\dimen275
+\Gm@layoutwidth=\dimen276
+\Gm@layoutheight=\dimen277
+\Gm@layouthoffset=\dimen278
+\Gm@layoutvoffset=\dimen279
+\Gm@dimlist=\toks45
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/colortbl\colortbl.sty
 Package: colortbl 2024/07/06 v1.0i Color table columns (DPC)
-\everycr=\toks45
+\everycr=\toks46
 \minrowclearance=\skip68
-\rownum=\count315
+\rownum=\count323
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tools\afterpage.sty
 Package: afterpage 2023/07/04 v1.08 After-Page Package (DPC)
-\AP@output=\toks46
-\AP@partial=\box80
-\AP@footins=\box81
+\AP@output=\toks47
+\AP@partial=\box82
+\AP@footins=\box83
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/tools\indentfirst.sty
 Package: indentfirst 2023/07/02 v1.03 Indent first paragraph (DPC)
@@ -987,52 +1014,53 @@ Package: caption 2023/08/05 v3.6o Customizing captions (AR)
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen276
-\captionmargin=\dimen277
-\caption@leftmargin=\dimen278
-\caption@rightmargin=\dimen279
-\caption@width=\dimen280
-\caption@indent=\dimen281
-\caption@parindent=\dimen282
-\caption@hangindent=\dimen283
+\caption@tempdima=\dimen280
+\captionmargin=\dimen281
+\caption@leftmargin=\dimen282
+\caption@rightmargin=\dimen283
+\caption@width=\dimen284
+\caption@indent=\dimen285
+\caption@parindent=\dimen286
+\caption@hangindent=\dimen287
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count316
-\c@continuedfloat=\count317
+\c@caption@flags=\count324
+\c@continuedfloat=\count325
 Package caption Info: float package is loaded.
+Package caption Info: listings package is loaded.
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count318
+\c@subfigure=\count326
 Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count319
+\c@subtable=\count327
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/makecell\makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
-\rotheadsize=\dimen284
-\c@nlinenum=\count320
-\TeXr@lab=\toks47
+\rotheadsize=\dimen288
+\c@nlinenum=\count328
+\TeXr@lab=\toks48
 ) (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.st
 y
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen285
-\lightrulewidth=\dimen286
-\cmidrulewidth=\dimen287
-\belowrulesep=\dimen288
-\belowbottomsep=\dimen289
-\aboverulesep=\dimen290
-\abovetopsep=\dimen291
-\cmidrulesep=\dimen292
-\cmidrulekern=\dimen293
-\defaultaddspace=\dimen294
-\@cmidla=\count321
-\@cmidlb=\count322
-\@aboverulesep=\dimen295
-\@belowrulesep=\dimen296
-\@thisruleclass=\count323
-\@lastruleclass=\count324
-\@thisrulewidth=\dimen297
+\heavyrulewidth=\dimen289
+\lightrulewidth=\dimen290
+\cmidrulewidth=\dimen291
+\belowrulesep=\dimen292
+\belowbottomsep=\dimen293
+\aboverulesep=\dimen294
+\abovetopsep=\dimen295
+\cmidrulesep=\dimen296
+\cmidrulekern=\dimen297
+\defaultaddspace=\dimen298
+\@cmidla=\count329
+\@cmidlb=\count330
+\@aboverulesep=\dimen299
+\@belowrulesep=\dimen300
+\@thisruleclass=\count331
+\@lastruleclass=\count332
+\@thisrulewidth=\dimen301
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
 Package: hyperref 2024-07-10 v7.01j Hypertext links for LaTeX
@@ -1082,16 +1110,16 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 y
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count325
+\c@section@level=\count333
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.
 sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
-\@linkdim=\dimen298
-\Hy@linkcounter=\count326
-\Hy@pagecounter=\count327
+\@linkdim=\dimen302
+\Hy@linkcounter=\count334
+\Hy@pagecounter=\count335
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2024-07-10 v7.01j Hyperref: PDFDocEncoding definition (HO)
@@ -1101,7 +1129,7 @@ Now handling font encoding PD1 ...
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count328
+\Hy@SavedSpaceFactor=\count336
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2024-07-10 v7.01j Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -1123,14 +1151,14 @@ Package hyperref Info: Plain pages OFF on input line 4172.
 Package hyperref Info: Backreferencing OFF on input line 4177.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4424.
-\c@Hy@tempcnt=\count329
+\c@Hy@tempcnt=\count337
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4763.
-\XeTeXLinkMargin=\dimen299
+\XeTeXLinkMargin=\dimen303
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -1140,9 +1168,9 @@ c.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count330
-\Field@Width=\dimen300
-\Fld@charsize=\dimen301
+\Fld@menulength=\count338
+\Field@Width=\dimen304
+\Fld@charsize=\dimen305
 Package hyperref Info: Hyper figures OFF on input line 6042.
 Package hyperref Info: Link nesting OFF on input line 6047.
 Package hyperref Info: Hyper index ON on input line 6050.
@@ -1155,9 +1183,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6072.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count331
-\c@Item=\count332
-\c@Hfootnote=\count333
+\Hy@abspage=\count339
+\c@Item=\count340
+\c@Hfootnote=\count341
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
  (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
@@ -1168,8 +1196,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count334
-\c@bookmark@seq@number=\count335
+\Fld@listcount=\count342
+\c@bookmark@seq@number=\count343
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
 lecheck.sty
@@ -1187,52 +1215,52 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
 ftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count336
-\l__pdf_internal_box=\box82
+\l__color_backend_stack_int=\count344
+\l__pdf_internal_box=\box84
 ) (Ημερολόγιο_από_2023.aux)
 \openout1 = `Ημερολόγιο_από_2023.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 66.
-LaTeX Font Info:    Trying to load font information for LGR+cmr on input line 6
-6.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 92.
+LaTeX Font Info:    Trying to load font information for LGR+cmr on input line 9
+2.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmr.fd
 File: lgrcmr.fd 2017/07/29 v1.2 Greek European Computer Regular
 )
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 92.
+LaTeX Font Info:    ... okay on input line 92.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
 kii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count337
-\scratchdimen=\dimen302
-\scratchbox=\box83
-\nofMPsegments=\count338
-\nofMParguments=\count339
-\everyMPshowfont=\toks48
-\MPscratchCnt=\count340
-\MPscratchDim=\dimen303
-\MPnumerator=\count341
-\makeMPintoPDFobject=\count342
-\everyMPtoPDFconversion=\toks49
+\scratchcounter=\count345
+\scratchdimen=\dimen306
+\scratchbox=\box85
+\nofMPsegments=\count346
+\nofMParguments=\count347
+\everyMPshowfont=\toks49
+\MPscratchCnt=\count348
+\MPscratchDim=\dimen307
+\MPnumerator=\count349
+\makeMPintoPDFobject=\count350
+\everyMPtoPDFconversion=\toks50
 )
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
 base.sty
@@ -1244,15 +1272,15 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-LaTeX Info: Redefining \Upsilon on input line 66.
-LaTeX Info: Redefining \Omega on input line 66.
-LaTeX Info: Redefining \alpha on input line 66.
-LaTeX Info: Redefining \epsilon on input line 66.
-LaTeX Info: Redefining \eta on input line 66.
-LaTeX Info: Redefining \iota on input line 66.
-LaTeX Info: Redefining \rho on input line 66.
-LaTeX Info: Redefining \upsilon on input line 66.
-LaTeX Info: Redefining \omega on input line 66.
+LaTeX Info: Redefining \Upsilon on input line 92.
+LaTeX Info: Redefining \Omega on input line 92.
+LaTeX Info: Redefining \alpha on input line 92.
+LaTeX Info: Redefining \epsilon on input line 92.
+LaTeX Info: Redefining \eta on input line 92.
+LaTeX Info: Redefining \iota on input line 92.
+LaTeX Info: Redefining \rho on input line 92.
+LaTeX Info: Redefining \upsilon on input line 92.
+LaTeX Info: Redefining \omega on input line 92.
    defining Unicode char U+0393 (decimal 915)
    defining Unicode char U+0394 (decimal 916)
    defining Unicode char U+0398 (decimal 920)
@@ -1294,6 +1322,7 @@ LaTeX Info: Redefining \omega on input line 66.
    defining Unicode char U+03DD (decimal 989)
    defining Unicode char U+03F1 (decimal 1009)
    defining Unicode char U+03F5 (decimal 1013)
+\c@lstlisting=\count351
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1332,7 +1361,7 @@ LaTeX Info: Redefining \omega on input line 66.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 66.
+Package hyperref Info: Link coloring OFF on input line 92.
 (Ημερολόγιο_από_2023.out) (Ημερολόγιο_από_2023.out)
 \@outlinefile=\write4
 \openout4 = `Ημερολόγιο_από_2023.out'.
@@ -1371,10 +1400,10 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [4]
 
 [5]
-<images/Hungary 2017.png, id=493, 1003.75pt x 1003.75pt>
+<images/Hungary 2017.png, id=488, 1003.75pt x 1003.75pt>
 File: images/Hungary 2017.png Graphic file (type png)
 <use images/Hungary 2017.png>
-Package pdftex.def Info: images/Hungary 2017.png  used on input line 205.
+Package pdftex.def Info: images/Hungary 2017.png  used on input line 231.
 (pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1384,39 +1413,39 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [6]
 
 [7 <./images/Hungary 2017.png>]
-<images/Malta 2017.png, id=507, 1003.75pt x 1003.75pt>
+<images/Malta 2017.png, id=502, 1003.75pt x 1003.75pt>
 File: images/Malta 2017.png Graphic file (type png)
 <use images/Malta 2017.png>
-Package pdftex.def Info: images/Malta 2017.png  used on input line 216.
+Package pdftex.def Info: images/Malta 2017.png  used on input line 242.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Greece 2017.png, id=508, 1003.75pt x 1003.75pt>
+<images/Greece 2017.png, id=503, 1003.75pt x 1003.75pt>
 File: images/Greece 2017.png Graphic file (type png)
 <use images/Greece 2017.png>
-Package pdftex.def Info: images/Greece 2017.png  used on input line 223.
+Package pdftex.def Info: images/Greece 2017.png  used on input line 249.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Germany 2017.png, id=509, 1003.75pt x 1003.75pt>
+<images/Germany 2017.png, id=504, 1003.75pt x 1003.75pt>
 File: images/Germany 2017.png Graphic file (type png)
 <use images/Germany 2017.png>
-Package pdftex.def Info: images/Germany 2017.png  used on input line 230.
+Package pdftex.def Info: images/Germany 2017.png  used on input line 256.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
 
 
 [8 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 2017.
 png>]
-<images/2017 r^2 vs GDP.png, id=520, 1003.75pt x 1003.75pt>
+<images/2017 r^2 vs GDP.png, id=515, 1003.75pt x 1003.75pt>
 File: images/2017 r^2 vs GDP.png Graphic file (type png)
 <use images/2017 r^2 vs GDP.png>
-Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 272.
+Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 298.
 (pdftex.def)             Requested size: 483.69687pt x 483.70903pt.
 
 
 [9 <./images/2017 r^2 vs GDP.png>]
 
 [10]
-<images/plot.jpg, id=542, 601.4972pt x 644.4075pt>
+<images/plot.jpg, id=537, 601.4972pt x 644.4075pt>
 File: images/plot.jpg Graphic file (type jpg)
 <use images/plot.jpg>
-Package pdftex.def Info: images/plot.jpg  used on input line 369.
+Package pdftex.def Info: images/plot.jpg  used on input line 395.
 (pdftex.def)             Requested size: 483.69687pt x 518.2209pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1433,41 +1462,41 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [13]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 444.
+(hyperref)                removing `math shift' on input line 470.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 444.
+(hyperref)                removing `superscript' on input line 470.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 444.
+(hyperref)                removing `math shift' on input line 470.
 
 
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 509--510
+Underfull \hbox (badness 10000) in paragraph at lines 535--536
 
  []
 
 
 
 [15]
-<images/Boxplot Population Normalized vs Country.png, id=581, 440.39531pt x 316
+<images/Boxplot Population Normalized vs Country.png, id=576, 440.39531pt x 316
 .93407pt>
 File: images/Boxplot Population Normalized vs Country.png Graphic file (type pn
 g)
 <use images/Boxplot Population Normalized vs Country.png>
 Package pdftex.def Info: images/Boxplot Population Normalized vs Country.png  u
-sed on input line 570.
+sed on input line 596.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Boxplot Population in Millions vs Country.png, id=582, 440.39531pt x 31
+<images/Boxplot Population in Millions vs Country.png, id=577, 440.39531pt x 31
 6.93407pt>
 File: images/Boxplot Population in Millions vs Country.png Graphic file (type p
 ng)
 <use images/Boxplot Population in Millions vs Country.png>
 Package pdftex.def Info: images/Boxplot Population in Millions vs Country.png  
-used on input line 575.
+used on input line 601.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 1112) has occurred while \output is active []
@@ -1481,17 +1510,17 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 [17 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
 opulation in Millions vs Country.png>]
-<images/boxplot_inflation_raw.png, id=595, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_raw.png, id=590, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_raw.png Graphic file (type png)
 <use images/boxplot_inflation_raw.png>
 Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 6
-31.
+57.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_inflation_normalized.png, id=596, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_normalized.png, id=591, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_normalized.png Graphic file (type png)
 <use images/boxplot_inflation_normalized.png>
 Package pdftex.def Info: images/boxplot_inflation_normalized.png  used on input
- line 636.
+ line 662.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1515,16 +1544,16 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [21]
-<images/Boxplot_Verified.png, id=620, 440.39531pt x 316.93407pt>
+<images/Boxplot_Verified.png, id=615, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Verified.png Graphic file (type png)
 <use images/Boxplot_Verified.png>
-Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 780.
+Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 806.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_verified_log.png, id=621, 440.39531pt x 316.93407pt>
+<images/boxplot_verified_log.png, id=616, 440.39531pt x 316.93407pt>
 File: images/boxplot_verified_log.png Graphic file (type png)
 <use images/boxplot_verified_log.png>
-Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 78
-6.
+Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 81
+2.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1537,10 +1566,10 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
 [23 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
-<images/Boxplot_Agriculture.png, id=633, 440.39531pt x 316.93407pt>
+<images/Boxplot_Agriculture.png, id=628, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Agriculture.png Graphic file (type png)
 <use images/Boxplot_Agriculture.png>
-Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 839
+Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 865
 .
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
 
@@ -1553,11 +1582,11 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [25 <./images/Boxplot_Agriculture.png>]
 
 [26]
-<images/boxplot_Manufacturing.png, id=651, 440.39531pt x 316.93407pt>
+<images/boxplot_Manufacturing.png, id=646, 440.39531pt x 316.93407pt>
 File: images/boxplot_Manufacturing.png Graphic file (type png)
 <use images/boxplot_Manufacturing.png>
 Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 9
-38.
+64.
 (pdftex.def)             Requested size: 241.84843pt x 174.0483pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1567,7 +1596,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [27 <./images/boxplot_Manufacturing.png>]
 
 [28]
-Underfull \hbox (badness 10000) in paragraph at lines 1002--1003
+Underfull \hbox (badness 10000) in paragraph at lines 1028--1029
 
  []
 
@@ -1578,29 +1607,29 @@ Underfull \hbox (badness 10000) in paragraph at lines 1002--1003
 [30]
 
 [31]
-Underfull \hbox (badness 10000) in paragraph at lines 1120--1129
+Underfull \hbox (badness 10000) in paragraph at lines 1146--1155
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1130--1131
+Underfull \hbox (badness 10000) in paragraph at lines 1156--1157
 
  []
 
 
-Overfull \hbox (36.79974pt too wide) in paragraph at lines 1137--1152
+Overfull \hbox (36.79974pt too wide) in paragraph at lines 1163--1178
  [][] 
  []
 
 
-Overfull \hbox (45.60533pt too wide) in paragraph at lines 1156--1171
+Overfull \hbox (45.60533pt too wide) in paragraph at lines 1182--1197
  [][] 
  []
 
-<images/Clustering.png, id=679, 811.3512pt x 716.1957pt>
+<images/Clustering.png, id=674, 811.3512pt x 716.1957pt>
 File: images/Clustering.png Graphic file (type png)
 <use images/Clustering.png>
-Package pdftex.def Info: images/Clustering.png  used on input line 1177.
+Package pdftex.def Info: images/Clustering.png  used on input line 1203.
 (pdftex.def)             Requested size: 314.40001pt x 277.52296pt.
 
 Underfull \vbox (badness 2564) has occurred while \output is active []
@@ -1613,35 +1642,35 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [33]
-<images/Clustering_per_capita.png, id=691, 749.9217pt x 753.0534pt>
+<images/Clustering_per_capita.png, id=686, 749.9217pt x 753.0534pt>
 File: images/Clustering_per_capita.png Graphic file (type png)
 <use images/Clustering_per_capita.png>
 Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
-226.
+252.
 (pdftex.def)             Requested size: 314.40001pt x 315.71722pt.
 
 
 [34 <./images/Clustering.png>]
 
 [35 <./images/Clustering_per_capita.png>]
-<images/Distances from Lithuania.png, id=708, 440.39531pt x 316.93407pt>
+<images/Distances from Lithuania.png, id=703, 440.39531pt x 316.93407pt>
 File: images/Distances from Lithuania.png Graphic file (type png)
 <use images/Distances from Lithuania.png>
 Package pdftex.def Info: images/Distances from Lithuania.png  used on input lin
-e 1363.
+e 1389.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Denmark, third Cluster.png, id=709, 440.39531pt x 316.93
+<images/Distances from Denmark, third Cluster.png, id=704, 440.39531pt x 316.93
 407pt>
 File: images/Distances from Denmark, third Cluster.png Graphic file (type png)
 <use images/Distances from Denmark, third Cluster.png>
 Package pdftex.def Info: images/Distances from Denmark, third Cluster.png  used
- on input line 1366.
+ on input line 1392.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Italy.png, id=710, 440.39531pt x 316.93407pt>
+<images/Distances from Italy.png, id=705, 440.39531pt x 316.93407pt>
 File: images/Distances from Italy.png Graphic file (type png)
 <use images/Distances from Italy.png>
 Package pdftex.def Info: images/Distances from Italy.png  used on input line 13
-72.
+98.
 (pdftex.def)             Requested size: 483.69687pt x 348.11108pt.
 
 Underfull \vbox (badness 4927) has occurred while \output is active []
@@ -1662,7 +1691,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [38 <./images/Distances from Italy.png>]
 
 [39]
-Overfull \hbox (16.754pt too wide) in paragraph at lines 1540--1570
+Overfull \hbox (16.754pt too wide) in paragraph at lines 1566--1596
  [][] 
  []
 
@@ -1681,23 +1710,23 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [42]
 
 [43]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=788, 1673.25125
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=783, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
 <use images/346111264_237886352220554_6402134938597733881_n.jpg>
 Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
-.jpg  used on input line 1647.
+.jpg  used on input line 1673.
 (pdftex.def)             Requested size: 338.58632pt x 212.85414pt.
 
 
 [44 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=794, 605.76312pt x 410.031
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=789, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
 Package pdftex.def Info: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png  used 
-on input line 1672.
+on input line 1698.
 (pdftex.def)             Requested size: 338.58632pt x 229.18457pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1705,7 +1734,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [45 <./images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>]
-Overfull \hbox (118.90921pt too wide) in paragraph at lines 1714--1716
+Overfull \hbox (118.90921pt too wide) in paragraph at lines 1740--1742
 []\LGR/cmr/m/n/10 Arqik� kate-b�-zon-tac ap� to []$\OT1/cmtt/m/n/10 https : / /
  www . eea . europa . eu / data-[]and-[]maps / data / european-[]union-[]emissi
 ons-[]trading-[]scheme-[]17 #
@@ -1714,34 +1743,34 @@ ons-[]trading-[]scheme-[]17 #
 
 
 [46]
-<images/Calculated_EI_EI_Combustion.png, id=811, 465.23813pt x 349.305pt>
+<images/Calculated_EI_EI_Combustion.png, id=806, 465.23813pt x 349.305pt>
 File: images/Calculated_EI_EI_Combustion.png Graphic file (type png)
 <use images/Calculated_EI_EI_Combustion.png>
 Package pdftex.def Info: images/Calculated_EI_EI_Combustion.png  used on input 
-line 1750.
+line 1776.
 (pdftex.def)             Requested size: 338.58632pt x 254.223pt.
 
 
 [47 <./images/Calculated_EI_EI_Combustion.png>]
-<images/Calculated_RI_gdpps.png, id=821, 616.55344pt x 349.305pt>
+<images/Calculated_RI_gdpps.png, id=816, 616.55344pt x 349.305pt>
 File: images/Calculated_RI_gdpps.png Graphic file (type png)
 <use images/Calculated_RI_gdpps.png>
-Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 177
-3.
+Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 179
+9.
 (pdftex.def)             Requested size: 338.58632pt x 191.83052pt.
 LaTeX Font Info:    Trying to load font information for LGR+cmtt on input line 
-1780.
+1806.
 
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmtt.fd
 File: lgrcmtt.fd 2017/07/29 v1.2 Greek European Computer Typewriter
 )
-<images/calculated_without_austria_lithuania_finland.png, id=822, 611.28375pt x
+<images/calculated_without_austria_lithuania_finland.png, id=817, 611.28375pt x
  349.305pt>
 File: images/calculated_without_austria_lithuania_finland.png Graphic file (typ
 e png)
 <use images/calculated_without_austria_lithuania_finland.png>
 Package pdftex.def Info: images/calculated_without_austria_lithuania_finland.pn
-g  used on input line 1790.
+g  used on input line 1816.
 (pdftex.def)             Requested size: 338.58632pt x 193.47748pt.
 
 Underfull \vbox (badness 1460) has occurred while \output is active []
@@ -1751,60 +1780,60 @@ Underfull \vbox (badness 1460) has occurred while \output is active []
 [48 <./images/Calculated_RI_gdpps.png>]
 
 [49 <./images/calculated_without_austria_lithuania_finland.png>]
-Overfull \hbox (25.54869pt too wide) in paragraph at lines 1806--1807
+Overfull \hbox (25.54869pt too wide) in paragraph at lines 1832--1833
 \OT1/cmtt/m/n/10 com / spreadsheets / d / 1mwmZSr8PBiFgsxemVE _ FFEdaZS0dOeX3 /
  edit ? usp = sharing & ouid = 105915891653467891041 &
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1808--1811
+Underfull \hbox (badness 10000) in paragraph at lines 1834--1837
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1808--1811
+Underfull \hbox (badness 10000) in paragraph at lines 1834--1837
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1808--1811
+Underfull \hbox (badness 10000) in paragraph at lines 1834--1837
 
  []
 
 
-Overfull \hbox (22.85947pt too wide) in paragraph at lines 1812--1831
+Overfull \hbox (22.85947pt too wide) in paragraph at lines 1838--1857
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1812--1831
+Underfull \hbox (badness 10000) in paragraph at lines 1838--1857
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1812--1831
+Underfull \hbox (badness 10000) in paragraph at lines 1838--1857
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1812--1831
+Underfull \hbox (badness 10000) in paragraph at lines 1838--1857
 
  []
 
 
-Overfull \hbox (46.55399pt too wide) in paragraph at lines 1832--1862
+Overfull \hbox (46.55399pt too wide) in paragraph at lines 1858--1888
 [][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1832--1862
+Underfull \hbox (badness 10000) in paragraph at lines 1858--1888
 
  []
 
 
 
 [50]
-Underfull \hbox (badness 10000) in paragraph at lines 1876--1952
+Underfull \hbox (badness 10000) in paragraph at lines 1902--1978
 
  []
 
@@ -1814,7 +1843,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [51]
-Overfull \hbox (43.70685pt too wide) in paragraph at lines 1956--1957
+Overfull \hbox (43.70685pt too wide) in paragraph at lines 1982--1983
 \LGR/cmr/m/n/10 �pwc e�-nai sto \OT1/cmr/m/n/10 ex-cel \LGR/cmr/m/n/10 ta di-af
 ore-tik� qr�-mata\OT1/cmr/m/n/10 : []$\OT1/cmtt/m/n/10 https : / / docs . googl
 e . com / spreadsheets / d / 1mwmZSr8PBiFgsxemVE _
@@ -1828,10 +1857,10 @@ e . com / spreadsheets / d / 1mwmZSr8PBiFgsxemVE _
 
 [54]
 
-LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
+LaTeX Warning: Command \textAlpha invalid in math mode on input line 2086.
 
 
-LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
+LaTeX Warning: Command \textAlpha invalid in math mode on input line 2086.
 
 
 
@@ -1846,70 +1875,100 @@ LaTeX Warning: Command \textAlpha invalid in math mode on input line 2060.
 [59]
 
 [60]
-Underfull \hbox (badness 2368) in paragraph at lines 2295--2297
-[]\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
-ec-tive (excl. avi-a-tion ac-tiv-i-ties),
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2295--2297
-[]$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
- / archivio / allegati / emission _ trading /
+Overfull \hbox (16.43192pt too wide) in paragraph at lines 2303--2304
+[]\OT1/cmr/m/n/10 [x ]\LGR/cmr/m/n/10 Up-ost�rixh gia ek-jetik�\OT1/cmr/m/n/10 
+. \LGR/cmr/m/n/10 Sto \OT1/cmr/m/n/10 gurobi \LGR/cmr/m/n/10 aut� l�ne-tai b�-z
+on-tac bo-hjhtik� metabl-ht� kai thn enswmatwm�nh
  []
 
 
 
 [61]
+Underfull \hbox (badness 2368) in paragraph at lines 2331--2333
+[]\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
+ec-tive (excl. avi-a-tion ac-tiv-i-ties),
+ []
 
-[62] (Ημερολόγιο_από_2023.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 2331--2333
+[]$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
+ / archivio / allegati / emission _ trading /
+ []
+
+(C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
+File: lstlang1.sty 2024/05/25 1.10b listings language file
+)
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 2355.
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2356.
+
+
+
+[62]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[63]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[64]
+
+[65] (Ημερολόγιο_από_2023.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
  ***********
 Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
 t changed.
-(rerunfilecheck)             Checksum: 192E9B1E87E097315733600F2BE97877;21434.
+(rerunfilecheck)             Checksum: E0EA074F6783BC991BC4F5A4667C241A;21269.
  ) 
 Here is how much of TeX's memory you used:
- 28414 strings out of 473899
- 547896 string characters out of 5726028
- 1972960 words of memory out of 5000000
- 50522 multiletter control sequences out of 15000+600000
- 572333 words of font info for 84 fonts, out of 8000000 for 9000
+ 30365 strings out of 473898
+ 573991 string characters out of 5726007
+ 2299960 words of memory out of 5000000
+ 52328 multiletter control sequences out of 15000+600000
+ 572668 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,17n,107p,1242b,601s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 98i,17n,107p,1242b,2216s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Kostas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcr
 m1000.pk><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/cm/cmbx12.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fon
 ts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Kostas/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Kostas/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Kostas/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/K
-ostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C
-:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
-10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
-ts/cm/cmr12.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmr5.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/public/amsfonts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/AppData/Local/
-Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Kostas/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Ko
-stas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C
-:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grmn100
-0.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek
-/grmn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kostas/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/Users/Kostas/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (62 pages, 2039165 bytes
+MiKTeX/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:/Users/Kostas/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Kostas/Ap
+pData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users
+/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi5.pfb>
+<C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mmi7.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
+onts/cm/cmr10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Kostas/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Kostas/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Kostas/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/
+Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><
+C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
+tt10.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
+onts/cm/cmtt9.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/cbgreek/grmn1000.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/cbgreek/grmn1200.pfb><C:/Users/Kostas/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/cbgreek/grxn1000.pfb><C:/Users/Kostas/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/cbgreek/grxn1200.pfb><C:/Users/Kostas/AppData/Loca
+l/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn1440.pfb><C:/Users/Kostas/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kos
+tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/U
+sers/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/m
+sbm10.pfb>
+Output written on Ημερολόγιο_από_2023.pdf (65 pages, 2099820 bytes
 ).
 PDF statistics:
- 1146 PDF objects out of 1200 (max. 8388607)
- 311 named destinations out of 1000 (max. 500000)
- 829 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1318 PDF objects out of 1440 (max. 8388607)
+ 440 named destinations out of 1000 (max. 500000)
+ 821 words of extra memory for PDF output out of 10000 (max. 10000000)
 
