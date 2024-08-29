@@ -191,3 +191,4 @@ def calculate_output(firm, firms, dummy_market, sectors):
     #     print(f"{v.varName}: {v.X}")
     # return sum_other_outputs
     return output.X, emission.X, profit_expr.subs(out, output.X).subs(em, emission.X).evalf()
+
