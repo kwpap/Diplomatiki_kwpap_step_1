@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  29 AUG 2024 10:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  2 SEP 2024 00:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1400,7 +1400,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [4]
 
 [5]
-<images/Hungary 2017.png, id=488, 1003.75pt x 1003.75pt>
+<images/Hungary 2017.png, id=494, 1003.75pt x 1003.75pt>
 File: images/Hungary 2017.png Graphic file (type png)
 <use images/Hungary 2017.png>
 Package pdftex.def Info: images/Hungary 2017.png  used on input line 231.
@@ -1413,17 +1413,17 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [6]
 
 [7 <./images/Hungary 2017.png>]
-<images/Malta 2017.png, id=502, 1003.75pt x 1003.75pt>
+<images/Malta 2017.png, id=508, 1003.75pt x 1003.75pt>
 File: images/Malta 2017.png Graphic file (type png)
 <use images/Malta 2017.png>
 Package pdftex.def Info: images/Malta 2017.png  used on input line 242.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Greece 2017.png, id=503, 1003.75pt x 1003.75pt>
+<images/Greece 2017.png, id=509, 1003.75pt x 1003.75pt>
 File: images/Greece 2017.png Graphic file (type png)
 <use images/Greece 2017.png>
 Package pdftex.def Info: images/Greece 2017.png  used on input line 249.
 (pdftex.def)             Requested size: 145.11053pt x 145.10352pt.
-<images/Germany 2017.png, id=504, 1003.75pt x 1003.75pt>
+<images/Germany 2017.png, id=510, 1003.75pt x 1003.75pt>
 File: images/Germany 2017.png Graphic file (type png)
 <use images/Germany 2017.png>
 Package pdftex.def Info: images/Germany 2017.png  used on input line 256.
@@ -1432,7 +1432,7 @@ Package pdftex.def Info: images/Germany 2017.png  used on input line 256.
 
 [8 <./images/Malta 2017.png> <./images/Greece 2017.png> <./images/Germany 2017.
 png>]
-<images/2017 r^2 vs GDP.png, id=515, 1003.75pt x 1003.75pt>
+<images/2017 r^2 vs GDP.png, id=521, 1003.75pt x 1003.75pt>
 File: images/2017 r^2 vs GDP.png Graphic file (type png)
 <use images/2017 r^2 vs GDP.png>
 Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 298.
@@ -1442,7 +1442,7 @@ Package pdftex.def Info: images/2017 r^2 vs GDP.png  used on input line 298.
 [9 <./images/2017 r^2 vs GDP.png>]
 
 [10]
-<images/plot.jpg, id=537, 601.4972pt x 644.4075pt>
+<images/plot.jpg, id=543, 601.4972pt x 644.4075pt>
 File: images/plot.jpg Graphic file (type jpg)
 <use images/plot.jpg>
 Package pdftex.def Info: images/plot.jpg  used on input line 395.
@@ -1482,7 +1482,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 535--536
 
 
 [15]
-<images/Boxplot Population Normalized vs Country.png, id=576, 440.39531pt x 316
+<images/Boxplot Population Normalized vs Country.png, id=582, 440.39531pt x 316
 .93407pt>
 File: images/Boxplot Population Normalized vs Country.png Graphic file (type pn
 g)
@@ -1490,7 +1490,7 @@ g)
 Package pdftex.def Info: images/Boxplot Population Normalized vs Country.png  u
 sed on input line 596.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Boxplot Population in Millions vs Country.png, id=577, 440.39531pt x 31
+<images/Boxplot Population in Millions vs Country.png, id=583, 440.39531pt x 31
 6.93407pt>
 File: images/Boxplot Population in Millions vs Country.png Graphic file (type p
 ng)
@@ -1510,13 +1510,13 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 [17 <./images/Boxplot Population Normalized vs Country.png> <./images/Boxplot P
 opulation in Millions vs Country.png>]
-<images/boxplot_inflation_raw.png, id=590, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_raw.png, id=596, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_raw.png Graphic file (type png)
 <use images/boxplot_inflation_raw.png>
 Package pdftex.def Info: images/boxplot_inflation_raw.png  used on input line 6
 57.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_inflation_normalized.png, id=591, 440.39531pt x 316.93407pt>
+<images/boxplot_inflation_normalized.png, id=597, 440.39531pt x 316.93407pt>
 File: images/boxplot_inflation_normalized.png Graphic file (type png)
 <use images/boxplot_inflation_normalized.png>
 Package pdftex.def Info: images/boxplot_inflation_normalized.png  used on input
@@ -1544,12 +1544,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [21]
-<images/Boxplot_Verified.png, id=615, 440.39531pt x 316.93407pt>
+<images/Boxplot_Verified.png, id=621, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Verified.png Graphic file (type png)
 <use images/Boxplot_Verified.png>
 Package pdftex.def Info: images/Boxplot_Verified.png  used on input line 806.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/boxplot_verified_log.png, id=616, 440.39531pt x 316.93407pt>
+<images/boxplot_verified_log.png, id=622, 440.39531pt x 316.93407pt>
 File: images/boxplot_verified_log.png Graphic file (type png)
 <use images/boxplot_verified_log.png>
 Package pdftex.def Info: images/boxplot_verified_log.png  used on input line 81
@@ -1566,7 +1566,7 @@ Overfull \vbox (0.44368pt too high) has occurred while \output is active []
 
 
 [23 <./images/Boxplot_Verified.png> <./images/boxplot_verified_log.png>]
-<images/Boxplot_Agriculture.png, id=628, 440.39531pt x 316.93407pt>
+<images/Boxplot_Agriculture.png, id=634, 440.39531pt x 316.93407pt>
 File: images/Boxplot_Agriculture.png Graphic file (type png)
 <use images/Boxplot_Agriculture.png>
 Package pdftex.def Info: images/Boxplot_Agriculture.png  used on input line 865
@@ -1582,7 +1582,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [25 <./images/Boxplot_Agriculture.png>]
 
 [26]
-<images/boxplot_Manufacturing.png, id=646, 440.39531pt x 316.93407pt>
+<images/boxplot_Manufacturing.png, id=652, 440.39531pt x 316.93407pt>
 File: images/boxplot_Manufacturing.png Graphic file (type png)
 <use images/boxplot_Manufacturing.png>
 Package pdftex.def Info: images/boxplot_Manufacturing.png  used on input line 9
@@ -1626,7 +1626,7 @@ Overfull \hbox (45.60533pt too wide) in paragraph at lines 1182--1197
  [][] 
  []
 
-<images/Clustering.png, id=674, 811.3512pt x 716.1957pt>
+<images/Clustering.png, id=680, 811.3512pt x 716.1957pt>
 File: images/Clustering.png Graphic file (type png)
 <use images/Clustering.png>
 Package pdftex.def Info: images/Clustering.png  used on input line 1203.
@@ -1642,7 +1642,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [33]
-<images/Clustering_per_capita.png, id=686, 749.9217pt x 753.0534pt>
+<images/Clustering_per_capita.png, id=692, 749.9217pt x 753.0534pt>
 File: images/Clustering_per_capita.png Graphic file (type png)
 <use images/Clustering_per_capita.png>
 Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
@@ -1653,20 +1653,20 @@ Package pdftex.def Info: images/Clustering_per_capita.png  used on input line 1
 [34 <./images/Clustering.png>]
 
 [35 <./images/Clustering_per_capita.png>]
-<images/Distances from Lithuania.png, id=703, 440.39531pt x 316.93407pt>
+<images/Distances from Lithuania.png, id=709, 440.39531pt x 316.93407pt>
 File: images/Distances from Lithuania.png Graphic file (type png)
 <use images/Distances from Lithuania.png>
 Package pdftex.def Info: images/Distances from Lithuania.png  used on input lin
 e 1389.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Denmark, third Cluster.png, id=704, 440.39531pt x 316.93
+<images/Distances from Denmark, third Cluster.png, id=710, 440.39531pt x 316.93
 407pt>
 File: images/Distances from Denmark, third Cluster.png Graphic file (type png)
 <use images/Distances from Denmark, third Cluster.png>
 Package pdftex.def Info: images/Distances from Denmark, third Cluster.png  used
  on input line 1392.
 (pdftex.def)             Requested size: 386.95897pt x 278.48694pt.
-<images/Distances from Italy.png, id=705, 440.39531pt x 316.93407pt>
+<images/Distances from Italy.png, id=711, 440.39531pt x 316.93407pt>
 File: images/Distances from Italy.png Graphic file (type png)
 <use images/Distances from Italy.png>
 Package pdftex.def Info: images/Distances from Italy.png  used on input line 13
@@ -1710,7 +1710,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [42]
 
 [43]
-<images/346111264_237886352220554_6402134938597733881_n.jpg, id=783, 1673.25125
+<images/346111264_237886352220554_6402134938597733881_n.jpg, id=789, 1673.25125
 pt x 1051.93pt>
 File: images/346111264_237886352220554_6402134938597733881_n.jpg Graphic file (
 type jpg)
@@ -1721,7 +1721,7 @@ Package pdftex.def Info: images/346111264_237886352220554_6402134938597733881_n
 
 
 [44 <./images/346111264_237886352220554_6402134938597733881_n.jpg>]
-<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=789, 605.76312pt x 410.031
+<images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png, id=795, 605.76312pt x 410.031
 88pt>
 File: images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png Graphic file (type png)
 <use images/8df6abab-b528-4c7f-a8ff-f985a8085b91.png>
@@ -1743,7 +1743,7 @@ ons-[]trading-[]scheme-[]17 #
 
 
 [46]
-<images/Calculated_EI_EI_Combustion.png, id=806, 465.23813pt x 349.305pt>
+<images/Calculated_EI_EI_Combustion.png, id=812, 465.23813pt x 349.305pt>
 File: images/Calculated_EI_EI_Combustion.png Graphic file (type png)
 <use images/Calculated_EI_EI_Combustion.png>
 Package pdftex.def Info: images/Calculated_EI_EI_Combustion.png  used on input 
@@ -1752,7 +1752,7 @@ line 1776.
 
 
 [47 <./images/Calculated_EI_EI_Combustion.png>]
-<images/Calculated_RI_gdpps.png, id=816, 616.55344pt x 349.305pt>
+<images/Calculated_RI_gdpps.png, id=822, 616.55344pt x 349.305pt>
 File: images/Calculated_RI_gdpps.png Graphic file (type png)
 <use images/Calculated_RI_gdpps.png>
 Package pdftex.def Info: images/Calculated_RI_gdpps.png  used on input line 179
@@ -1764,7 +1764,7 @@ LaTeX Font Info:    Trying to load font information for LGR+cmtt on input line
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/cbfonts-fd\lgrcmtt.fd
 File: lgrcmtt.fd 2017/07/29 v1.2 Greek European Computer Typewriter
 )
-<images/calculated_without_austria_lithuania_finland.png, id=817, 611.28375pt x
+<images/calculated_without_austria_lithuania_finland.png, id=823, 611.28375pt x
  349.305pt>
 File: images/calculated_without_austria_lithuania_finland.png Graphic file (typ
 e png)
@@ -1884,7 +1884,7 @@ on-tac bo-hjhtik� metabl-ht� kai thn enswmatwm�nh
 
 
 [61]
-<images/diagram-export-8-28-2024-4_45_56-PM.jpg, id=966, 1439.3775pt x 1934.226
+<images/diagram-export-8-28-2024-4_45_56-PM.jpg, id=972, 1439.3775pt x 1934.226
 26pt>
 File: images/diagram-export-8-28-2024-4_45_56-PM.jpg Graphic file (type jpg)
 <use images/diagram-export-8-28-2024-4_45_56-PM.jpg>
@@ -1899,29 +1899,32 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 [62]
 
 [63 <./images/diagram-export-8-28-2024-4_45_56-PM.jpg>]
-Underfull \hbox (badness 2368) in paragraph at lines 2383--2385
+Overfull \hbox (1.3898pt too wide) in paragraph at lines 2359--2374
+[][]
+ []
+
+
+Underfull \hbox (badness 2368) in paragraph at lines 2411--2413
 []\OT1/cmr/m/n/10 Guidance on In-ter-pre-ta-tion of An-nex I of the EU ETS Di-r
 ec-tive (excl. avi-a-tion ac-tiv-i-ties),
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2383--2385
+Underfull \hbox (badness 10000) in paragraph at lines 2411--2413
 []$\OT1/cmtt/m/n/10 https : / / www . mase . gov . it / sites / default / files
  / archivio / allegati / emission _ trading /
  []
 
+
+
+[64]
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2024/05/25 1.10b listings language file
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 2407.
+nput line 2435.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2408.
-
-
-
-[64]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2436.
 
 
 
@@ -1931,21 +1934,26 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [66]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[67] (Ημερολόγιο_από_2023.aux)
+
+
+[67]
+
+[68] (Ημερολόγιο_από_2023.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 2
 L3 programming layer <2024-07-20>
  ***********
 Package rerunfilecheck Info: File `Ημερολόγιο_από_2023.out' has no
 t changed.
-(rerunfilecheck)             Checksum: E0EA074F6783BC991BC4F5A4667C241A;21269.
+(rerunfilecheck)             Checksum: CF2F532FAF3577EEB0F9AF4F3A712329;21983.
  ) 
 Here is how much of TeX's memory you used:
- 30426 strings out of 473899
- 575317 string characters out of 5726028
- 2315960 words of memory out of 5000000
- 52353 multiletter control sequences out of 15000+600000
+ 30420 strings out of 473899
+ 575120 string characters out of 5726028
+ 2297960 words of memory out of 5000000
+ 52362 multiletter control sequences out of 15000+600000
  572668 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,17n,107p,1242b,2183s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1980,10 +1988,10 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kos
 tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/U
 sers/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/m
 sbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (67 pages, 2330226 bytes
+Output written on Ημερολόγιο_από_2023.pdf (68 pages, 2337130 bytes
 ).
 PDF statistics:
- 1368 PDF objects out of 1440 (max. 8388607)
- 475 named destinations out of 1000 (max. 500000)
- 826 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1357 PDF objects out of 1440 (max. 8388607)
+ 460 named destinations out of 1000 (max. 500000)
+ 834 words of extra memory for PDF output out of 10000 (max. 10000000)
 
