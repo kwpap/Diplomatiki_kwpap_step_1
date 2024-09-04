@@ -62,11 +62,11 @@
 \contentsline {section}{\numberline {16}Συνάντηση στο ΜΟΠ 31/10/23}{54}{section.16}%
 \contentsline {subsection}{\numberline {16.1}Σημαντικά Ειπωθέντα}{54}{subsection.16.1}%
 \contentsline {subsection}{\numberline {16.2}Στόχοι}{54}{subsection.16.2}%
-\contentsline {section}{\numberline {17}Συνάντηση μέσω Skype στις 5 Νοεμβρίου 2023}{54}{section.17}%
+\contentsline {section}{\numberline {17}5/1/23 Συνάντηση μέσω Skype}{54}{section.17}%
 \contentsline {subsection}{\numberline {17.1}Δημιουργία Συνθετικών Δεδομένων}{54}{subsection.17.1}%
 \contentsline {subsection}{\numberline {17.2}Ανάλυση Εταιρικών Συναρτήσεων}{55}{subsection.17.2}%
 \contentsline {subsection}{\numberline {17.3}Στόχοι για την Επόμενη Συνάντηση}{55}{subsection.17.3}%
-\contentsline {section}{\numberline {18}Συνάντηση στο ΜΟΠ στις 7 Νοεμβρίου 2023}{55}{section.18}%
+\contentsline {section}{\numberline {18}7/11/23 Συνάντηση στο ΜΟΠ}{55}{section.18}%
 \contentsline {subsection}{\numberline {18.1}Πριν την συνάντηση}{55}{subsection.18.1}%
 \contentsline {subsubsection}{\numberline {18.1.1}Ορισμοί}{55}{subsubsection.18.1.1}%
 \contentsline {subsubsection}{\numberline {18.1.2}Πιθανές συναρτήσεις παραγωγής}{55}{subsubsection.18.1.2}%
@@ -75,13 +75,15 @@
 \contentsline {subsubsection}{\numberline {18.2.1}Βήμα 1}{57}{subsubsection.18.2.1}%
 \contentsline {subsubsection}{\numberline {18.2.2}Βήμα 2}{57}{subsubsection.18.2.2}%
 \contentsline {subsubsection}{\numberline {18.2.3}Βήμα 3 - Βελτιώσεις}{57}{subsubsection.18.2.3}%
-\contentsline {section}{\numberline {19}Συνάντηση 14 Νοεμβρίου 2023 στο ΜΟΠ}{58}{section.19}%
-\contentsline {section}{\numberline {20}Συνάντηση 28 Νοεμβρίου 2023}{58}{section.20}%
-\contentsline {section}{\numberline {21}Συνάντηση στις 12/12/23}{58}{section.21}%
-\contentsline {section}{\numberline {22}Συνάντηση στις 19/12/23}{58}{section.22}%
-\contentsline {section}{\numberline {23}Διαδικτυακή συνάντηση 27/2/24}{58}{section.23}%
-\contentsline {section}{\numberline {24}Επανεκκίνηση 22/4/24}{59}{section.24}%
-\contentsline {section}{\numberline {25}Επανεκκίνηση 19/7/24}{59}{section.25}%
-\contentsline {section}{\numberline {26}Συνάντηση με τον κ Φωτάκη από το γραφείο του Κοινοτάρχη Αστριτσίου 26 Ιουλίου}{60}{section.26}%
+\contentsline {section}{\numberline {19}14/1/23 Συνάντηση στο ΜΟΠ}{58}{section.19}%
+\contentsline {section}{\numberline {20}28/11/23 Διαδικτυακή συνάντηση}{58}{section.20}%
+\contentsline {section}{\numberline {21}12/12/23 Διαδικτυακή συνάντηση}{58}{section.21}%
+\contentsline {section}{\numberline {22}19/12/23 Διαδικτυακή συνάντηση}{58}{section.22}%
+\contentsline {section}{\numberline {23}27/2/24 Διαδικτυακή συνάντηση}{58}{section.23}%
+\contentsline {section}{\numberline {24}22/4/24 Επανεκκίνηση}{59}{section.24}%
+\contentsline {section}{\numberline {25}19/7/24 Επανεκκίνηση}{59}{section.25}%
+\contentsline {section}{\numberline {26}26/7/24 Συνάντηση με τον κ Φωτάκη από το γραφείο του Κοινοτάρχη Αστριτσίου}{60}{section.26}%
 \contentsline {section}{\numberline {27}Μετά το Αστρίτσι και την Νάξο}{60}{section.27}%
-\contentsline {section}{\numberline {28}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{65}{section.28}%
+\contentsline {section}{\numberline {28}2/9/24 Συνάντηση στο ΜΟΠ με την Τζέλα και κ. Φωτάκη}{65}{section.28}%
+\contentsline {subsection}{\numberline {28.1}Ιδέες για abatement cost function}{66}{subsection.28.1}%
+\contentsline {section}{\numberline {29}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{67}{section.29}%
