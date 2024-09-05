@@ -1,4 +1,5 @@
 import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
+from gurobipy import Model, LinExpr, QuadExpr, GRB
 def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     """
     Recursively convert a SymPy expression to a Gurobi expression, 
@@ -119,6 +120,7 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
         raise ValueError(f"Unsupported SymPy expression: {sympy_expr}")
     
 x = sp.symbols('x')
+y = sp.symbols('y')
 
 class Regulator:
     _id_counter = 1
@@ -129,19 +131,19 @@ class Regulator:
         self.name = name
         self.permit_price = permit_price
         self.emission_cap = emission_cap
+        self.sector_registry = {}
+        self.country_registry = {}
+        self.firm_registry = {}
 
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
 
-# Global registries for sectors and countries
-sector_registry = {}
-country_registry = {}
-firm_registry = {}
+
 
 class Sector:
     _id_counter = 1
 
-    def __init__(self, name, price_demand_function, free_emission_multiplier):
+    def __init__(self, name, price_demand_function, free_emission_multiplier, regulator):
         self.id = Sector._id_counter
         Sector._id_counter += 1
         self.name = name
@@ -150,7 +152,7 @@ class Sector:
         self.firms = []  # List to store firms in this sector
 
         # Register this sector in the global registry
-        sector_registry[self.id] = self
+        regulator.sector_registry[self.id] = self
 
     def add_firm(self, firm):
         self.firms.append(firm)
@@ -161,7 +163,7 @@ class Sector:
 class Country:
     _id_counter = 1
 
-    def __init__(self, name, size):
+    def __init__(self, name, size,regulator):
         self.id = Country._id_counter
         Country._id_counter += 1
         self.name = name
@@ -169,7 +171,7 @@ class Country:
         self.firms = []  # List to store firms in this country
 
         # Register this country in the global registry
-        country_registry[self.id] = self
+        regulator.country_registry[self.id] = self
 
     def add_firm(self, firm):
         self.firms.append(firm)
@@ -180,7 +182,7 @@ class Country:
 class Firm:
     _id_counter = 1
 
-    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, BAU_output=0, BAU_emission=0):
+    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, regulator, BAU_output=0, BAU_emission=0):
         self.id = Firm._id_counter
         Firm._id_counter += 1
         self.name = name
@@ -189,12 +191,12 @@ class Firm:
         if isinstance(sector, Sector):
             self.sector = sector
         elif isinstance(sector, int):
-            self.sector = sector_registry.get(sector)
+            self.sector = regulator.sector_registry.get(sector)
 
         if isinstance(country, Country):
             self.country = country
         elif isinstance(country, int):
-            self.country = country_registry.get(country)
+            self.country = regulator.country_registry.get(country)
 
         self.production_cost_function = production_cost_function
         self.abatement_cost_function = abatement_cost_function
@@ -203,9 +205,10 @@ class Firm:
         self.profit = profit
         self.BAU_output = BAU_output
         self.BAU_emission = BAU_emission
+        self.regulator = regulator
 
         # Register this firm in the global registry
-        firm_registry[self.id] = self
+        regulator.firm_registry[self.id] = self
         
         # Register this firm with its sector and country
         if self.sector:
@@ -215,4 +218,55 @@ class Firm:
 
     def __repr__(self):
         return f"Firm(id={self.id}, name='{self.name}', sector_id={self.sector.id if self.sector else None}, country_id={self.country.id if self.country else None}, actual_output={self.actual_output}, emission={self.emission}, profit={self.profit})"
+
+
+def calculate_output(firm, verbose=False, writeLP=False, BAU=False):
+    # Calculate the output of the firm
+    sector = firm.sector
+    regulator = firm.regulator
+    # Sum of all other outputs
+    sum_other_outputs = 0
+    for i in range(len(sector.firms)):
+        if sector.firms[i].id != firm.id:
+            sum_other_outputs += sector.firms[i].actual_output
     
+    #Get the price of the permits
+    permit_price = regulator.permit_price
+    # Get the price demand function of the sector
+    price_demand_function = sector.price_demand_function
+    # Get the abatement cost function of the firm
+    abatement_cost_function = firm.abatement_cost_function
+    # Get the production cost function of the firm
+    production_cost_function = firm.production_cost_function
+    # Get the free emission multiplier of the firm
+    free_emission_multiplier = sector.free_emission_multiplier
+
+    out, em = sp.symbols('out em')
+    # Calculate the output of the firm
+    #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
+    income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
+    abatement = -abatement_cost_function.subs({x: out - em, y: em})
+    trading = - permit_price * (em -free_emission_multiplier * out)
+    if BAU: # If BAU is True, then the firm is operating at Business as Usual, meaning that there is no objective to abate emissions nor to trade a valueless item
+        abatement = 0
+        trading = 0
+    
+    profit_expr = income + abatement + trading
+    # print("Profit Expression: {}".format(profit_expr))
+    # Solve the optimization problem
+    m = gb.Model("firm")
+    output = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "output", lb = 0)
+    emission = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "emission", lb = 0)
+    symbol_map = {out: output, em: emission}
+    profit = sympy_to_gurobi(profit_expr, symbol_map, m)
+    m.setObjective(profit, gb.GRB.MAXIMIZE) 
+    m.addConstr(emission <= output)
+
+    m.params.OutputFlag = 1 if verbose else 0
+
+    if writeLP:
+        m.write(f"firm{firm.id}.lp")
+    #check if output.X is None
+    m.optimize()
+    return output.X, emission.X, profit.getValue()
+
