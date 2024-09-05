@@ -1,6 +1,7 @@
 import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
 from gurobipy import Model, LinExpr, QuadExpr, GRB
 import sys
+import random
 
 def get_emission(firms):
     total_emission = 0
@@ -194,7 +195,9 @@ class Regulator:
             repeat = True
             precision *= 10
             counter = 0
-            while repeat and counter < max_iter*10:
+            max_iter *= 10
+            other_a_excecusions = 0
+            while repeat and counter < max_iter:
                 lp_counter = 0
                 max_diff = 0
                 repeat = False
@@ -214,9 +217,19 @@ class Regulator:
                 if(print_diff): 
                     sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
                     sys.stdout.flush()
-            # Step 5: If it doesn't converge, return an error message.
-            if counter == max_iter:
-                print("It doesn't converge")
+                # Step 5: If it doesn't converge, return an error message.
+                if counter == max_iter:
+                    other_a_excecusions += 1
+                    print("It doesn't converge with a={}".format(a))
+                    # to combat this we will do the same but with different a values.
+                    a = random.uniform(0.05, 0.4)
+                    if other_a_excecusions == 1:
+                        max_iter /= 10
+                        
+                    elif other_a_excecusions == 10:
+                        print("It doesn't converge")
+                        break
+                    
 
     def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000):
 
