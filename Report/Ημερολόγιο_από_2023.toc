@@ -86,4 +86,5 @@
 \contentsline {section}{\numberline {27}Μετά το Αστρίτσι και την Νάξο}{60}{section.27}%
 \contentsline {section}{\numberline {28}2/9/24 Συνάντηση στο ΜΟΠ με την Τζέλα και κ. Φωτάκη}{65}{section.28}%
 \contentsline {subsection}{\numberline {28.1}Ιδέες για abatement cost function}{66}{subsection.28.1}%
-\contentsline {section}{\numberline {29}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{67}{section.29}%
+\contentsline {subsection}{\numberline {28.2}Πειράματα για την 5/9/24}{67}{subsection.28.2}%
+\contentsline {section}{\numberline {29}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{70}{section.29}%
