@@ -1,5 +1,6 @@
 import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
 from gurobipy import Model, LinExpr, QuadExpr, GRB
+import sys
 def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     """
     Recursively convert a SymPy expression to a Gurobi expression, 
@@ -137,6 +138,78 @@ class Regulator:
 
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
+    
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30):
+        repeat = True
+        counter = 0
+        while repeat and counter < max_iter:
+            counter +=1
+            max_diff = 0
+            repeat = False
+
+            max_output = {}
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    output, emission, profit = calculate_output(firm , verbose=False)
+                    max_output[firm.name] = max(max_output.get(firm.name, 0), output)
+
+                    if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
+                        repeat = True
+                    max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
+                    firm.actual_output = output
+                    firm.emission = emission
+                    firm.profit = profit
+                    if(print_output):
+                        print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+            if(print_diff): 
+                sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
+                sys.stdout.flush()
+        if counter == max_iter:
+            print("It doesn't converge initially for cap = {}".format(self.emission_cap))
+            # In this case, the calculation will be different. 
+            # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
+            # Step 2: Repeat step 1 10 times, and take the average of the outputs.
+
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    output_list = []
+                    for i in range(10):
+                        for firm in sector.firms:
+                            firm.actual_output = np.random.uniform(0, max_output[firm.name])
+                        output, emission, profit = calculate_output(firm)
+                        output_list.append(output)
+                    firm.actual_output = np.mean(output_list)
+
+            # Step 3: Use the average as a starting point and repeat the optimization process. This time, the new value can affect the old one by up to 10%.
+            # Step 4: Repeat step 3 until the difference between the new and old values is less than 1%.
+            a = 0.1
+            repeat = True
+            precision *= 10
+            counter = 0
+            while repeat and counter < max_iter*10:
+                lp_counter = 0
+                max_diff = 0
+                repeat = False
+                counter +=1
+                for sector in self.sector_registry.values():
+                    for firm in sector.firms:
+
+                        output, emission, profit = calculate_output(firm)
+                        if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
+                            repeat = True
+                        max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
+                        firm.actual_output = firm.actual_output*(1-a) + output*a
+                        firm.emission = emission
+                        firm.profit = profit
+                        if(print_output):
+                            print("Firm {} has output: {:2f} and emission: {:2f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+                if(print_diff): 
+                    sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
+                    sys.stdout.flush()
+            # Step 5: If it doesn't converge, return an error message.
+            if counter == max_iter:
+                print("It doesn't converge")
+
 
 
 
@@ -270,3 +343,8 @@ def calculate_output(firm, verbose=False, writeLP=False, BAU=False):
     m.optimize()
     return output.X, emission.X, profit.getValue()
 
+def get_emission(firms):
+    total_emission = 0
+    for firm in firms:
+        total_emission += firm.emission
+    return total_emission
