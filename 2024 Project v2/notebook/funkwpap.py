@@ -1,5 +1,15 @@
 import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
 from gurobipy import Model, LinExpr, QuadExpr, GRB
+import sys
+import random
+
+def get_emission(firms):
+    total_emission = 0
+    for firm in firms:
+        total_emission += firm.emission
+    return total_emission
+
+
 def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     """
     Recursively convert a SymPy expression to a Gurobi expression, 
@@ -137,6 +147,112 @@ class Regulator:
 
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
+    
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False):
+        repeat = True
+        counter = 0
+        while repeat and counter < max_iter:
+            counter +=1
+            max_diff = 0
+            repeat = False
+
+            max_output = {}
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    output, emission, profit = firm.calculate_output(verbose=False, BAU = BAU)
+                    max_output[firm.name] = max(max_output.get(firm.name, 0), output)
+
+                    if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
+                        repeat = True
+                    max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
+                    firm.actual_output = output
+                    firm.emission = emission
+                    firm.profit = profit
+                    if(print_output):
+                        print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+            if(print_diff): 
+                sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
+                sys.stdout.flush()
+        if counter == max_iter:
+            print("It doesn't converge initially for cap = {}".format(self.emission_cap))
+            # In this case, the calculation will be different. 
+            # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
+            # Step 2: Repeat step 1 10 times, and take the average of the outputs.
+
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    output_list = []
+                    for i in range(10):
+                        for firm in sector.firms:
+                            firm.actual_output = np.random.uniform(0, max_output[firm.name])
+                        output, emission, profit = firm.calculate_output(BAU = BAU)
+                        output_list.append(output)
+                    firm.actual_output = np.mean(output_list)
+
+            # Step 3: Use the average as a starting point and repeat the optimization process. This time, the new value can affect the old one by up to 10%.
+            # Step 4: Repeat step 3 until the difference between the new and old values is less than 1%.
+            a = 0.1
+            repeat = True
+            precision *= 10
+            counter = 0
+            max_iter *= 10
+            other_a_excecusions = 0
+            while repeat and counter < max_iter:
+                lp_counter = 0
+                max_diff = 0
+                repeat = False
+                counter +=1
+                for sector in self.sector_registry.values():
+                    for firm in sector.firms:
+
+                        output, emission, profit = firm.calculate_output(BAU = BAU)
+                        if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
+                            repeat = True
+                        max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
+                        firm.actual_output = firm.actual_output*(1-a) + output*a
+                        firm.emission = emission
+                        firm.profit = profit
+                        if(print_output):
+                            print("Firm {} has output: {:2f} and emission: {:2f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+                if(print_diff): 
+                    sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
+                    sys.stdout.flush()
+                # Step 5: If it doesn't converge, return an error message.
+                if counter == max_iter:
+                    other_a_excecusions += 1
+                    print("It doesn't converge with a={}".format(a))
+                    # to combat this we will do the same but with different a values.
+                    a = random.uniform(0.05, 0.4)
+                    if other_a_excecusions == 1:
+                        max_iter /= 10
+                        
+                    elif other_a_excecusions == 10:
+                        print("It doesn't converge")
+                        break
+                    
+
+    def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000):
+
+        while x_high - x_low > permit_price_tolerance:
+            x_mid = (x_high + x_low)/2
+            self.permit_price = x_mid
+            self.optimize_them_all(print_output=False, print_diff=True, precision = precision)
+            total_emission = get_emission(self.firm_registry.values())
+            sys.stdout.write("\rPermit price: {:2f}".format(self.permit_price))
+            sys.stdout.flush()
+            if total_emission > self.emission_cap:
+                x_low = x_mid
+            else:
+                x_high = x_mid
+            self.permit_price = x_mid
+            total_emission = get_emission(self.firm_registry.values())
+        if total_emission > self.emission_cap:
+            x_mid = x_high
+            self.permit_price = x_high
+            self.optimize_them_all(print_output=False, print_diff=True, precision = precision)
+            total_emission = get_emission(self.firm_registry.values())
+        print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
+        return x_mid
 
 
 
@@ -220,53 +336,53 @@ class Firm:
         return f"Firm(id={self.id}, name='{self.name}', sector_id={self.sector.id if self.sector else None}, country_id={self.country.id if self.country else None}, actual_output={self.actual_output}, emission={self.emission}, profit={self.profit})"
 
 
-def calculate_output(firm, verbose=False, writeLP=False, BAU=False):
-    # Calculate the output of the firm
-    sector = firm.sector
-    regulator = firm.regulator
-    # Sum of all other outputs
-    sum_other_outputs = 0
-    for i in range(len(sector.firms)):
-        if sector.firms[i].id != firm.id:
-            sum_other_outputs += sector.firms[i].actual_output
-    
-    #Get the price of the permits
-    permit_price = regulator.permit_price
-    # Get the price demand function of the sector
-    price_demand_function = sector.price_demand_function
-    # Get the abatement cost function of the firm
-    abatement_cost_function = firm.abatement_cost_function
-    # Get the production cost function of the firm
-    production_cost_function = firm.production_cost_function
-    # Get the free emission multiplier of the firm
-    free_emission_multiplier = sector.free_emission_multiplier
+    def calculate_output(self, verbose=False, writeLP=False, BAU=False):
+        # Calculate the output of the firm
+        sector = self.sector
+        regulator = self.regulator
+        # Sum of all other outputs
+        sum_other_outputs = 0
+        for i in range(len(sector.firms)):
+            if sector.firms[i].id != self.id:
+                sum_other_outputs += sector.firms[i].actual_output
+        
+        #Get the price of the permits
+        permit_price = regulator.permit_price
+        # Get the price demand function of the sector
+        price_demand_function = sector.price_demand_function
+        # Get the abatement cost function of the firm
+        abatement_cost_function = self.abatement_cost_function
+        # Get the production cost function of the firm
+        production_cost_function = self.production_cost_function
+        # Get the free emission multiplier of the firm
+        free_emission_multiplier = sector.free_emission_multiplier
 
-    out, em = sp.symbols('out em')
-    # Calculate the output of the firm
-    #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
-    income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
-    abatement = -abatement_cost_function.subs({x: out - em, y: em})
-    trading = - permit_price * (em -free_emission_multiplier * out)
-    if BAU: # If BAU is True, then the firm is operating at Business as Usual, meaning that there is no objective to abate emissions nor to trade a valueless item
-        abatement = 0
-        trading = 0
-    
-    profit_expr = income + abatement + trading
-    # print("Profit Expression: {}".format(profit_expr))
-    # Solve the optimization problem
-    m = gb.Model("firm")
-    output = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "output", lb = 0)
-    emission = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "emission", lb = 0)
-    symbol_map = {out: output, em: emission}
-    profit = sympy_to_gurobi(profit_expr, symbol_map, m)
-    m.setObjective(profit, gb.GRB.MAXIMIZE) 
-    m.addConstr(emission <= output)
+        out, em = sp.symbols('out em')
+        # Calculate the output of the firm
+        #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
+        income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
+        abatement = -abatement_cost_function.subs({x: out - em, y: em})
+        trading = - permit_price * (em -free_emission_multiplier * out)
+        if BAU: # If BAU is True, then the firm is operating at Business as Usual, meaning that there is no objective to abate emissions nor to trade a valueless item
+            abatement = 0
+            trading = 0
+        
+        profit_expr = income + abatement + trading
+        # print("Profit Expression: {}".format(profit_expr))
+        # Solve the optimization problem
+        m = gb.Model("firm")
+        output = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "output", lb = 0)
+        emission = m.addVar(vtype = gb.GRB.CONTINUOUS, name = "emission", lb = 0)
+        symbol_map = {out: output, em: emission}
+        profit = sympy_to_gurobi(profit_expr, symbol_map, m)
+        m.setObjective(profit, gb.GRB.MAXIMIZE) 
+        m.addConstr(emission <= output)
 
-    m.params.OutputFlag = 1 if verbose else 0
+        m.params.OutputFlag = 1 if verbose else 0
 
-    if writeLP:
-        m.write(f"firm{firm.id}.lp")
-    #check if output.X is None
-    m.optimize()
-    return output.X, emission.X, profit.getValue()
+        if writeLP:
+            m.write(f"firm{self.id}.lp")
+        #check if output.X is None
+        m.optimize()
+        return output.X, emission.X, profit.getValue()
 
