@@ -144,6 +144,8 @@ class Regulator:
         self.sector_registry = {}
         self.country_registry = {}
         self.firm_registry = {}
+        self.BAU_emissions = 0
+        self.BAU_profit = 0
 
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
@@ -229,7 +231,14 @@ class Regulator:
                     elif other_a_excecusions == 10:
                         print("It doesn't converge")
                         break
-                    
+    def BAU_calculator(self, precision = 0.01, print_diff = False):
+        self.optimize_them_all(precision = precision, print_diff = print_diff, BAU = True)
+        self.BAU_emissions = sum([firm.actual_output for firm in self.firm_registry.values()])
+        self.BAU_profit = sum([firm.profit for firm in self.firm_registry.values()])
+        for firm in self.firm_registry.values():
+            firm.BAU_output = firm.actual_output
+            firm.BAU_emission = firm.actual_output
+            firm.BAU_profit = firm.profit
 
     def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000):
 
@@ -298,7 +307,7 @@ class Country:
 class Firm:
     _id_counter = 1
 
-    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, regulator, BAU_output=0, BAU_emission=0):
+    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, regulator, BAU_output=0, BAU_emission=0, BAU_profit=0):
         self.id = Firm._id_counter
         Firm._id_counter += 1
         self.name = name
@@ -321,7 +330,9 @@ class Firm:
         self.profit = profit
         self.BAU_output = BAU_output
         self.BAU_emission = BAU_emission
+        self.BAU_profit = BAU_profit
         self.regulator = regulator
+        self.BAU_emission = 0
 
         # Register this firm in the global registry
         regulator.firm_registry[self.id] = self
@@ -385,4 +396,4 @@ class Firm:
         #check if output.X is None
         m.optimize()
         return output.X, emission.X, profit.getValue()
-
+    
