@@ -153,12 +153,14 @@ class Regulator:
     def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False):
         repeat = True
         counter = 0
+        last_invonvergent_result = 999999999 # A large number.
+        previous_max_diff = 0
         while repeat and counter < max_iter:
             counter +=1
-            max_diff = 0
+            max_diff = 999999999 
             repeat = False
-
             max_output = {}
+            previous_max_diff = max_diff
             for sector in self.sector_registry.values():
                 for firm in sector.firms:
                     output, emission, profit = firm.calculate_output(verbose=False, BAU = BAU)
@@ -175,6 +177,12 @@ class Regulator:
             if(print_diff): 
                 sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
                 sys.stdout.flush()
+            if max_diff > previous_max_diff: #Then we need to chech if the incovergencies aproach zero.
+                if max_diff - last_invonvergent_result < 0.01:
+                    last_invonvergent_result = max_diff
+                else:
+                    repeat = False # This is used only to make sure that the loop stops if it doesn't converge.
+
         if counter == max_iter:
             print("It doesn't converge initially for cap = {}".format(self.emission_cap))
             # In this case, the calculation will be different. 
@@ -183,24 +191,25 @@ class Regulator:
 
             for sector in self.sector_registry.values():
                 for firm in sector.firms:
-                    output_list = []
+                    output_list = {}
                     for i in range(10):
                         for firm in sector.firms:
                             firm.actual_output = np.random.uniform(0, max_output[firm.name])
                         output, emission, profit = firm.calculate_output(BAU = BAU)
-                        output_list.append(output)
-                    firm.actual_output = np.mean(output_list)
+                    output_list[firm.name] = np.mean(output_list)
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    firm.actual_output = output_list[firm.name]
 
             # Step 3: Use the average as a starting point and repeat the optimization process. This time, the new value can affect the old one by up to 10%.
             # Step 4: Repeat step 3 until the difference between the new and old values is less than 1%.
-            a = 0.1
+            a = 0.5
             repeat = True
             precision *= 10
             counter = 0
             max_iter *= 10
-            other_a_excecusions = 0
+            previous_max_diff = 999999999
             while repeat and counter < max_iter:
-                lp_counter = 0
                 max_diff = 0
                 repeat = False
                 counter +=1
@@ -219,6 +228,9 @@ class Regulator:
                 if(print_diff): 
                     sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
                     sys.stdout.flush()
+                if max_diff > previous_max_diff:
+                    print("It overshooted with a={} trying again with {}".format([a, a*0.9]))
+                    a = a*0.9
                 # Step 5: If it doesn't converge, return an error message.
                 if counter == max_iter:
                     other_a_excecusions += 1
