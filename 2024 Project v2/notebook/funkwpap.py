@@ -231,6 +231,9 @@ class Regulator:
                 if max_diff > previous_max_diff:
                     print("It overshooted with a={} trying again with {}".format([a, a*0.9]))
                     a = a*0.9
+                    previous_max_diff = 999999999
+                else:
+                    previous_max_diff = max_diff
                 # Step 5: If it doesn't converge, return an error message.
                 if counter == max_iter:
                     other_a_excecusions += 1
