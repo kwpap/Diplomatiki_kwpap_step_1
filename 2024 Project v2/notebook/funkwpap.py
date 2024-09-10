@@ -188,18 +188,30 @@ class Regulator:
             # In this case, the calculation will be different. 
             # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
             # Step 2: Repeat step 1 10 times, and take the average of the outputs.
+            temp_output_dict = {}
 
+            # Iterate over all sectors
             for sector in self.sector_registry.values():
+                # Iterate over all firms in the sector
                 for firm in sector.firms:
-                    output_list = {}
+                    temp_output_dict[firm.name] = []
+
+                    # Repeat 10 times
                     for i in range(10):
-                        for firm in sector.firms:
-                            firm.actual_output = np.random.uniform(0, max_output[firm.name])
-                        output, emission, profit = firm.calculate_output(BAU = BAU)
-                    output_list[firm.name] = np.mean(output_list)
+                        # Iterate over all sectors and firms again
+                        for sector_inner in self.sector_registry.values():
+                            for firm_inner in sector_inner.firms:
+                                # Set actual_output to a random value
+                                firm_inner.actual_output = np.random.uniform(0, max_output[firm_inner.name])
+                        
+                        # Calculate output, emission, and profit
+                        output, emission, profit = firm.calculate_output(BAU=BAU)
+                        temp_output_dict[firm.name].append(output)
+
+            # Set actual_output to the mean of the values in temp_output_dict
             for sector in self.sector_registry.values():
                 for firm in sector.firms:
-                    firm.actual_output = output_list[firm.name]
+                    firm.actual_output = np.mean(temp_output_dict[firm.name])
 
             # Step 3: Use the average as a starting point and repeat the optimization process. This time, the new value can affect the old one by up to 10%.
             # Step 4: Repeat step 3 until the difference between the new and old values is less than 1%.
@@ -209,10 +221,12 @@ class Regulator:
             counter = 0
             max_iter *= 10
             previous_max_diff = 999999999
+            
             while repeat and counter < max_iter:
                 max_diff = 0
                 repeat = False
                 counter +=1
+                other_a_excecusions = 0
                 for sector in self.sector_registry.values():
                     for firm in sector.firms:
 
@@ -229,7 +243,7 @@ class Regulator:
                     sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
                     sys.stdout.flush()
                 if max_diff > previous_max_diff:
-                    print("It overshooted with a={} trying again with {}".format([a, a*0.9]))
+                    print("It overshooted with a={} trying again with {}".format(a, a*0.9))
                     a = a*0.9
                     previous_max_diff = 999999999
                 else:
@@ -243,7 +257,7 @@ class Regulator:
                     if other_a_excecusions == 1:
                         max_iter /= 10
                         
-                    elif other_a_excecusions == 10:
+                    elif other_a_excecusions == 20:
                         print("It doesn't converge")
                         break
     def BAU_calculator(self, precision = 0.01, print_diff = False):
