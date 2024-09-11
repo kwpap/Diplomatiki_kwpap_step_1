@@ -218,7 +218,7 @@ class Regulator:
                 firm.profit = np.mean(temp_profit_dict[firm.name])
         self.save_state(state_name="average_of_10_random")
 
-    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False, size_of_diffs = 1):
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False, size_of_diffs = 10):
         iterations = 0
         last_diffs = [999999999]*size_of_diffs
         repeat = True
@@ -240,12 +240,13 @@ class Regulator:
                     firm.actual_output = firm.actual_output*(1-a) + output*a
                     firm.emission = firm.emission * (1-a) + emission*a
                     firm.profit = firm.calculate_profit(BAU = BAU)
-                    if(max_diff < lowest_diff):
-                        lowest_diff = max_diff
-                        self.save_state()
-                        self.states["best"] = self.states["current"] if self.states["previous"] == {} else self.states["previous"]
+
                     if(print_output):
                         print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+            self.save_state()
+            if(max_diff < lowest_diff):
+                lowest_diff = max_diff
+                self.states["best"] = self.states["current"] if self.states["previous"] == {} else self.states["previous"]
             if(print_diff): 
                 sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
                 sys.stdout.flush()
