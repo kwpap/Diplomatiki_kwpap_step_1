@@ -249,7 +249,7 @@ class Regulator:
             if(print_diff): 
                 sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
                 sys.stdout.flush()
-            print(max(last_diffs))
+            # print(max(last_diffs))
             if max_diff > max(last_diffs):
                 print("It failed to converge with permit = {}, cap = {}, a = {}".format(self.permit_price, self.emission_cap, a))
                 a = a*0.9
