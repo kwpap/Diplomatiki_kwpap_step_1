@@ -2,6 +2,7 @@ import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
 from gurobipy import Model, LinExpr, QuadExpr, GRB
 import sys
 import random
+import sqlite3
 
 def get_emission(firms):
     total_emission = 0
@@ -147,10 +148,129 @@ class Regulator:
         self.BAU_emissions = 0
         self.BAU_profit = 0
 
+        # Initialize states as a dictionary of dictionaries
+        self.states = {
+            "current": {},
+            "best": {},
+            "previous": {},
+            "average_of_10_random": {}
+        }
+    def save_state(self, state_name="current"):
+        """Save the current state of all firms."""
+        self.states[state_name] = {
+            firm.name: (firm.actual_output, firm.emission, firm.profit)
+            for firm in self.firm_registry.values()
+        }
+
+    def load_state(self, state_name="current"):
+        """Load a saved state and apply it to all firms."""
+        if state_name in self.states:
+            for firm_name, values in self.states[state_name].items():
+                firm = next((f for f in self.firm_registry.values() if f.name == firm_name), None)
+                if firm:
+                    firm.actual_output, firm.emission, firm.profit = values
+        else:
+            print(f"State '{state_name}' does not exist.")
+
+    def print_state(self, state_name="current"):
+        """Print the saved state for debugging purposes."""
+        if state_name in self.states:
+            print(f"State '{state_name}':")
+            for firm_name, (output, emission, profit) in self.states[state_name].items():
+                print(f"Firm: {firm_name}, Output: {output}, Emission: {emission}, Profit: {profit}")
+        else:
+            print(f"State '{state_name}' does not exist.")
+
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
     
-    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False):
+    def calculate_average_of_10_states(self, BAU = False, max_output = {}):
+        # Here we calculate an average state of 10 random states, to be used as a starting point for the optimization process.
+        # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
+        # Step 2: Repeat step 1 10 times, and take the average of the outputs.
+        temp_output_dict = {}
+        temp_emission_dict = {}
+        temp_profit_dict = {}
+        # Iterate over all sectors
+        for sector in self.sector_registry.values():
+            # Iterate over all firms in the sector
+            for firm in sector.firms:
+                temp_output_dict[firm.name] = []
+                # Repeat 10 times
+                for i in range(10):
+                    # Iterate over all sectors and firms again
+                    for sector_inner in self.sector_registry.values():
+                        for firm_inner in sector_inner.firms:
+                            # Set actual_output to a random value
+                            firm_inner.actual_output = np.random.uniform(0, max_output[firm_inner.name])
+                    
+                    # Calculate output, emission, and profit
+                    output, emission, profit = firm.calculate_output(BAU=BAU)
+                    temp_output_dict[firm.name].append(output)
+                    temp_emission_dict[firm.name].append(emission)
+                    temp_profit_dict[firm.name].append(profit)
+
+        # Set actual_output to the mean of the values in temp_output_dict
+        for sector in self.sector_registry.values():
+            for firm in sector.firms:
+                firm.actual_output = np.mean(temp_output_dict[firm.name])
+                firm.emission = np.mean(temp_emission_dict[firm.name])
+                firm.profit = np.mean(temp_profit_dict[firm.name])
+        self.save_state(state_name="average_of_10_random")
+
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False, size_of_diffs = 1):
+        iterations = 0
+        last_diffs = [999999999]*size_of_diffs
+        repeat = True
+        second_stage = False
+        a = 1
+        max_output = {}
+        lowest_diff = 999999999
+        while repeat :
+            repeat = False
+            max_diff = 0
+            iterations += 1
+            for sector in self.sector_registry.values():
+                for firm in sector.firms:
+                    output, emission, profit = firm.calculate_output(verbose=False, BAU = BAU)
+                    max_output[firm.name] = max(max_output.get(firm.name, 0), output)
+                    if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
+                        repeat = True
+                    max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
+                    firm.actual_output = firm.actual_output*(1-a) + output*a
+                    firm.emission = firm.emission * (1-a) + emission*a
+                    firm.profit = firm.calculate_profit(BAU = BAU)
+                    if(max_diff < lowest_diff):
+                        lowest_diff = max_diff
+                        self.save_state()
+                        self.states["best"] = self.states["current"] if self.states["previous"] == {} else self.states["previous"]
+                    if(print_output):
+                        print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
+            if(print_diff): 
+                sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
+                sys.stdout.flush()
+            print(max(last_diffs))
+            if max_diff > max(last_diffs):
+                print("It failed to converge with permit = {}, cap = {}, a = {}".format(self.permit_price, self.emission_cap, a))
+                a = a*0.9
+                repeat = True
+                self.load_state("average_of_10_random") if second_stage else self.load_state("best")
+            if a<0.01 and second_stage: # There is no stage 3
+                self.load_state("best")
+                print ("Everything failed, best result is {}".format(lowest_diff))
+            if a<0.01:
+                second_stage = True
+                a = 1
+                self.load_state("average_of_10_random")
+            
+            last_diffs[iterations%size_of_diffs] = max_diff
+            self.save_state("previous")
+
+
+
+
+
+    def optimize_them_all2(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False):
         repeat = True
         counter = 0
         last_invonvergent_result = 999999999 # A large number.
@@ -169,9 +289,9 @@ class Regulator:
                     if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
                         repeat = True
                     max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
-                    firm.actual_output = output
-                    firm.emission = emission
-                    firm.profit = profit
+                    firm.actual_output = firm.actual_output*(1-a) + output*a
+                    firm.emission = firm.emission * (1-a) + emission*a
+                    firm.profit = firm.calculate_profit(BAU = BAU)
                     if(print_output):
                         print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
             if(print_diff): 
@@ -425,4 +545,36 @@ class Firm:
         #check if output.X is None
         m.optimize()
         return output.X, emission.X, profit.getValue()
+    
+    def calculate_profit(self, BAU = False):
+        # Calculate the output of the firm
+        sector = self.sector
+        regulator = self.regulator
+        # Sum of all other outputs
+        sum_other_outputs = 0
+        for i in range(len(sector.firms)):
+            if sector.firms[i].id != self.id:
+                sum_other_outputs += sector.firms[i].actual_output
+        #Get the price of the permits
+        permit_price = regulator.permit_price
+        # Get the price demand function of the sector
+        price_demand_function = sector.price_demand_function
+        # Get the abatement cost function of the firm
+        abatement_cost_function = self.abatement_cost_function
+        # Get the production cost function of the firm
+        production_cost_function = self.production_cost_function
+        # Get the free emission multiplier of the firm
+        free_emission_multiplier = sector.free_emission_multiplier
+
+        out, em = sp.symbols('out em')
+        # Calculate the output of the firm
+        #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
+        income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
+        abatement = -abatement_cost_function.subs({x: out - em, y: em})
+        trading = - permit_price * (em -free_emission_multiplier * out)
+        if BAU: 
+            abatement = 0
+            trading = 0
+        return (income + abatement + trading).subs({out: self.actual_output, em: self.emission}).evalf()
+
     
