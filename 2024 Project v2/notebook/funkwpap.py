@@ -248,17 +248,18 @@ class Regulator:
                 lowest_diff = max_diff
                 self.states["best"] = self.states["current"] if self.states["previous"] == {} else self.states["previous"]
             if(print_diff): 
-                sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
+                sys.stdout.write("\rMax diff: {:.2f}, permit price = {:.1f}, cap = {:.0f}, second_stage = {}, a = {:.2f}".format(max_diff, self.permit_price, self.emission_cap, second_stage, a))
                 sys.stdout.flush()
             # print(max(last_diffs))
             if max_diff > max(last_diffs):
-                print("It failed to converge with permit = {}, cap = {}, a = {}".format(self.permit_price, self.emission_cap, a))
+                # print("It failed to converge with permit = {}, cap = {}, a = {}".format(self.permit_price, self.emission_cap, a))
                 a = a*0.9
                 repeat = True
                 self.load_state("average_of_10_random") if second_stage else self.load_state("best")
             if a<0.01 and second_stage: # There is no stage 3
                 self.load_state("best")
                 print ("Everything failed, best result is {}".format(lowest_diff))
+                repeat = False
             if a<0.01:
                 second_stage = True
                 a = 1
