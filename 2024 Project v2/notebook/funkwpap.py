@@ -218,7 +218,7 @@ class Regulator:
                 firm.profit = np.mean(temp_profit_dict[firm.name])
         self.save_state(state_name="average_of_10_random")
 
-    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False, size_of_diffs = 10):
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, BAU = False, size_of_diffs = 10):
         iterations = 0
         last_diffs = [999999999]*size_of_diffs
         repeat = True
@@ -270,118 +270,6 @@ class Regulator:
 
 
 
-
-
-    def optimize_them_all2(self, print_output=False,print_diff=False, precision = 0.01, max_iter = 30, BAU = False):
-        repeat = True
-        counter = 0
-        last_invonvergent_result = 999999999 # A large number.
-        previous_max_diff = 0
-        while repeat and counter < max_iter:
-            counter +=1
-            max_diff = 999999999 
-            repeat = False
-            max_output = {}
-            previous_max_diff = max_diff
-            for sector in self.sector_registry.values():
-                for firm in sector.firms:
-                    output, emission, profit = firm.calculate_output(verbose=False, BAU = BAU)
-                    max_output[firm.name] = max(max_output.get(firm.name, 0), output)
-
-                    if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
-                        repeat = True
-                    max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
-                    firm.actual_output = firm.actual_output*(1-a) + output*a
-                    firm.emission = firm.emission * (1-a) + emission*a
-                    firm.profit = firm.calculate_profit(BAU = BAU)
-                    if(print_output):
-                        print("Firm {} has output: {:5f} and emission: {:5f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
-            if(print_diff): 
-                sys.stdout.write("\rMax diff: {:5f}".format(max_diff))
-                sys.stdout.flush()
-            if max_diff > previous_max_diff: #Then we need to chech if the incovergencies aproach zero.
-                if max_diff - last_invonvergent_result < 0.01:
-                    last_invonvergent_result = max_diff
-                else:
-                    repeat = False # This is used only to make sure that the loop stops if it doesn't converge.
-
-        if counter == max_iter:
-            print("It doesn't converge initially for cap = {}".format(self.emission_cap))
-            # In this case, the calculation will be different. 
-            # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
-            # Step 2: Repeat step 1 10 times, and take the average of the outputs.
-            temp_output_dict = {}
-
-            # Iterate over all sectors
-            for sector in self.sector_registry.values():
-                # Iterate over all firms in the sector
-                for firm in sector.firms:
-                    temp_output_dict[firm.name] = []
-
-                    # Repeat 10 times
-                    for i in range(10):
-                        # Iterate over all sectors and firms again
-                        for sector_inner in self.sector_registry.values():
-                            for firm_inner in sector_inner.firms:
-                                # Set actual_output to a random value
-                                firm_inner.actual_output = np.random.uniform(0, max_output[firm_inner.name])
-                        
-                        # Calculate output, emission, and profit
-                        output, emission, profit = firm.calculate_output(BAU=BAU)
-                        temp_output_dict[firm.name].append(output)
-
-            # Set actual_output to the mean of the values in temp_output_dict
-            for sector in self.sector_registry.values():
-                for firm in sector.firms:
-                    firm.actual_output = np.mean(temp_output_dict[firm.name])
-
-            # Step 3: Use the average as a starting point and repeat the optimization process. This time, the new value can affect the old one by up to 10%.
-            # Step 4: Repeat step 3 until the difference between the new and old values is less than 1%.
-            a = 0.5
-            repeat = True
-            precision *= 10
-            counter = 0
-            max_iter *= 10
-            previous_max_diff = 999999999
-            
-            while repeat and counter < max_iter:
-                max_diff = 0
-                repeat = False
-                counter +=1
-                other_a_excecusions = 0
-                for sector in self.sector_registry.values():
-                    for firm in sector.firms:
-
-                        output, emission, profit = firm.calculate_output(BAU = BAU)
-                        if abs(output - firm.actual_output)>precision or abs(emission - firm.emission)>precision:
-                            repeat = True
-                        max_diff = max(max_diff, abs(output - firm.actual_output), abs(emission - firm.emission))
-                        firm.actual_output = firm.actual_output*(1-a) + output*a
-                        firm.emission = emission
-                        firm.profit = profit
-                        if(print_output):
-                            print("Firm {} has output: {:2f} and emission: {:2f} and profit: {:2f}".format(firm.name, firm.actual_output, firm.emission, profit))
-                if(print_diff): 
-                    sys.stdout.write("\rMax diff: {:3f}".format(max_diff))
-                    sys.stdout.flush()
-                if max_diff > previous_max_diff:
-                    print("It overshooted with a={} trying again with {}".format(a, a*0.9))
-                    a = a*0.9
-                    previous_max_diff = 999999999
-                else:
-                    previous_max_diff = max_diff
-                # Step 5: If it doesn't converge, return an error message.
-                if counter == max_iter:
-                    other_a_excecusions += 1
-                    print("It doesn't converge with a={}".format(a))
-                    # to combat this we will do the same but with different a values.
-                    a = random.uniform(0.05, 0.4)
-                    if other_a_excecusions == 1:
-                        max_iter /= 10
-                        
-                    elif other_a_excecusions == 20:
-                        print("It doesn't converge")
-                        break
     def BAU_calculator(self, precision = 0.01, print_diff = False):
         self.optimize_them_all(precision = precision, print_diff = print_diff, BAU = True)
         self.BAU_emissions = sum([firm.actual_output for firm in self.firm_registry.values()])
@@ -391,12 +279,12 @@ class Regulator:
             firm.BAU_emission = firm.actual_output
             firm.BAU_profit = firm.profit
 
-    def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000):
+    def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000, size_of_diffs = 10):
 
         while x_high - x_low > permit_price_tolerance:
             x_mid = (x_high + x_low)/2
             self.permit_price = x_mid
-            self.optimize_them_all(print_output=False, print_diff=True, precision = precision)
+            self.optimize_them_all(print_output=False, print_diff=True, precision = precision, size_of_diffs= size_of_diffs)
             total_emission = get_emission(self.firm_registry.values())
             sys.stdout.write("\rPermit price: {:2f}".format(self.permit_price))
             sys.stdout.flush()
