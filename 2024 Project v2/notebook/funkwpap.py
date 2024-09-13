@@ -155,6 +155,7 @@ class Regulator:
             "previous": {},
             "average_of_10_random": {}
         }
+
     def save_state(self, state_name="current"):
         """Save the current state of all firms."""
         self.states[state_name] = {
@@ -256,19 +257,17 @@ class Regulator:
                 a = a*0.9
                 repeat = True
                 self.load_state("average_of_10_random") if second_stage else self.load_state("best")
-            if a<0.01 and second_stage: # There is no stage 3
+            if a<0.1 and second_stage: # There is no stage 3
                 self.load_state("best")
                 print ("Everything failed, best result is {}".format(lowest_diff))
                 repeat = False
-            if a<0.01:
+            if a<0.1:
                 second_stage = True
                 a = 1
                 self.load_state("average_of_10_random")
             
             last_diffs[iterations%size_of_diffs] = max_diff
             self.save_state("previous")
-
-
 
     def BAU_calculator(self, precision = 0.01, print_diff = False):
         self.optimize_them_all(precision = precision, print_diff = print_diff, BAU = True)
@@ -301,8 +300,6 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
-
-
 
 class Sector:
     _id_counter = 1
@@ -385,6 +382,49 @@ class Firm:
     def __repr__(self):
         return f"Firm(id={self.id}, name='{self.name}', sector_id={self.sector.id if self.sector else None}, country_id={self.country.id if self.country else None}, actual_output={self.actual_output}, emission={self.emission}, profit={self.profit})"
 
+
+    def calculate_sales(self):
+        # Calculate the sales of the firm
+        sector = self.sector
+        regulator = self.regulator
+        # Sum of all other outputs
+        sum_other_outputs = 0
+        for i in range(len(sector.firms)):
+            if sector.firms[i].id != self.id:
+                sum_other_outputs += sector.firms[i].actual_output
+        
+        #Get the price of the permits
+        permit_price = regulator.permit_price
+        # Get the price demand function of the sector
+        price_demand_function = sector.price_demand_function
+        # Get the production cost function of the firm
+        production_cost_function = self.production_cost_function
+
+
+        out, em = sp.symbols('out em')
+        # Calculate the output of the firm
+        #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
+        income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
+        return income.subs(out, self.actual_output).evalf()
+
+    def calculate_abatement(self):
+        abatement_cost_function = self.abatement_cost_function
+        out, em = sp.symbols('out em')
+        abatement = abatement_cost_function.subs({x: self.actual_output - self.emission, y: self.emission})
+        return abatement.evalf()
+
+    def calculate_trading(self):
+        sector = self.sector
+        regulator = self.regulator
+        # Sum of all other outputs
+
+        #Get the price of the permits
+        permit_price = regulator.permit_price
+        # Get the free emission multiplier of the firm
+        free_emission_multiplier = sector.free_emission_multiplier
+        out, em = sp.symbols('out em')
+        trading = permit_price * (em -free_emission_multiplier * out)
+        return trading.subs({out: self.actual_output, em: self.emission}).evalf()
 
     def calculate_output(self, verbose=False, writeLP=False, BAU=False):
         # Calculate the output of the firm
