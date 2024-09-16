@@ -219,7 +219,7 @@ class Regulator:
                 firm.profit = np.mean(temp_profit_dict[firm.name])
         self.save_state(state_name="average_of_10_random")
 
-    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, BAU = False, size_of_diffs = 10):
+    def optimize_them_all(self, print_output=False,print_diff=False, precision = 0.01, BAU = False, size_of_diffs = 2):
         iterations = 0
         last_diffs = [999999999]*size_of_diffs
         repeat = True
