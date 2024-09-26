@@ -284,7 +284,7 @@ class Regulator:
             firm.BAU_emission = firm.actual_output
             firm.BAU_profit = firm.profit
 
-    def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000, size_of_diffs = 10):
+    def find_optimal_permit_price_to_meet_the_emission_cap_requirements(self, precision = 0.1, permit_price_tolerance = 0.5, x_low = 0, x_high = 1000, size_of_diffs = 2):
 
         while x_high - x_low > permit_price_tolerance:
             x_mid = (x_high + x_low)/2
@@ -302,7 +302,7 @@ class Regulator:
         if total_emission > self.emission_cap:
             x_mid = x_high
             self.permit_price = x_high
-            self.optimize_them_all(print_output=False, print_diff=True, precision = precision)
+            self.optimize_them_all(print_output=False, print_diff=True, precision = precision, size_of_diffs= size_of_diffs)
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
@@ -480,7 +480,8 @@ class Firm:
             m.write(f"firm{self.id}.lp")
         #check if output.X is None
         m.optimize()
-        return output.X, emission.X, profit.getValue()
+        # return output.X, emission.X, profit.getValue()
+        return output.X, emission.X, m.ObjVal
     
     def calculate_profit(self, BAU = False):
         # Calculate the output of the firm
