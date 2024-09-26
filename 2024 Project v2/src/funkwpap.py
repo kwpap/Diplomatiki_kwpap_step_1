@@ -2,7 +2,6 @@ import sympy as sp, numpy as np, gurobipy as gb, pandas as pd
 from gurobipy import Model, LinExpr, QuadExpr, GRB
 import sys
 import random
-import sqlite3
 
 def get_emission(firms):
     total_emission = 0
@@ -35,7 +34,7 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     except Exception as e:
         # Handle the exception and continue with the old value
         # print(f"An error occurred: {e}")
-            a=5
+        pass
     if isinstance(sympy_expr, sp.Symbol):
         return symbol_map[sympy_expr]
     
@@ -51,6 +50,14 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     elif isinstance(sympy_expr, sp.Pow):
         base, exp = sympy_expr.args
         
+        # Check for special cases of exponents
+        if exp == 0:
+            # Any base to the power of 0 is 1
+            return 1
+        if exp == 1:
+            # Any base to the power of 1 is the base itself
+            return sympy_to_gurobi(base, symbol_map, model, aux_var_count)
+
         # Always create an auxiliary variable for the base
         base_expr = sympy_to_gurobi(base, symbol_map, model, aux_var_count)
         aux_var_name = f"pow_base_aux_{aux_var_count[0]}"
@@ -68,13 +75,10 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
             model.addGenConstrPow(base_aux_var, pow_aux_var, exp_value)
             return pow_aux_var
         else:
-            # Handle symbolic powers using general constraints
+            # Handle symbolic exponents using logarithms
             aux_var_name = f"pow_aux_{aux_var_count[0]}"
             aux_var_count[0] += 1
             pow_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
-
-            # Convert the base to a Gurobi expression
-            base_expr = sympy_to_gurobi(base, symbol_map, model, aux_var_count)
 
             # Create an auxiliary variable for the base
             base_aux_var_name = f"base_aux_{aux_var_count[0]}"
@@ -82,22 +86,24 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
             base_aux_var = model.addVar(name=base_aux_var_name, vtype=GRB.CONTINUOUS)
             model.addConstr(base_aux_var == base_expr)
 
-            # Create an auxiliary variable for the logarithm of the base
+            # Convert the exponent to a Gurobi expression
+            exp_expr = sympy_to_gurobi(exp, symbol_map, model, aux_var_count)
+
+            # Create auxiliary variable for log(base)
             log_base_aux_var_name = f"log_base_aux_{aux_var_count[0]}"
             aux_var_count[0] += 1
             log_base_aux_var = model.addVar(name=log_base_aux_var_name, vtype=GRB.CONTINUOUS)
             model.addGenConstrLog(base_aux_var, log_base_aux_var)
 
-            # Convert the exponent to a Gurobi expression
-            exp_expr = sympy_to_gurobi(exp, symbol_map, model, aux_var_count)
 
-            # Create an auxiliary variable for the product of the exponent and the logarithm of the base
+            # Create auxiliary variable for exp * log(base)
             prod_aux_var_name = f"prod_aux_{aux_var_count[0]}"
             aux_var_count[0] += 1
             prod_aux_var = model.addVar(name=prod_aux_var_name, vtype=GRB.CONTINUOUS)
             model.addConstr(prod_aux_var == exp_expr * log_base_aux_var)
 
-            # Create the exponential constraint
+
+            # Add exponential constraint for exp(prod_aux_var)
             model.addGenConstrExp(prod_aux_var, pow_aux_var)
 
             return pow_aux_var
