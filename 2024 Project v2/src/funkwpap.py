@@ -161,6 +161,36 @@ class Regulator:
             "previous": {},
             "average_of_10_random": {}
         }
+    def destroy_all(self):
+        # Clean up firms
+        for firm in self.firm_registry.values():
+            firm.cleanup()
+            del firm
+        self.firm_registry.clear()
+
+        # Clean up sectors
+        for sector in self.sector_registry.values():
+            sector.cleanup()
+            del sector
+        self.sector_registry.clear()
+
+        # Clean up countries
+        for country in self.country_registry.values():
+            country.cleanup()
+            del country
+        self.country_registry.clear()
+
+        # Reset other attributes
+        self.BAU_emissions = 0
+        self.BAU_profit = 0
+        self.states = {
+            "current": {},
+            "best": {},
+            "previous": {},
+            "average_of_10_random": {}
+        }
+
+        print(f"{self.name} regulator destroyed")
 
     def save_state(self, state_name="current"):
         """Save the current state of all firms."""
@@ -321,6 +351,10 @@ class Sector:
         # Register this sector in the global registry
         regulator.sector_registry[self.id] = self
 
+    def cleanup(self):
+        # Custom cleanup logic for Sector
+        print(f"Cleaning up sector {self.name}")
+
     def add_firm(self, firm):
         self.firms.append(firm)
 
@@ -339,6 +373,10 @@ class Country:
 
         # Register this country in the global registry
         regulator.country_registry[self.id] = self
+
+    def cleanup(self):
+        # Custom cleanup logic for Country
+        print(f"Cleaning up country {self.name}")
 
     def add_firm(self, firm):
         self.firms.append(firm)
@@ -384,6 +422,10 @@ class Firm:
             self.sector.add_firm(self)
         if self.country:
             self.country.add_firm(self)
+
+    def cleanup(self):
+        # Custom cleanup logic for Firm
+        print(f"Cleaning up firm {self.name}")
 
     def __repr__(self):
         return f"Firm(id={self.id}, name='{self.name}', sector_id={self.sector.id if self.sector else None}, country_id={self.country.id if self.country else None}, actual_output={self.actual_output}, emission={self.emission}, profit={self.profit})"
