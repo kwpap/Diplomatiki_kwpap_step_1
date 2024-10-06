@@ -90,4 +90,5 @@
 \contentsline {section}{\numberline {29}5/9/24 Διάβασμα στο ΜΟΠ με την Τζέλα}{70}{section.29}%
 \contentsline {section}{\numberline {30}6-11/9/24 ΜΟΠ + Διάφορα}{70}{section.30}%
 \contentsline {section}{\numberline {31}12-23/9/24}{71}{section.31}%
-\contentsline {section}{\numberline {32}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{71}{section.32}%
+\contentsline {section}{\numberline {32}5/10/24}{71}{section.32}%
+\contentsline {section}{\numberline {33}Τυχαία πράγματα που μου έρχεται πως καλό θα ήταν να γίνουν, αλλά δεν θέλω να τα κάνω}{74}{section.33}%
