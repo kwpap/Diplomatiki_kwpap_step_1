@@ -2694,7 +2694,7 @@ $$ (exp \vee poly) + \frac{1}{x^2}$$
 		\frac{\partial \Pi_i}{\partial x_i} &= 0 \\
 		\frac{\partial^2 \Pi_i}{\partial x_i^2} &<0\text{, λογικό} \\ 
 		\frac{\partial^2 \Pi_i}{\partial q_i^2} &<0\text{, λογικό} \\ 
-		\frac{\partial^2 \Pi_i}{\partial x_i^2} \cdot \frac{\partial^2 \Pi_i}{\partial q_i^2} - (\frac{\partial^2 \Pi_i}{\partial q_i \partial x_i })^2 & >0 \text{ Hessian determinant condition}
+		\frac{\partial^2 \Pi_i}{\partial x_i^2} \cdot \frac{\partial^2 \Pi_i}{\partial q_i^2} - (\frac{\partial^2 \Pi_i}{\partial q_i \partial x_i })^2 & \geq 0 \text{ Hessian determinant condition}
 	\end{align*}
 
 	Που θα έλεγε κανείς πως είναι πολύ περισσότερες συνθήκες από όσες εξετάζω εγώ :Ρ Αλλά προφανώς το πρόβλημα είναι πως μπορεί να είναι πιο περίπλοκη περίπτωση.
@@ -2730,18 +2730,54 @@ $$ (exp \vee poly) + \frac{1}{x^2}$$
 	\text{s.t.} \quad &  \frac{\partial \Pi_i}{\partial x_i} \geq 0 \quad \forall i \\
 	&  \frac{\partial \Pi_i}{\partial q_i} \geq 0 \quad \forall i \\
 \end{align*}
-
-	
-	
-	
 \end{enumerate}
-
-
-
-
-
-
 	\end{enumerate}
+\section{7/10/24}
+Ο Θάνος ήρθε από νωρίς σήμερα. Έμοιαζε χαρούμενος, είχε έρθει και το καθαριστικό του πίνακα και ήταν λίγο αγχωμένος με το πρώτο μάθημα του progIntro στη Σεμφε. Τώρα είναι στο μάθημα και ελπίζω να περνά καλά. Ήρθαν διάφορα παιδιά τα οποία δεν έβρισκαν το εργαστήριο μέχρι και στο ΜΟΠ. Πέτυχα και τη Δανάη στη σχολή. Ήταν και αυτή πολύ καλά. Άρχισε να τρώει σαλάτες και γράφει και εκείνη δημοσίευση και πάει και για δεύτερη, παράλληλα ξεκίνησε μεταπτυχιακό στην βιοϊατρική.
+
+Σταματώ τα άσχετα και έρχομαι στα δικά μας. 
+\begin{enumerate}
+	\item Το βιβλίο "Fundamental Methods of Mathematical Economics" το βρήκα στην βιβλιοθήκη. Δεν είναι αυτό που περίμενα. Είναι μαθηματικά εργαλεία, όπως ακριβώς λέει ο τίτλος του. Δεν ξέρω πού το ξεφύτρωσε η Τζέλα το κεφάλαιο που μου έστειλε και πώς ήταν τόσο στοχευμένο σε αυτό που χρειαζόμουν. Γενικά χάζεψα πολλά βιβλία στην βιβλιοθήκη. Προφανώς είχε δίκιο η Τζέλα, μικροοικονομικής βιβλία έρπεπε να δω. Αλλά και αυτά δεν είναι αναγκαστικό ότι είχαν αυτό που ήθελα. Τουλάχιστον δεν κατάφερα να το βρω.
+	\item Εδώ μάλλον καταλήγω και μετά από το ψάξιμο το πρωί πως αυτό που έστειλε η Τζέλα ήταν το πιο σωστό. Χρειάζεται να ισχύει:
+		\begin{align*}
+			\frac{\partial \Pi_i}{\partial q_i} &= 0 \\
+			\frac{\partial \Pi_i}{\partial x_i} &= 0 \\
+			\frac{\partial^2 \Pi_i}{\partial x_i^2} &<0\text{, μέγιστο} \\ 
+			\frac{\partial^2 \Pi_i}{\partial q_i^2} &<0\text{, μέγιστο} \\ 
+			\frac{\partial^2 \Pi_i}{\partial x_i^2} \cdot \frac{\partial^2 \Pi_i}{\partial q_i^2} - (\frac{\partial^2 \Pi_i}{\partial q_i \partial x_i })^2 & \geq 0 \text{ Hessian determinant condition, λόγω αλληλεξάρτησης των μεταβλητών}
+		\end{align*}
+	\item Δεν έμαθα ακόμα να κάνω scaling. Όμως αυτό στο οποίο είμαι καλός είναι στο να τρέχω κάτι με brute force και να ξαναπροσπαθώ. Με άλλα λόγια. Ενώ ήδη δίνω εξαιρετικά initial guesses στον solver, έβαλα απλά να ξαναπροσπαθεί με μία παράμετρο random. Αλάνι είναι, όλα τα λύνει, όλα τα σκοτώνει. 
+	\item το πρόβλημα τώρα είναι πως αφού αποκρίνεται αυτό το σύστημα φαίνονται οι προφανείς αδυναμίες του. Η συνθήκη $\sum_{i=1}^{n}x_i = \text{CAP}$ είναι ακραία προβληματική. Γιατί αποτελέσματα σαν το παρακάτω είναι απολύτως λογικά:
+	
+\begin{center}
+	\textbf{Firm Data Overview}
+\end{center}
+
+\vspace{1em}
+\begin{tabbing}
+	\color{red}{ \textbf{Permit price:}} \= 	\color{red}{-16555.3937} \hspace{3em} \= \textbf{Emission cap:} 5000000 \\
+\end{tabbing}
+
+\vspace{1em}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline
+	\textbf{Name} & \textbf{Sector (PDF)} & \textbf{PCF} & \textbf{ACostF} & \textbf{\(q_i\)} & \textbf{\(x_i\)} & \textbf{Profit \(\Pi_i\)} \\
+	\hline
+	firm1 & cem(\(100 - 0.1x\)) & \( x \cdot 1 \) & \( 15x + 2x^2 + 2x^3 \) & 59471 & 59392 & 634,508,956 \\
+	firm2 & cem(\(100 - 0.1x\)) & \( x \cdot 0 \) & \( 16x + 3x^2 \) & 1253372 & 1288031 & -139,248,277,302 \\
+	firm3 & cem(\(100 - 0.1x\)) & \( x \cdot 0 \) & \( 15x + 2.1x^2 + 3x^3 \) & 1248912 & 1248916 & -135,177,022,185 \\
+	firm4 & ste(\(150 - 0.2x\)) & \( x \cdot 0 \) & \( 12x + 2.2x^2 + 4x^3 \) & 475838 & 475841 & -37,335,384,630 \\
+	firm5 & ste(\(150 - 0.2x\)) & \( x \cdot 0 \) & \( 20x + 2.3x^2 + 6x^3 \) & 475838 & 475816 & -37,335,796,517 \\
+	firm6 & ste(\(150 - 0.2x\)) & \( x \cdot 0 \) & \( 10x + 2.4x^2 + 1x^3 \) & 475838 & 475862 & -37,334,932,114 \\
+	firm7 & pow(\(200 - 0.3x\)) & \( x \cdot 0 \) & \( 10x + 2.5x^2 + 0.5x^3 \) & 317267 & 317258 & -24,881,777,677 \\
+	firm8 & pow(\(200 - 0.3x\)) & \( x \cdot 0 \) & \( 10x + 2.6x^2 + 1.5x^3 \) & 317267 & 317276 & -24,881,491,280 \\
+	firm9 & pow(\(200 - 0.3x\)) & \( x \cdot 0 \) & \( 10x + 2.7x^2 + 2x^3 \) & 317267 & 317299 & -24,881,043,261 \\
+	\hline
+\end{tabular}
+\item Εδώ λοιπόν γίνεται προφανές πως η συνθήκη $\sum_{i=1}^{n}x_i \leq \text{CAP}$ είναι παραπάνω από απαραίτητη. Συνεπώς το πρόβλημα είναι πρόβλημα βελτιστοποίησης. Άρα τα αφήνω όλα στην άκρη και πάω στο gurobi αναγκαστικά.
+	
+	 
+\end{enumerate}
 
 
 
