@@ -336,6 +336,78 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
+    def optimization_with_least_squares(self, BAU = False, gurobi_output = True):
+    
+        m = Model("Least Squares")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        gurobi_output = {}
+        gurobi_emission = {}
+        
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            xx_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"xx{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_emission[firm.id] = xx_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[x_sym] = xx_var
+            
+            m.addConstr(qq_var >= xx_var)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs({x: sympy_output[firm.id] - sympy_emission[firm.id], y: sympy_emission[firm.id]})
+            firm_trading = -pp * (sympy_emission[firm.id] - sect.free_emission_multiplier * sympy_output[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            sympy_objective += sp.diff(firm_profit, sympy_output[firm.id])**2 + sp.diff(firm_profit, sympy_emission[firm.id])**2
+            print("Firm {} has profit: {}".format(firm.name, firm_profit))  
+            print("FOD: {}".format(sp.diff(firm_profit, sympy_output[firm.id])))
+            print("FED: {}".format(sp.diff(firm_profit, sympy_emission[firm.id])))
+        sympy_objective += (self.emission_cap - sum(sympy_emission.values()))**2
+        
+        print("Sum sector outputs: {}".format(sum_sector_outputs))
+        print("Sympy Objective: {}".format(sympy_objective))
+
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_output else 0
+        m.write("least_squares.lp")
+        m.optimize()
+
+        for firm in self.firm_registry.values():
+            firm.actual_output = gurobi_output[firm.id].X
+            firm.emission = gurobi_emission[firm.id].X
+        for firm in self.firm_registry.values():
+            print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+        print(f"Permit price: {ppp.X}")
+        return m
+
+
+
+
 
 class Sector:
     _id_counter = 1
