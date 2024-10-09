@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  9 OCT 2024 16:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2024.8.26)  9 OCT 2024 19:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2060,11 +2060,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 2803--2805
  / archivio / allegati / emission _ trading /
  []
 
+
+
+[77]
 (C:\Users\Kostas\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2024/05/25 1.10b listings language file
 )
-
-[77]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
 nput line 2827.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
@@ -2096,7 +2097,7 @@ t changed.
 Here is how much of TeX's memory you used:
  34906 strings out of 473898
  704492 string characters out of 5726007
- 2421960 words of memory out of 5000000
+ 2396960 words of memory out of 5000000
  56729 multiletter control sequences out of 15000+600000
  574061 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2132,7 +2133,7 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/grxn2074.pfb><C:/Users/Kos
 tas/AppData/Local/Programs/MiKTeX/fonts/type1/public/cbgreek/gttn1000.pfb><C:/U
 sers/Kostas/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/m
 sbm10.pfb>
-Output written on Ημερολόγιο_από_2023.pdf (81 pages, 2964908 bytes
+Output written on Ημερολόγιο_από_2023.pdf (81 pages, 2965393 bytes
 ).
 PDF statistics:
  1576 PDF objects out of 1728 (max. 8388607)
