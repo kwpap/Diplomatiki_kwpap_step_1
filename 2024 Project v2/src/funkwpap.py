@@ -9,6 +9,25 @@ def get_emission(firms):
         total_emission += firm.emission
     return total_emission
 
+def eq_check_condition(cond_value, expected, precision=0.001):
+    """Check if the condition value meets the expected criteria."""
+    if expected == "zero" and abs(cond_value) < precision:
+        return "✔️", True
+    elif expected == "negative" and cond_value < 0:
+        return "✔️", True
+    elif expected == "positive" and cond_value > 0:
+        return "✔️", True
+    else:
+        return "⚠️", False
+
+def eq_format_number(value):
+    """Format number in scientific notation if too large or small, otherwise to 4 decimals."""
+    if abs(value) >= 10000 or abs(value) < 0.001:
+        return f"{value:>+9.2e}"  # Scientific notation with proper alignment
+    else:
+        return f"{value:>+9.4f}"  # Fixed-point notation for normal numbers
+
+
 
 def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     """
@@ -336,7 +355,7 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
-    def optimization_with_least_squares(self, BAU = False, gurobi_output = True):
+    def optimization_with_least_squares(self, BAU = False, gurobi_output = True, lp_file = "least_squares.lp"):
     
         m = Model("Least Squares")
         
@@ -383,12 +402,12 @@ class Regulator:
                 firm_trading = 0
             firm_profit += firm_revenew + firm_abatement + firm_trading
             sympy_objective += sp.diff(firm_profit, sympy_output[firm.id])**2 + sp.diff(firm_profit, sympy_emission[firm.id])**2
-            print("Firm {} has profit: {}".format(firm.name, firm_profit))  
-            print("FOD: {}".format(sp.diff(firm_profit, sympy_output[firm.id])))
-            print("FED: {}".format(sp.diff(firm_profit, sympy_emission[firm.id])))
+            # print("Firm {} has profit: {}".format(firm.name, firm_profit))  
+            # print("FOD: {}".format(sp.diff(firm_profit, sympy_output[firm.id])))
+            # print("FED: {}".format(sp.diff(firm_profit, sympy_emission[firm.id])))
         sympy_objective += (self.emission_cap - sum(sympy_emission.values()))**2
         
-        print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
         print("Sympy Objective: {}".format(sympy_objective))
 
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
@@ -400,11 +419,75 @@ class Regulator:
         for firm in self.firm_registry.values():
             firm.actual_output = gurobi_output[firm.id].X
             firm.emission = gurobi_emission[firm.id].X
+        self.permit_price = ppp.X
         for firm in self.firm_registry.values():
             print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
         print(f"Permit price: {ppp.X}")
+
         return m
 
+    def equilibrium_tester(self, precision = 0.001, output = False, full_output = False):
+        x, y = sp.symbols('x y')
+        q1, x1 = sp.symbols('q1 x1')
+        firms_data = []
+        for sector in self.sector_registry.values():
+            sum_sector_outputs = 0
+            for firm in sector.firms:
+                sum_sector_outputs += firm.actual_output
+            for firm in sector.firms:
+
+                firm_revenew = sector.price_demand_function.subs(x, sum_sector_outputs - firm.actual_output + q1) * q1
+                firm_abatement = -firm.abatement_cost_function.subs({x: q1 - x1, y: x1})
+                firm_trading = -self.permit_price * (x1 - sector.free_emission_multiplier * q1)
+                firm_profit = firm_revenew + firm_abatement + firm_trading
+                cond1 = sp.diff(firm_profit, q1)
+                cond2 = sp.diff(firm_profit, x1)
+                cond3 = sp.diff(firm_profit, x1, 2)
+                cond4 = sp.diff(firm_profit, q1, 2)
+                # print("Firm {} has cond2: {}".format(firm.name, cond2))
+                cond5 = cond3 * cond4 - (sp.diff(firm_profit, q1, x1))**2
+                cond1 = cond1.subs({q1: firm.actual_output, x1: firm.emission}).evalf()
+                cond2 = cond2.subs({q1: firm.actual_output, x1: firm.emission}).evalf()
+                cond3 = cond3.subs({q1: firm.actual_output, x1: firm.emission}).evalf()
+                cond4 = cond4.subs({q1: firm.actual_output, x1: firm.emission}).evalf()
+                cond5 = cond5.subs({q1: firm.actual_output, x1: firm.emission}).evalf()
+                firms_data.append([firm.name, cond1, cond2, cond3, cond4, cond5])
+        max_FOC_1 = max([abs(firm_data[1]) for firm_data in firms_data])
+        max_FOC_2 = max([abs(firm_data[2]) for firm_data in firms_data])
+        max_SOC = max([firm_data[3] for firm_data in firms_data])
+        max_SOC_2 = max([firm_data[4] for firm_data in firms_data])
+        min_Hessian = min([firm_data[5] for firm_data in firms_data])
+        firms_data.insert(0, ["Worst", max_FOC_1, max_FOC_2, max_SOC, max_SOC_2, min_Hessian])
+
+        if output and not full_output:
+            firms_data = firms_data[0]
+        if full_output or output:
+                # Print table header
+            print(f"{'Firm':<10} | {'FOC 1':<12} | {'FOC 2':<13} | {'SOC 1':<13} | {'SOC 2':<12} | {'Hessian':<12} | Status")
+            print("-" * 85)
+                # Iterate through each firm's data and print the status
+            for firm_data in firms_data:
+                firm_name, cond1, cond2, cond3, cond4, cond5 = firm_data
+                
+                # Check each condition and get the status (✔️ or ⚠️)
+                cond1_status, cond1_ok = eq_check_condition(cond1, "zero", precision)
+                cond2_status, cond2_ok = eq_check_condition(cond2, "zero", precision)
+                cond3_status, cond3_ok = eq_check_condition(cond3, "negative")
+                cond4_status, cond4_ok = eq_check_condition(cond4, "negative")
+                cond5_status, cond5_ok = eq_check_condition(cond5, "positive")
+                
+                # Calculate how many conditions are OK
+                conditions_ok = sum([cond1_ok, cond2_ok, cond3_ok, cond4_ok, cond5_ok])
+                
+                # Format each condition with scientific notation where necessary
+                print(f"{firm_name:<10} | {eq_format_number(cond1)} {cond1_status} | {eq_format_number(cond2)} {cond2_status} | "
+                    f"{eq_format_number(cond3)} {cond3_status} | {eq_format_number(cond4)} {cond4_status} | "
+                    f"{eq_format_number(cond5)} {cond5_status} | {conditions_ok}/5")
+        return abs(firms_data[0][1])<precision and abs(firms_data[0][2])<precision and firms_data[0][3]<0 and firms_data[0][4]<0 and firms_data[0][5]>0
+
+
+
+            
 
 
 
