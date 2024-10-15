@@ -31,7 +31,7 @@ Subject To
  R21: - qq4 + xx4 + pow_base_aux_56 = 0
  R22: - 10 qq4 + 10 xx4 + ppp - 9 pow_aux_57 + pow_base_aux_58 = 7
  R23: xx1 + xx2 + xx3 + xx4 + xx5 + xx6 + xx7 + xx8 + xx9 + pow_base_aux_60
-   = 2000
+   = 0
  R24: - qq1 + xx1 + pow_base_aux_62 = 0
  R25: - 0.4 qq1 + 0.4 xx1 + 0.1 ppp - 0.03 pow_aux_63 + pow_base_aux_64
    = 1
