@@ -355,7 +355,7 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
-    def optimization_with_least_squares(self, BAU = False, gurobi_output = True, lp_file = "least_squares.lp"):
+    def optimization_with_least_squares(self, BAU = False, gurobi_print = True, lp_file = "least_squares.lp", print_output = True):
     
         m = Model("Least Squares")
         
@@ -408,22 +408,33 @@ class Regulator:
         sympy_objective += (self.emission_cap - sum(sympy_emission.values()))**2
         
         # print("Sum sector outputs: {}".format(sum_sector_outputs))
-        print("Sympy Objective: {}".format(sympy_objective))
+        # print("Sympy Objective: {}".format(sympy_objective))
 
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
         m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
-        m.params.OutputFlag = 1 if gurobi_output else 0
+        m.params.OutputFlag = 1 if gurobi_print else 0
         m.write("least_squares.lp")
         m.optimize()
 
-        for firm in self.firm_registry.values():
-            firm.actual_output = gurobi_output[firm.id].X
-            firm.emission = gurobi_emission[firm.id].X
-        self.permit_price = ppp.X
-        for firm in self.firm_registry.values():
-            print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
-        print(f"Permit price: {ppp.X}")
-
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_emission[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
         return m
 
     def equilibrium_tester(self, precision = 0.001, output = False, full_output = False):
@@ -460,7 +471,8 @@ class Regulator:
         firms_data.insert(0, ["Worst", max_FOC_1, max_FOC_2, max_SOC, max_SOC_2, min_Hessian])
 
         if output and not full_output:
-            firms_data = firms_data[0]
+            firms_data = firms_data[0:1]
+            # print(firms_data)
         if full_output or output:
                 # Print table header
             print(f"{'Firm':<10} | {'FOC 1':<12} | {'FOC 2':<13} | {'SOC 1':<13} | {'SOC 2':<12} | {'Hessian':<12} | Status")
