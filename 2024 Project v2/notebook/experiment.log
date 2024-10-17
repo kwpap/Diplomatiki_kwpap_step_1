@@ -17,3 +17,98 @@
 2024-10-17 12:13:11,501 - Using method 4, the worst was updated from 97.4138420681044 to 2.66645132427107.
 2024-10-17 12:13:22,945 - Using method 0, the worst was updated from 74.4750031620663 to 65.5483813969289.
 2024-10-17 12:14:32,091 - Method <lambda> timed out.
+2024-10-17 12:16:30,131 - Set parameter Username
+2024-10-17 12:16:30,133 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 12:16:34,247 - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 12:16:39,925 - Using method 2, the worst was updated from 102.887291182726 to 102.597137681084.
+2024-10-17 12:16:50,038 - Using method 3, the worst was updated from 102.597137681084 to 97.4138420681044.
+2024-10-17 12:17:15,867 - Using method 4, the worst was updated from 97.4138420681044 to 2.66645132427107.
+2024-10-17 12:17:27,803 - Using method 0, the worst was updated from 74.4750031620663 to 65.5483813969289.
+2024-10-17 12:18:37,255 - Method <lambda> timed out.
+2024-10-17 12:19:41,533 - Set parameter Username
+2024-10-17 12:19:41,534 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 12:19:45,665 - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 12:19:51,244 - Using method 2, the worst was updated from 102.887291182726 to 102.597137681084.
+2024-10-17 12:20:01,558 - Using method 3, the worst was updated from 102.597137681084 to 97.4138420681044.
+2024-10-17 12:20:28,155 - Using method 4, the worst was updated from 97.4138420681044 to 2.66645132427107.
+2024-10-17 12:20:39,899 - Using method 0, the worst was updated from 74.4750031620663 to 65.5483813969289.
+2024-10-17 12:21:49,249 - Method <lambda> timed out.
+2024-10-17 12:35:47,729 - Set parameter Username
+2024-10-17 12:35:47,730 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 12:45:35,908 - Set parameter Username
+2024-10-17 12:45:35,909 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 12:45:40,205 - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 12:45:42,343 - Method optimization_with_positive_constraints failed with exception: 'Regulator' object has no attribute 'optimization_with_positive_constraints'
+2024-10-17 12:45:53,477 - Using method 3, the worst was updated from 102.887291182726 to 97.4138420681044.
+2024-10-17 12:45:53,478 - Method optimize_them_all failed with exception: Regulator.optimize_them_all() got an unexpected keyword argument 'gurobi_print'
+2024-10-17 12:46:05,822 - Using method 0, the worst was updated from 74.4750031620663 to 65.5483813969289.
+2024-10-17 12:46:09,472 - Method optimization_with_positive_constraints failed with exception: 'Regulator' object has no attribute 'optimization_with_positive_constraints'
+2024-10-17 12:47:09,478 - Method optimization_with_least_squares timed out.
+2024-10-17 13:07:38,341 - INFO - Set parameter Username
+2024-10-17 13:07:38,342 - INFO - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 13:07:42,325 - INFO - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 13:07:47,848 - INFO - Using method 2, the worst was updated from 102.887291182726 to 102.597137681084.
+2024-10-17 13:08:22,214 - INFO - Using method 4, the worst was updated from 102.597137681084 to 2.66925400183946.
+2024-10-17 13:08:33,779 - INFO - Using method 0, the worst was updated from 74.4722004844983 to 65.5483813969289.
+2024-10-17 13:09:13,620 - INFO - Using method 4, the worst was updated from 65.5483813969289 to 2.66925400183955.
+2024-10-17 13:09:18,103 - INFO - Using method 0, the worst was updated from 50.7151285180980 to 50.0518530252050.
+2024-10-17 13:10:28,152 - INFO - Using method 4, the worst was updated from 50.0518530252050 to 2.66925400184873.
+2024-10-17 13:10:32,475 - INFO - Using method 0, the worst was updated from 39.0967051549463 to 33.8631700719735.
+2024-10-17 13:11:32,485 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 13:12:43,594 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 13:15:21,814 - INFO - Method optimize_them_all timed out.
+2024-10-17 13:15:26,605 - INFO - Using method 0, the worst was updated from 27.3373963802835 to 24.0752885011242.
+2024-10-17 13:16:41,764 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 13:18:54,847 - INFO - Using method 4, the worst was updated from 24.0752885011242 to 2.66925400184068.
+2024-10-17 13:18:59,070 - INFO - Using method 0, the worst was updated from 11.0740322896725 to 5.08635193737931.
+2024-10-17 13:20:15,708 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 13:24:33,687 - INFO - Using method 4, the worst was updated from 5.08635193737931 to 2.66925402971354.
+2024-10-17 13:24:37,879 - INFO - Using method 0, the worst was updated from 5.21399004447213 to 0.0645775783389269.
+2024-10-17 13:25:37,888 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 13:27:34,913 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 13:47:39,269 - INFO - Using method 0, the worst was updated from 7.08214915707310 to 0.0878334759859740.
+2024-10-17 13:48:39,278 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 13:59:57,865 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 14:31:08,409 - INFO - Using method 3, the worst was updated from 0.0878334759859740 to 0.0693142371095803.
+2024-10-17 14:32:08,429 - INFO - Method optimize_them_all timed out.
+2024-10-17 14:32:55,380 - INFO - Using method 0, the worst was updated from 7.07575593680048 to 0.0462126080171714.
+2024-10-17 14:34:24,695 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 14:52:43,273 - INFO - Using method 0, the worst was updated from 31.5147508132209 to 0.0940349008847079.
+2024-10-17 14:53:43,280 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 14:58:12,881 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 15:22:24,652 - INFO - Using method 0, the worst was updated from 6.02629825163708 to 0.107421585125095.
+2024-10-17 15:23:24,658 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 15:24:51,500 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 15:30:19,768 - INFO - Using method 0, the worst was updated from 7.11134110498622 to 0.0307465954037838.
+2024-10-17 15:31:19,775 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 15:53:36,804 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 16:38:27,652 - INFO - Method optimize_them_all timed out.
+2024-10-17 16:38:51,009 - INFO - Using method 0, the worst was updated from 7.08018347449160 to 0.0929773564320726.
+2024-10-17 16:39:51,014 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 16:41:44,585 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 16:48:55,156 - INFO - Using method 3, the worst was updated from 0.0929773564320726 to 0.0854683568984420.
+2024-10-17 16:49:55,164 - INFO - Method optimize_them_all timed out.
+2024-10-17 16:50:44,996 - INFO - Using method 0, the worst was updated from 7.06110933616810 to 0.109505331883106.
+2024-10-17 16:51:45,004 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 16:55:16,191 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 17:38:08,429 - INFO - Using method 3, the worst was updated from 0.109505331883106 to 0.0418606119148137.
+2024-10-17 17:39:08,447 - INFO - Method optimize_them_all timed out.
+2024-10-17 17:40:19,046 - INFO - Using method 0, the worst was updated from 17.5000478563599 to 0.0842532482412501.
+2024-10-17 17:41:19,054 - INFO - Method optimization_with_positive_constraints_ab timed out.
+2024-10-17 18:00:25,148 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 18:06:26,824 - INFO - Using method 0, the worst was updated from 7.41712230089986 to 0.0585373866607384.
+2024-10-17 18:07:35,946 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 18:25:35,542 - INFO - Method optimize_them_all timed out.
+2024-10-17 18:25:49,985 - INFO - Using method 0, the worst was updated from 7.03675145518012 to 0.133778615154315.
+2024-10-17 18:27:08,674 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 19:05:51,199 - INFO - Using method 0, the worst was updated from 7.00718014898564 to 0.142715460779154.
+2024-10-17 19:05:56,738 - INFO - Using method 1, the worst was updated from 0.142715460779154 to 0.142704392911042.
+2024-10-17 19:06:56,744 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-17 19:10:59,323 - INFO - Using method 3, the worst was updated from 0.142704392911042 to 0.0586841894171357.
+2024-10-17 19:11:59,330 - INFO - Method optimize_them_all timed out.
+2024-10-17 19:13:22,136 - INFO - Method optimization_with_least_squares_ab failed with exception: Unable to retrieve attribute 'X'
+2024-10-17 19:13:23,029 - INFO - Method optimization_with_positive_constraints_ab failed with exception: Unable to retrieve attribute 'X'
+2024-10-17 19:13:31,255 - INFO - Using method 2, the worst was updated from 8.60667096792933 to 5.64439973111348.
+2024-10-17 19:14:31,452 - INFO - Method optimize_them_all timed out.
+2024-10-17 19:17:27,092 - INFO - Method optimization_with_least_squares_ab failed with exception: Unable to retrieve attribute 'X'
+2024-10-17 19:17:27,957 - INFO - Method optimization_with_positive_constraints_ab failed with exception: Unable to retrieve attribute 'X'

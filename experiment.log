@@ -1,0 +1,23 @@
+2024-10-17 12:56:02,854 - Set parameter Username
+2024-10-17 12:56:02,856 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 12:56:07,076 - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 12:56:09,160 - Method optimization_with_positive_constraints failed with exception: 'Regulator' object has no attribute 'optimization_with_positive_constraints'
+2024-10-17 12:56:19,651 - Using method 3, the worst was updated from 102.887291182726 to 97.4138420681044.
+2024-10-17 12:56:19,653 - Method optimize_them_all failed with exception: Regulator.optimize_them_all() got an unexpected keyword argument 'gurobi_print'
+2024-10-17 12:56:31,893 - Using method 0, the worst was updated from 74.4750031620663 to 65.5483813969289.
+2024-10-17 12:56:35,371 - Method optimization_with_positive_constraints failed with exception: 'Regulator' object has no attribute 'optimization_with_positive_constraints'
+2024-10-17 12:57:35,378 - Method optimization_with_least_squares timed out.
+2024-10-17 12:59:07,238 - Method optimize_them_all failed with exception: Regulator.optimize_them_all() got an unexpected keyword argument 'gurobi_print'
+2024-10-17 12:59:11,486 - Using method 0, the worst was updated from 50.7179311956658 to 50.0518530252050.
+2024-10-17 12:59:20,075 - Method optimization_with_positive_constraints failed with exception: 'Regulator' object has no attribute 'optimization_with_positive_constraints'
+2024-10-17 13:01:54,159 - Set parameter Username
+2024-10-17 13:01:54,160 - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 13:01:58,171 - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
+2024-10-17 13:02:03,856 - Using method 2, the worst was updated from 102.887291182726 to 102.597137681084.
+2024-10-17 13:02:37,681 - Using method 4, the worst was updated from 102.597137681084 to 2.66925400183946.
+2024-10-17 13:02:49,036 - Using method 0, the worst was updated from 74.4722004844983 to 65.5483813969289.
+2024-10-17 13:03:24,908 - Using method 4, the worst was updated from 65.5483813969289 to 2.66925400183955.
+2024-10-17 13:03:29,063 - Using method 0, the worst was updated from 50.7151285180980 to 50.0518530252050.
+2024-10-17 13:05:59,447 - INFO - Set parameter Username
+2024-10-17 13:05:59,448 - INFO - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-17 13:06:03,580 - INFO - Using method 0, the worst was updated from 143.872557882701 to 102.887291182726.
