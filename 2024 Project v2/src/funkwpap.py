@@ -587,8 +587,8 @@ class Regulator:
         m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
 
         
-        print("Sum sector outputs: {}".format(sum_sector_outputs))
-        print("Sympy Objective: {}".format(sympy_objective))
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sympy Objective: {}".format(sympy_objective))
 
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
         m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
@@ -680,8 +680,8 @@ class Regulator:
         m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
 
         
-        print("Sum sector outputs: {}".format(sum_sector_outputs))
-        print("Sympy Objective: {}".format(sympy_objective))
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sympy Objective: {}".format(sympy_objective))
 
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
         m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
@@ -774,8 +774,8 @@ class Regulator:
         m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
 
         
-        print("Sum sector outputs: {}".format(sum_sector_outputs))
-        print("Sympy Objective: {}".format(sympy_objective))
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sympy Objective: {}".format(sympy_objective))
 
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
         m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
