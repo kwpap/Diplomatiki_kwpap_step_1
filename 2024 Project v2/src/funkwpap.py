@@ -9,6 +9,8 @@ def get_emission(firms):
         total_emission += firm.emission
     return total_emission
 
+
+
 def eq_check_condition(cond_value, expected, precision=0.001):
     """Check if the condition value meets the expected criteria."""
     if expected == "zero" and abs(cond_value) < precision:
@@ -436,6 +438,373 @@ class Regulator:
                 print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
             print(f"Permit price: {ppp.X}")
         return m
+    
+    def optimization_with_positive_constaints(self, BAU = False, gurobi_print = True, lp_file = "least_squares.lp", print_output = True):
+    
+        m = Model("Positive Constraints")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        gurobi_output = {}
+        gurobi_emission = {}
+        
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            xx_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"xx{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_emission[firm.id] = xx_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[x_sym] = xx_var
+            
+            m.addConstr(qq_var >= xx_var)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs({x: sympy_output[firm.id] - sympy_emission[firm.id], y: sympy_emission[firm.id]})
+            firm_trading = -pp * (sympy_emission[firm.id] - sect.free_emission_multiplier * sympy_output[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
+            profit_dx = sp.diff(firm_profit, sympy_emission[firm.id])
+            sympy_objective += profit_dq + profit_dx
+            m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) >= 0)
+            m.addConstr(sympy_to_gurobi(profit_dx, symbol_map, m) >= 0)
+        sympy_objective += (self.emission_cap - sum(sympy_emission.values()))**2
+
+
+        
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sympy Objective: {}".format(sympy_objective))
+
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_print else 0
+        m.write("least_squares.lp")
+        m.optimize()
+
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_emission[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
+        return m
+    
+    def optimization_with_least_squares_ab(self, BAU = False, gurobi_print = True, lp_file = "least_squares_e.lp", print_output = True):
+    
+        m = Model("Least Squares e")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        sympy_abatement = {}
+        gurobi_output = {}
+        gurobi_abatement = {}
+        
+        # ab = abatement ab = q - x (output - emission)
+
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            ab_sym = sp.symbols(f"ab{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            sympy_abatement[firm.id] = ab_sym
+            
+
+
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            ab_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"ab{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_abatement[firm.id] = ab_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[ab_sym] = ab_var
+            
+            m.addConstr(qq_var >= ab_var)
+            m.addConstr(ab_var >= 0)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs(x, sympy_abatement[firm.id])
+            firm_trading = -pp * ((1 - sect.free_emission_multiplier) * sympy_output[firm.id] - sympy_abatement[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
+            profit_dab = sp.diff(firm_profit, sympy_abatement[firm.id])
+            sympy_objective += profit_dq **2 + profit_dab **2
+            # m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) >= 0)
+            # m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) >= 0)
+        # sympy_objective += (self.emission_cap + sum(sympy_output.values())- sum(sympy_abatement.values()))**2
+        m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
+
+        
+        print("Sum sector outputs: {}".format(sum_sector_outputs))
+        print("Sympy Objective: {}".format(sympy_objective))
+
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_print else 0
+        m.write("Least Squares e.lp")
+        m.optimize()
+
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
+        return m
+    
+    def optimization_with_positive_constraints_ab(self, BAU = False, gurobi_print = True, lp_file = "positive_constraints_ab.lp", print_output = True):
+    
+        m = Model("positive_constraints_ab")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        sympy_abatement = {}
+        gurobi_output = {}
+        gurobi_abatement = {}
+        
+        # ab = abatement ab = q - x (output - emission)
+
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            ab_sym = sp.symbols(f"ab{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            sympy_abatement[firm.id] = ab_sym
+            
+
+
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            ab_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"ab{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_abatement[firm.id] = ab_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[ab_sym] = ab_var
+            
+            m.addConstr(qq_var >= ab_var)
+            m.addConstr(ab_var >= 0)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs(x, sympy_abatement[firm.id])
+            firm_trading = -pp * ((1 - sect.free_emission_multiplier) * sympy_output[firm.id] - sympy_abatement[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
+            profit_dab = sp.diff(firm_profit, sympy_abatement[firm.id])
+            sympy_objective += profit_dq + profit_dab
+            m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) >= 0)
+            m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) >= 0)
+        # sympy_objective += (self.emission_cap + sum(sympy_output.values())- sum(sympy_abatement.values()))**2
+        m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
+
+        
+        print("Sum sector outputs: {}".format(sum_sector_outputs))
+        print("Sympy Objective: {}".format(sympy_objective))
+
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_print else 0
+        m.write("positive_constraints_ab.lp")
+        m.optimize()
+
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
+        return m
+
+    def optimization_everything_constrained_and_ab(self, BAU = False, gurobi_print = True, lp_file = "everything_constrained_and_ab.lp", print_output = True):
+    
+        m = Model("everything_constrained_and_ab")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        sympy_abatement = {}
+        gurobi_output = {}
+        gurobi_abatement = {}
+        
+        # ab = abatement ab = q - x (output - emission)
+
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            ab_sym = sp.symbols(f"ab{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            sympy_abatement[firm.id] = ab_sym
+            
+
+
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            ab_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"ab{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_abatement[firm.id] = ab_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[ab_sym] = ab_var
+            
+            m.addConstr(qq_var >= ab_var)
+            m.addConstr(ab_var >= 0)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs(x, sympy_abatement[firm.id])
+            firm_trading = -pp * ((1 - sect.free_emission_multiplier) * sympy_output[firm.id] - sympy_abatement[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
+            profit_dab = sp.diff(firm_profit, sympy_abatement[firm.id])
+            # sympy_objective += profit_dq + profit_dab
+            sympy_objective = profit_dq
+            m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) >= 0)
+            m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) == 0)
+        # sympy_objective += (self.emission_cap + sum(sympy_output.values())- sum(sympy_abatement.values()))**2
+        m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
+
+        
+        print("Sum sector outputs: {}".format(sum_sector_outputs))
+        print("Sympy Objective: {}".format(sympy_objective))
+
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_print else 0
+        m.write(lp_file)
+        m.optimize()
+
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
+        return m
+
+
 
     def equilibrium_tester(self, precision = 0.001, output = False, full_output = False):
         x, y = sp.symbols('x y')
@@ -469,6 +838,7 @@ class Regulator:
         max_SOC_2 = max([firm_data[4] for firm_data in firms_data])
         min_Hessian = min([firm_data[5] for firm_data in firms_data])
         firms_data.insert(0, ["Worst", max_FOC_1, max_FOC_2, max_SOC, max_SOC_2, min_Hessian])
+        worst_value = max(max_FOC_1, max_FOC_2)
 
         if output and not full_output:
             firms_data = firms_data[0:1]
@@ -495,7 +865,8 @@ class Regulator:
                 print(f"{firm_name:<10} | {eq_format_number(cond1)} {cond1_status} | {eq_format_number(cond2)} {cond2_status} | "
                     f"{eq_format_number(cond3)} {cond3_status} | {eq_format_number(cond4)} {cond4_status} | "
                     f"{eq_format_number(cond5)} {cond5_status} | {conditions_ok}/5")
-        return abs(firms_data[0][1])<precision and abs(firms_data[0][2])<precision and firms_data[0][3]<0 and firms_data[0][4]<0 and firms_data[0][5]>0
+        
+        return abs(firms_data[0][1])<precision and abs(firms_data[0][2])<precision and firms_data[0][3]<0 and firms_data[0][4]<0 and firms_data[0][5]>0, worst_value
 
 
 
