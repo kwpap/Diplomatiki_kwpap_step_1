@@ -112,3 +112,10 @@
 2024-10-17 19:14:31,452 - INFO - Method optimize_them_all timed out.
 2024-10-17 19:17:27,092 - INFO - Method optimization_with_least_squares_ab failed with exception: Unable to retrieve attribute 'X'
 2024-10-17 19:17:27,957 - INFO - Method optimization_with_positive_constraints_ab failed with exception: Unable to retrieve attribute 'X'
+2024-10-18 14:39:36,591 - INFO - Set parameter Username
+2024-10-18 14:39:36,592 - INFO - Academic license - for non-commercial use only - expires 2025-08-14
+2024-10-18 14:40:46,989 - INFO - Method optimize_them_all timed out.
+2024-10-18 14:46:19,611 - INFO - Method optimization_with_positive_constraints timed out.
+2024-10-18 15:16:17,689 - INFO - Starting row 0 with emission cap 0.0 and old worst 95.8918937822983
+2024-10-18 15:19:14,178 - INFO - Starting row 0 with emission cap 0.0 and old worst 95.8918937822983
+2024-10-18 15:19:21,931 - INFO - Starting row 0 with emission cap 0.0 and old worst 95.8918937822983

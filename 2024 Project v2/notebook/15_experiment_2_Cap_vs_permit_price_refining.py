@@ -9,6 +9,9 @@ sys.path.append(os.path.abspath(os.path.join(current_dir, '..', 'src')))
 # Construct the absolute path to the CSV file
 csv_file_path = os.path.join(current_dir, '..', 'data', 'generated', 'exp04_Cap_vs_permit_price.csv')
 
+# Construct the absolute path to the log file
+log_file_path = os.path.join(current_dir, 'experiment.log')
+
 from funkwpap import *
 import sympy as sp, pandas as pd, numpy as np, tqdm, time, sys, matplotlib.pyplot as plt
 from scipy.optimize import fsolve
@@ -18,11 +21,24 @@ from gurobipy import *
 import signal, ast, concurrent.futures
 import multiprocessing
 import concurrent.futures
-
+import signal
+from contextlib import contextmanager
 import logging
 
-# Construct the absolute path to the log file
-log_file_path = os.path.join(current_dir, 'experiment.log')
+class TimeoutException(Exception): pass
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
 
 # Configure logging
 logging.basicConfig(
@@ -51,21 +67,6 @@ firm7 = Firm('firm7', 3, 1, x*0, 3*x+ 8*x**2 + 4*x**3 , 0, 0, 0, regulator= Regu
 firm8 = Firm('firm8', 3, 2, x*0, 4*x+ 9*x**2 + 10*x**3 , 0, 0, 0, regulator= Regulator9)
 firm9 = Firm('firm9', 3, 3, x*0, 5*x+ 10*x**2 + 11*x**3 , 0, 0, 0, regulator= Regulator9)
 
-# Function to run a method with a timeout
-def run_with_timeout(method, timeout):
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future = executor.submit(method)
-        try:
-            future.result(timeout=timeout)
-        except concurrent.futures.TimeoutError:
-            print(f"Method {method.__name__} timed out.")
-            logging.info(f"Method {method.__name__} timed out.")
-            return False
-        except Exception as e:
-            print(f"Method {method.__name__} failed with exception: {e}")
-            logging.info(f"Method {method.__name__} failed with exception: {e}")
-            return False
-    return True
 
 def optimization_with_least_squares_ab():
     Regulator9.optimization_with_least_squares_ab(gurobi_print=False, print_output=False)
@@ -81,6 +82,8 @@ def optimization_with_least_squares():
 
 def optimize_them_all():
     Regulator9.optimize_them_all()
+def optimization_concave_problem():
+    Regulator9.optimization_concave_formulation_ab(gurobi_print=False, print_output=False)
 
 # Load the data from the CSV file
 df = pd.read_csv(csv_file_path)
@@ -107,6 +110,7 @@ for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
     # Run the equilibrium tester
     equilibrium_result, worst = Regulator9.equilibrium_tester(precision=1, full_output=False, output=True)
     print(f"Starting row {index} with emission cap {Regulator9.emission_cap} and old worst {worst}")
+    logging.info(f"Starting row {index} with emission cap {Regulator9.emission_cap} and old worst {worst}")
     # Store the best result
     best_result = {
         'Emission Cap': Regulator9.emission_cap,
@@ -118,26 +122,64 @@ for index, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
     }
 
 
-    for i in range(5):
+    for i in range(6):
         print(f"Running method {i}")
         if i == 0:
-            success = run_with_timeout(optimization_with_least_squares_ab, 60)
+            try:
+                with time_limit(60):
+                    optimization_concave_problem()
+            except TimeoutException as e:
+                logging.info("Concave problem timed out! on row {index}")
+                print("Timed out!")
+                continue
         elif i == 1:
-            success = run_with_timeout(optimization_with_positive_constraints_ab, 60)
+            try:
+                with time_limit(60):
+                    optimization_with_least_squares_ab()
+            except TimeoutException as e:
+                logging.info("least_squares_ab problem timed out! on row {index}")
+                print("Timed out!")
+                continue
         elif i == 2:
-            success = run_with_timeout(optimization_with_positive_constraints, 60)
+            try:
+                with time_limit(60):
+                    optimization_with_positive_constraints_ab()
+            except TimeoutException as e:
+                logging.info("least_squares_ab problem timed out! on row {index}")
+                print("Timed out!")
+                continue
         elif i == 3:
-            success = True
-            # success = run_with_timeout(optimization_with_least_squares, 60)
+            try:    
+                with time_limit(60):
+                    optimization_with_positive_constraints()
+            except TimeoutException as e:
+                logging.info("least_squares_ab problem timed out! on row {index}")
+                print("Timed out!")
+                continue
         elif i == 4:
-            success = run_with_timeout(optimize_them_all, 60)
+            try:
+                with time_limit(60):
+                    continue
+                    # optimization_with_least_squares()
+            except TimeoutException as e:
+                logging.info("least_squares_ab problem timed out! on row {index}")
+                print("Timed out!")
+                continue
+        elif i == 5:
+            try:
+                with time_limit(60):
+                    optimize_them_all()
+            except TimeoutException as e:
+                logging.info("least_squares_ab problem timed out! on row {index}")
+                print("Timed out!")
         else:
             continue
 
-        if not success:
-            continue  # Skip to the next method if the current one fails or times out
 
         equilibrium_result, new_worst = Regulator9.equilibrium_tester(precision=1, output=True)
+        if new_worst < 0.001:
+            logging.info(f"Using method {i}, the worst was updated finally with worst: {new_worst}.")
+            break
         print(f"Method {i} finished with worst: {new_worst}")
         if new_worst < best_result['Worst']:
             logging.info(f"Using method {i}, the worst was updated from {best_result['Worst']} to {new_worst}.")

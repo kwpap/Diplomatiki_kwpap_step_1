@@ -1,8 +1,21 @@
 \ Model Least Squares e
 \ LP format - for model browsing. Use MPS format to capture full model detail.
 Minimize
-  quad_aux_29 + 100 quad_aux_33 + 121 quad_aux_37 + 10000 quad_aux_39
-   + 10000 quad_aux_41 + 10000 quad_aux_43
+  - 80 qq1 + 800 ab1 - 80 qq2 + 1320 ab2 - 80 qq3 + 800 ab3 - 120 qq4
+   + 1400 ab4 - 120 qq5 + 240 ab5 - 120 qq6 + 560 ab6 - 320 qq7 + 960 ab7
+   - 320 qq8 + 1440 ab8 - 320 qq9 + 200 ab9 - 2796 ppp + 217850 Constant
+   + [ 1.6 qq1 * ppp + 0.12 qq1 ^2 + 0.2 qq1 * qq2 + 0.2 qq1 * qq3
+   - 160 ab1 * ppp + 3200 ab1 ^2 + 1.6 qq2 * ppp + 0.12 qq2 ^2
+   + 0.2 qq2 * qq3 - 240 ab2 * ppp + 7200 ab2 ^2 + 1.6 qq3 * ppp
+   + 0.12 qq3 ^2 - 320 ab3 * ppp + 12800 ab3 ^2 + 1.6 qq4 * ppp
+   + 0.12 qq4 ^2 + 0.2 qq4 * qq5 + 0.2 qq4 * qq6 - 400 ab4 * ppp
+   + 20000 ab4 ^2 + 1.6 qq5 * ppp + 0.12 qq5 ^2 + 0.2 qq5 * qq6
+   - 480 ab5 * ppp + 28800 ab5 ^2 + 1.6 qq6 * ppp + 0.12 qq6 ^2
+   - 560 ab6 * ppp + 39200 ab6 ^2 + 3.2 qq7 * ppp + 0.48 qq7 ^2
+   + 0.8 qq7 * qq8 + 0.8 qq7 * qq9 - 640 ab7 * ppp + 51200 ab7 ^2
+   + 3.2 qq8 * ppp + 0.48 qq8 ^2 + 0.8 qq8 * qq9 - 720 ab8 * ppp
+   + 64800 ab8 ^2 + 3.2 qq9 * ppp + 0.48 qq9 ^2 - 80 ab9 * ppp + 800 ab9 ^2
+   + 36 ppp ^2 ] / 2 
 Subject To
  R0: qq1 - ab1 >= 0
  R1: ab1 >= 0
@@ -10,25 +23,20 @@ Subject To
  R3: ab2 >= 0
  R4: qq3 - ab3 >= 0
  R5: ab3 >= 0
- R6: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 = 200
- R7: - ab3 + pow_base_aux_26 = 0
- R8: 8 ab3 - ppp + 15 quad_aux_27 + pow_base_aux_28 = -5
- R9: - ab1 + pow_base_aux_30 = 0
- R10: 0.4 ab1 - 0.1 ppp + 0.03 quad_aux_31 + pow_base_aux_32 = -1
- R11: - ab2 + pow_base_aux_34 = 0
- R12: 0.5454545454545454 ab2 - 0.0909090909090909 ppp
-   + 0.0545454545454545 quad_aux_35 + pow_base_aux_36 = -1
- R13: 0.001 qq1 + 0.001 qq2 + 0.002 qq3 + 0.01 ppp + pow_base_aux_38 = 1
- R14: 0.001 qq1 + 0.002 qq2 + 0.001 qq3 + 0.01 ppp + pow_base_aux_40 = 1
- R15: 0.002 qq1 + 0.001 qq2 + 0.001 qq3 + 0.01 ppp + pow_base_aux_42 = 1
- qc0: quad_aux_27 + [ - pow_base_aux_26 ^2 ] = 0
- qc1: quad_aux_29 + [ - pow_base_aux_28 ^2 ] = 0
- qc2: quad_aux_31 + [ - pow_base_aux_30 ^2 ] = 0
- qc3: quad_aux_33 + [ - pow_base_aux_32 ^2 ] = 0
- qc4: quad_aux_35 + [ - pow_base_aux_34 ^2 ] = 0
- qc5: quad_aux_37 + [ - pow_base_aux_36 ^2 ] = 0
- qc6: quad_aux_39 + [ - pow_base_aux_38 ^2 ] = 0
- qc7: quad_aux_41 + [ - pow_base_aux_40 ^2 ] = 0
- qc8: quad_aux_43 + [ - pow_base_aux_42 ^2 ] = 0
+ R6: qq4 - ab4 >= 0
+ R7: ab4 >= 0
+ R8: qq5 - ab5 >= 0
+ R9: ab5 >= 0
+ R10: qq6 - ab6 >= 0
+ R11: ab6 >= 0
+ R12: qq7 - ab7 >= 0
+ R13: ab7 >= 0
+ R14: qq8 - ab8 >= 0
+ R15: ab8 >= 0
+ R16: qq9 - ab9 >= 0
+ R17: ab9 >= 0
+ R18: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
+   + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 = 1000
 Bounds
+ Constant = 1
 End

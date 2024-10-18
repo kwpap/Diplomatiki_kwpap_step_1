@@ -3,11 +3,11 @@
 Minimize
   - 0.4 qq1 - 4 ab1 - 0.4 qq2 - 6 ab2 - 0.4 qq3 - 8 ab3 - 0.4 qq4 - 10 ab4
    - 0.4 qq5 - 12 ab5 - 0.4 qq6 - 14 ab6 - 16 ab7 - 18 ab8 - 20 ab9
-   - 33 pow_aux_27061 - 30 pow_aux_27063 - 15 pow_aux_27065
-   - 12 pow_aux_27067 - 9 pow_aux_27069 - 9 pow_aux_27071 - 6 pow_aux_27073
-   - 0.06 pow_aux_27075 - 0.3 pow_aux_27077 - 0.6 pow_aux_27079
-   + 1302 Constant + [ - 0.06 qq7 * pow_aux_27081
-   - 0.06 qq8 * pow_aux_27083 - 0.06 qq9 * pow_aux_27085 ] / 2 
+   - 33 quad_aux_6875 - 30 quad_aux_6877 - 15 quad_aux_6879
+   - 12 quad_aux_6881 - 9 quad_aux_6883 - 9 quad_aux_6885 - 6 quad_aux_6887
+   - 0.06 pow_aux_6889 - 0.3 quad_aux_6891 - 0.6 quad_aux_6893
+   + 1302 Constant + [ - 0.06 qq7 * pow_aux_6895 - 0.06 qq8 * pow_aux_6897
+   - 0.06 qq9 * pow_aux_6899 ] / 2 
 Subject To
  R0: qq1 - ab1 >= 0
  R1: ab1 >= 0
@@ -28,82 +28,64 @@ Subject To
  R16: qq9 - ab9 >= 0
  R17: ab9 >= 0
  R18: - 0.2 qq1 - 0.1 qq2 - 0.1 qq3 - ppp >= -100
- R19: - ab1 + pow_base_aux_27030 = 0
- R20: - 4 ab1 + ppp - 0.3 pow_aux_27031 >= 10
- R21: - 0.1 qq1 - 0.2 qq2 - 0.1 qq3 - ppp >= -100
- R22: - ab2 + pow_base_aux_27032 = 0
- R23: - 6 ab2 + ppp - 0.6 pow_aux_27033 >= 11
- R24: - 0.1 qq1 - 0.1 qq2 - 0.2 qq3 - ppp >= -100
- R25: - ab3 + pow_base_aux_27034 = 0
- R26: - 8 ab3 + ppp - 15 pow_aux_27035 >= 5
- R27: - 0.2 qq4 - 0.1 qq5 - 0.1 qq6 - ppp >= -150
- R28: - ab4 + pow_base_aux_27036 = 0
- R29: - 10 ab4 + ppp - 9 pow_aux_27037 >= 7
- R30: - 0.1 qq4 - 0.2 qq5 - 0.1 qq6 - ppp >= -150
- R31: - ab5 + pow_base_aux_27038 = 0
- R32: - 12 ab5 + ppp - 6 pow_aux_27039 >= 1
- R33: - 0.1 qq4 - 0.1 qq5 - 0.2 qq6 - ppp >= -150
- R34: - ab6 + pow_base_aux_27040 = 0
- R35: - 14 ab6 + ppp - 9 pow_aux_27041 >= 2
- R36: - qq7 - qq8 - qq9 + pow_base_aux_27042 = 0
- R37: - qq7 - qq8 - qq9 + pow_base_aux_27044 = 0
- R38: - ab7 + pow_base_aux_27046 = 0
- R39: - 16 ab7 + ppp - 12 pow_aux_27047 >= 3
- R40: - qq7 - qq8 - qq9 + pow_base_aux_27048 = 0
- R41: - qq7 - qq8 - qq9 + pow_base_aux_27050 = 0
- R42: - ab8 + pow_base_aux_27052 = 0
- R43: - 18 ab8 + ppp - 30 pow_aux_27053 >= 4
- R44: - qq7 - qq8 - qq9 + pow_base_aux_27054 = 0
- R45: - qq7 - qq8 - qq9 + pow_base_aux_27056 = 0
- R46: - ab9 + pow_base_aux_27058 = 0
- R47: - 20 ab9 + ppp - 33 pow_aux_27059 >= 5
- R48: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
-   + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 = 2229.249131094677
- R49: - ab9 + pow_base_aux_27060 = 0
- R50: - ab8 + pow_base_aux_27062 = 0
- R51: - ab3 + pow_base_aux_27064 = 0
- R52: - ab7 + pow_base_aux_27066 = 0
- R53: - ab4 + pow_base_aux_27068 = 0
- R54: - ab6 + pow_base_aux_27070 = 0
- R55: - ab5 + pow_base_aux_27072 = 0
- R56: - qq7 - qq8 - qq9 + pow_base_aux_27074 = 0
- R57: - ab1 + pow_base_aux_27076 = 0
- R58: - ab2 + pow_base_aux_27078 = 0
- R59: - qq7 - qq8 - qq9 + pow_base_aux_27080 = 0
- R60: - qq7 - qq8 - qq9 + pow_base_aux_27082 = 0
- R61: - qq7 - qq8 - qq9 + pow_base_aux_27084 = 0
- qc0: - ppp - 0.02 pow_aux_27043 + [ - 0.03 qq7 * pow_aux_27045 ] >= -200
- qc1: - ppp - 0.02 pow_aux_27049 + [ - 0.03 qq8 * pow_aux_27051 ] >= -200
- qc2: - ppp - 0.02 pow_aux_27055 + [ - 0.03 qq9 * pow_aux_27057 ] >= -200
+ R19: - 0.1 qq1 - 0.2 qq2 - 0.1 qq3 - ppp >= -100
+ R20: - 0.1 qq1 - 0.1 qq2 - 0.2 qq3 - ppp >= -100
+ R21: - 0.2 qq4 - 0.1 qq5 - 0.1 qq6 - ppp >= -150
+ R22: - 0.1 qq4 - 0.2 qq5 - 0.1 qq6 - ppp >= -150
+ R23: - 0.1 qq4 - 0.1 qq5 - 0.2 qq6 - ppp >= -150
+ R24: - qq7 - qq8 - qq9 + pow_base_aux_6862 = 0
+ R25: - qq7 - qq8 - qq9 + pow_base_aux_6864 = 0
+ R26: - qq7 - qq8 - qq9 + pow_base_aux_6866 = 0
+ R27: - qq7 - qq8 - qq9 + pow_base_aux_6868 = 0
+ R28: - qq7 - qq8 - qq9 + pow_base_aux_6870 = 0
+ R29: - qq7 - qq8 - qq9 + pow_base_aux_6872 = 0
+ R30: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
+   + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 = 117.3289016365619
+ R31: - ab9 + pow_base_aux_6874 = 0
+ R32: - ab8 + pow_base_aux_6876 = 0
+ R33: - ab3 + pow_base_aux_6878 = 0
+ R34: - ab7 + pow_base_aux_6880 = 0
+ R35: - ab4 + pow_base_aux_6882 = 0
+ R36: - ab6 + pow_base_aux_6884 = 0
+ R37: - ab5 + pow_base_aux_6886 = 0
+ R38: - qq7 - qq8 - qq9 + pow_base_aux_6888 = 0
+ R39: - ab1 + pow_base_aux_6890 = 0
+ R40: - ab2 + pow_base_aux_6892 = 0
+ R41: - qq7 - qq8 - qq9 + pow_base_aux_6894 = 0
+ R42: - qq7 - qq8 - qq9 + pow_base_aux_6896 = 0
+ R43: - qq7 - qq8 - qq9 + pow_base_aux_6898 = 0
+ qc0: - 4 ab1 + ppp + [ - 0.3 ab1 ^2 ] >= 10
+ qc1: - 6 ab2 + ppp + [ - 0.6 ab2 ^2 ] >= 11
+ qc2: - 8 ab3 + ppp + [ - 15 ab3 ^2 ] >= 5
+ qc3: - 10 ab4 + ppp + [ - 9 ab4 ^2 ] >= 7
+ qc4: - 12 ab5 + ppp + [ - 6 ab5 ^2 ] >= 1
+ qc5: - 14 ab6 + ppp + [ - 9 ab6 ^2 ] >= 2
+ qc6: - ppp - 0.02 pow_aux_6863 + [ - 0.03 qq7 * pow_aux_6865 ] >= -200
+ qc7: - 16 ab7 + ppp + [ - 12 ab7 ^2 ] >= 3
+ qc8: - ppp - 0.02 pow_aux_6867 + [ - 0.03 qq8 * pow_aux_6869 ] >= -200
+ qc9: - 18 ab8 + ppp + [ - 30 ab8 ^2 ] >= 4
+ qc10: - ppp - 0.02 pow_aux_6871 + [ - 0.03 qq9 * pow_aux_6873 ] >= -200
+ qc11: - 20 ab9 + ppp + [ - 33 ab9 ^2 ] >= 5
+ qc12: quad_aux_6875 + [ - pow_base_aux_6874 ^2 ] = 0
+ qc13: quad_aux_6877 + [ - pow_base_aux_6876 ^2 ] = 0
+ qc14: quad_aux_6879 + [ - pow_base_aux_6878 ^2 ] = 0
+ qc15: quad_aux_6881 + [ - pow_base_aux_6880 ^2 ] = 0
+ qc16: quad_aux_6883 + [ - pow_base_aux_6882 ^2 ] = 0
+ qc17: quad_aux_6885 + [ - pow_base_aux_6884 ^2 ] = 0
+ qc18: quad_aux_6887 + [ - pow_base_aux_6886 ^2 ] = 0
+ qc19: quad_aux_6891 + [ - pow_base_aux_6890 ^2 ] = 0
+ qc20: quad_aux_6893 + [ - pow_base_aux_6892 ^2 ] = 0
 Bounds
  Constant = 1
 General Constraints
- GC0: pow_aux_27031 = POW ( pow_base_aux_27030 ^ 2 )
- GC1: pow_aux_27033 = POW ( pow_base_aux_27032 ^ 2 )
- GC2: pow_aux_27035 = POW ( pow_base_aux_27034 ^ 2 )
- GC3: pow_aux_27037 = POW ( pow_base_aux_27036 ^ 2 )
- GC4: pow_aux_27039 = POW ( pow_base_aux_27038 ^ 2 )
- GC5: pow_aux_27041 = POW ( pow_base_aux_27040 ^ 2 )
- GC6: pow_aux_27043 = POW ( pow_base_aux_27042 ^ 1.5 )
- GC7: pow_aux_27045 = POW ( pow_base_aux_27044 ^ 0.5 )
- GC8: pow_aux_27047 = POW ( pow_base_aux_27046 ^ 2 )
- GC9: pow_aux_27049 = POW ( pow_base_aux_27048 ^ 1.5 )
- GC10: pow_aux_27051 = POW ( pow_base_aux_27050 ^ 0.5 )
- GC11: pow_aux_27053 = POW ( pow_base_aux_27052 ^ 2 )
- GC12: pow_aux_27055 = POW ( pow_base_aux_27054 ^ 1.5 )
- GC13: pow_aux_27057 = POW ( pow_base_aux_27056 ^ 0.5 )
- GC14: pow_aux_27059 = POW ( pow_base_aux_27058 ^ 2 )
- GC15: pow_aux_27061 = POW ( pow_base_aux_27060 ^ 2 )
- GC16: pow_aux_27063 = POW ( pow_base_aux_27062 ^ 2 )
- GC17: pow_aux_27065 = POW ( pow_base_aux_27064 ^ 2 )
- GC18: pow_aux_27067 = POW ( pow_base_aux_27066 ^ 2 )
- GC19: pow_aux_27069 = POW ( pow_base_aux_27068 ^ 2 )
- GC20: pow_aux_27071 = POW ( pow_base_aux_27070 ^ 2 )
- GC21: pow_aux_27073 = POW ( pow_base_aux_27072 ^ 2 )
- GC22: pow_aux_27075 = POW ( pow_base_aux_27074 ^ 1.5 )
- GC23: pow_aux_27077 = POW ( pow_base_aux_27076 ^ 2 )
- GC24: pow_aux_27079 = POW ( pow_base_aux_27078 ^ 2 )
- GC25: pow_aux_27081 = POW ( pow_base_aux_27080 ^ 0.5 )
- GC26: pow_aux_27083 = POW ( pow_base_aux_27082 ^ 0.5 )
- GC27: pow_aux_27085 = POW ( pow_base_aux_27084 ^ 0.5 )
+ GC0: pow_aux_6863 = POW ( pow_base_aux_6862 ^ 1.5 )
+ GC1: pow_aux_6865 = POW ( pow_base_aux_6864 ^ 0.5 )
+ GC2: pow_aux_6867 = POW ( pow_base_aux_6866 ^ 1.5 )
+ GC3: pow_aux_6869 = POW ( pow_base_aux_6868 ^ 0.5 )
+ GC4: pow_aux_6871 = POW ( pow_base_aux_6870 ^ 1.5 )
+ GC5: pow_aux_6873 = POW ( pow_base_aux_6872 ^ 0.5 )
+ GC6: pow_aux_6889 = POW ( pow_base_aux_6888 ^ 1.5 )
+ GC7: pow_aux_6895 = POW ( pow_base_aux_6894 ^ 0.5 )
+ GC8: pow_aux_6897 = POW ( pow_base_aux_6896 ^ 0.5 )
+ GC9: pow_aux_6899 = POW ( pow_base_aux_6898 ^ 0.5 )
 End
