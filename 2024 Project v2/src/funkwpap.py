@@ -29,9 +29,84 @@ def eq_format_number(value):
     else:
         return f"{value:>+9.4f}"  # Fixed-point notation for normal numbers
 
+x, y = sp.symbols('x y')
 
+def sympy_to_gurobi(sympy_expr, symbol_map, model):
+    """
+    Convert a SymPy expression to a Gurobi expression, handling polynomials of up to the second degree.
+    
+    Parameters:
+        sympy_expr (sp.Expr): SymPy expression to convert.
+        symbol_map (dict): Mapping from SymPy symbols to Gurobi variables.
+        model (gurobipy.Model): Gurobi model to add constraints for complex expressions.
+        
+    Returns:
+        Gurobi expression (LinExpr, QuadExpr, or constant).
+    """
+    def is_simple_expression(expr):
+        expr = expr.simplify()
+        expr = expr.expand()
+        if isinstance(expr, (sp.Symbol, sp.Number)):
+            return True
+        elif isinstance(expr, sp.Add) or isinstance(expr, sp.Mul):
+            return all(is_simple_expression(arg) for arg in expr.args)
+        elif isinstance(expr, sp.Pow):
+            base, exp = expr.args
+            return exp == 2 and is_simple_expression(base)
+        return False
 
-def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
+    if is_simple_expression(sympy_expr):
+        return sympy_to_gurobi_Quadratics_only(sympy_expr, symbol_map, model)
+    else:
+        return sympy_to_gurobi_complete(sympy_expr, symbol_map, model)
+
+def sympy_to_gurobi_Quadratics_only(sympy_expr, symbol_map, model):
+    """
+    Convert a SymPy expression to a Gurobi expression, handling polynomials of up to the second degree.
+    
+    Parameters:
+        sympy_expr (sp.Expr): SymPy expression to convert.
+        symbol_map (dict): Mapping from SymPy symbols to Gurobi variables.
+        model (gurobipy.Model): Gurobi model to add constraints for complex expressions.
+        
+    Returns:
+        Gurobi expression (LinExpr, QuadExpr, or constant).
+    """
+    if isinstance(sympy_expr, sp.Symbol):
+        return symbol_map[sympy_expr]
+    
+    elif isinstance(sympy_expr, sp.Add):
+        return sum(sympy_to_gurobi_Quadratics_only(arg, symbol_map, model) for arg in sympy_expr.args)
+    
+    elif isinstance(sympy_expr, sp.Mul):
+        result = 1
+        for arg in sympy_expr.args:
+            result *= sympy_to_gurobi_Quadratics_only(arg, symbol_map, model)
+        return result
+    
+    elif isinstance(sympy_expr, sp.Pow):
+        base, exp = sympy_expr.args
+        
+        if exp == 2:
+            # Handle quadratic expressions
+            base_expr = sympy_to_gurobi_Quadratics_only(base, symbol_map, model)
+            return base_expr * base_expr
+        elif exp == 1:
+            # Any base to the power of 1 is the base itself
+            return sympy_to_gurobi_Quadratics_only(base, symbol_map, model)
+        elif exp == 0:
+            # Any base to the power of 0 is 1
+            return 1
+        else:
+            raise ValueError(f"Unsupported power: {exp}")
+    
+    elif isinstance(sympy_expr, sp.Number):
+        return float(sympy_expr)
+    
+    else:
+        raise ValueError(f"Unsupported SymPy expression: {sympy_expr}")
+
+def sympy_to_gurobi_complete(sympy_expr, symbol_map, model, aux_var_count=[0]):
     """
     Recursively convert a SymPy expression to a Gurobi expression, 
     handling exponentials, powers, divisions, and other complex expressions with auxiliary variables and constraints.
@@ -60,12 +135,12 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
         return symbol_map[sympy_expr]
     
     elif isinstance(sympy_expr, sp.Add):
-        return sum(sympy_to_gurobi(arg, symbol_map, model, aux_var_count) for arg in sympy_expr.args)
+        return sum(sympy_to_gurobi_complete(arg, symbol_map, model, aux_var_count) for arg in sympy_expr.args)
     
     elif isinstance(sympy_expr, sp.Mul):
         result = 1
         for arg in sympy_expr.args:
-            result *= sympy_to_gurobi(arg, symbol_map, model, aux_var_count)
+            result *= sympy_to_gurobi_complete(arg, symbol_map, model, aux_var_count)
         return result
     
     elif isinstance(sympy_expr, sp.Pow):
@@ -77,15 +152,23 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
             return 1
         if exp == 1:
             # Any base to the power of 1 is the base itself
-            return sympy_to_gurobi(base, symbol_map, model, aux_var_count)
+            return sympy_to_gurobi_complete(base, symbol_map, model, aux_var_count)
+
 
         # Always create an auxiliary variable for the base
-        base_expr = sympy_to_gurobi(base, symbol_map, model, aux_var_count)
+        base_expr = sympy_to_gurobi_complete(base, symbol_map, model, aux_var_count)
         aux_var_name = f"pow_base_aux_{aux_var_count[0]}"
         aux_var_count[0] += 1
         base_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
         model.addConstr(base_aux_var == base_expr)
         
+        if exp == 2:
+            # Add a quadratic constraint for the square of the base
+            aux_var_name = f"quad_aux_{aux_var_count[0]}"
+            aux_var_count[0] += 1
+            quad_aux_var = model.addVar(name=aux_var_name, vtype=GRB.CONTINUOUS)
+            model.addQConstr(quad_aux_var == base_aux_var * base_aux_var)
+            return quad_aux_var
 
         if isinstance(exp, sp.Number):
             # Handle non-quadratic powers using general constraints
@@ -108,7 +191,7 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
             model.addConstr(base_aux_var == base_expr)
 
             # Convert the exponent to a Gurobi expression
-            exp_expr = sympy_to_gurobi(exp, symbol_map, model, aux_var_count)
+            exp_expr = sympy_to_gurobi_complete(exp, symbol_map, model, aux_var_count)
 
             # Create auxiliary variable for log(base)
             log_base_aux_var_name = f"log_base_aux_{aux_var_count[0]}"
@@ -131,7 +214,7 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
         
     
     elif isinstance(sympy_expr, sp.exp):
-        arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+        arg_expr = sympy_to_gurobi_complete(sympy_expr.args[0], symbol_map, model, aux_var_count)
         aux_var_name = f"exp_aux_{aux_var_count[0]}"
         aux_var_count[0] += 1
         arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", lb=0, vtype=GRB.CONTINUOUS)
@@ -141,7 +224,7 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
         return exp_aux_var
     
     elif isinstance(sympy_expr, sp.log):
-        arg_expr = sympy_to_gurobi(sympy_expr.args[0], symbol_map, model, aux_var_count)
+        arg_expr = sympy_to_gurobi_complete(sympy_expr.args[0], symbol_map, model, aux_var_count)
         aux_var_name = f"log_aux_{aux_var_count[0]}"
         aux_var_count[0] += 1
         arg_aux_var = model.addVar(name=f"aux_{aux_var_name}_arg", vtype=GRB.CONTINUOUS)
@@ -156,9 +239,6 @@ def sympy_to_gurobi(sympy_expr, symbol_map, model, aux_var_count=[0]):
     
     else:
         raise ValueError(f"Unsupported SymPy expression: {sympy_expr}")
-    
-x = sp.symbols('x')
-y = sp.symbols('y')
 
 class Regulator:
     _id_counter = 1
@@ -804,6 +884,99 @@ class Regulator:
             print(f"Permit price: {ppp.X}")
         return m
 
+
+    def optimization_concave_formulation_ab(self, BAU = False, gurobi_print = True, lp_file = "optimization_concave_formulation_ab.lp", print_output = True):
+    
+        m = Model("optimization_concave_formulation_ab")
+        
+        # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
+        symbol_map = {}
+        sympy_output = {}
+        sympy_emission = {}
+        sympy_abatement = {}
+        gurobi_output = {}
+        gurobi_abatement = {}
+        
+        # ab = abatement ab = q - x (output - emission)
+
+        for firm in self.firm_registry.values():
+            q_sym = sp.symbols(f"q{firm.id}")
+            x_sym = sp.symbols(f"x{firm.id}")
+            ab_sym = sp.symbols(f"ab{firm.id}")
+            sympy_output[firm.id] = q_sym
+            sympy_emission[firm.id] = x_sym
+            sympy_abatement[firm.id] = ab_sym
+            
+
+
+            qq_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"qq{firm.id}", lb=0)
+            ab_var = m.addVar(vtype=gb.GRB.CONTINUOUS, name=f"ab{firm.id}", lb=0)
+            gurobi_output[firm.id] = qq_var
+            gurobi_abatement[firm.id] = ab_var
+            
+            symbol_map[q_sym] = qq_var
+            symbol_map[ab_sym] = ab_var
+            
+            m.addConstr(qq_var >= ab_var)
+            m.addConstr(ab_var >= 0)
+        
+        pp = sp.symbols('pp')  # Permit price
+        ppp = m.addVar(vtype=gb.GRB.CONTINUOUS, name='ppp', lb=0)
+        symbol_map[pp] = ppp
+                
+        # Define the objective function
+        sympy_objective = 0
+        for firm in self.firm_registry.values():
+            firm_profit = 0
+            sect = firm.sector
+            sum_sector_outputs = 0
+            for i in range(len(sect.firms)):
+                sum_sector_outputs += sympy_output[sect.firms[i].id]
+            firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
+            firm_abatement = -firm.abatement_cost_function.subs(x, sympy_abatement[firm.id])
+            firm_trading = -pp * ((1 - sect.free_emission_multiplier) * sympy_output[firm.id] - sympy_abatement[firm.id])
+            if BAU:
+                firm_abatement = 0
+                firm_trading = 0
+            firm_profit += firm_revenew + firm_abatement + firm_trading
+            profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
+            profit_dab = sp.diff(firm_profit, sympy_abatement[firm.id])
+            # sympy_objective += profit_dq + profit_dab
+            sympy_objective += - profit_dq - profit_dab
+            m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) <= 0)
+            m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) <= 0)
+        # sympy_objective += (self.emission_cap + sum(sympy_output.values())- sum(sympy_abatement.values()))**2
+        m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
+
+        
+        # print("Sum sector outputs: {}".format(sum_sector_outputs))
+        # print("Sympy Objective: {}".format(sympy_objective))
+        gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
+        m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
+        m.params.OutputFlag = 1 if gurobi_print else 0
+        m.write(lp_file)
+        m.optimize()
+
+        if m.status == gb.GRB.OPTIMAL:
+            print("Optimal solution found")
+        else:
+            print("No solution found")
+        
+        if BAU:
+            for firm in self.firm_registry.values():
+                firm.BAU_output = gurobi_output[firm.id].X
+                firm.BAU_emission = gurobi_output[firm.id].X
+            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
+        else:
+            for firm in self.firm_registry.values():
+                firm.actual_output = gurobi_output[firm.id].X
+                firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
+            self.permit_price = ppp.X
+        if print_output:
+            for firm in self.firm_registry.values():
+                print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
+            print(f"Permit price: {ppp.X}")
+        return m
 
 
     def equilibrium_tester(self, precision = 0.001, output = False, full_output = False):
