@@ -437,7 +437,7 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
-    def optimization_with_least_squares(self, BAU = False, gurobi_print = True, lp_file = "least_squares.lp", print_output = True):
+    def optimization_with_least_squares(self, BAU = False, gurobi_print = False, lp_file = "least_squares.lp", print_output = False):
     
         m = Model("Least Squares")
         
@@ -885,7 +885,7 @@ class Regulator:
         return m
 
 
-    def optimization_concave_formulation_ab(self, BAU = False, gurobi_print = True, lp_file = "optimization_concave_formulation_ab.lp", print_output = True):
+    def optimization_concave_formulation_ab(self, BAU = False, gurobi_print = False, lp_file = "optimization_concave_formulation_ab.lp", print_output = False):
     
         m = Model("optimization_concave_formulation_ab")
         
@@ -1124,6 +1124,10 @@ class Firm:
         self.BAU_profit = BAU_profit
         self.regulator = regulator
         self.BAU_emission = 0
+        self.abatement = 0
+        self.permits_costs = 0
+        self.sales = 0
+        self.permits_used = 0
 
         # Register this firm in the global registry
         regulator.firm_registry[self.id] = self
@@ -1141,9 +1145,7 @@ class Firm:
     def __repr__(self):
         return f"Firm(id={self.id}, name='{self.name}', sector_id={self.sector.id if self.sector else None}, country_id={self.country.id if self.country else None}, actual_output={self.actual_output}, emission={self.emission}, profit={self.profit})"
 
-
-    def calculate_sales(self):
-        # Calculate the sales of the firm
+    def calculate_profit_components(self):
         sector = self.sector
         regulator = self.regulator
         # Sum of all other outputs
@@ -1152,38 +1154,23 @@ class Firm:
             if sector.firms[i].id != self.id:
                 sum_other_outputs += sector.firms[i].actual_output
         
-        #Get the price of the permits
         permit_price = regulator.permit_price
-        # Get the price demand function of the sector
         price_demand_function = sector.price_demand_function
-        # Get the production cost function of the firm
         production_cost_function = self.production_cost_function
+        abatement_cost_function = self.abatement_cost_function
 
 
         out, em = sp.symbols('out em')
         # Calculate the output of the firm
-        #print("Price to demand Function: {}".format(price_demand_function.subs(x, sum_other_outputs + out)))
         income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
-        return income.subs(out, self.actual_output).evalf()
+        self.sales = income.subs(out, self.actual_output).evalf()
+        self.abatement = abatement_cost_function.subs({x: self.actual_output - self.emission, y: self.emission}).evalf()
+        self.permits_costs = permit_price * (self.emission - sector.free_emission_multiplier * self.actual_output)
+        self.profit = self.sales - self.abatement - self.permits_costs
+        self.permits_used = self.emission - sector.free_emission_multiplier * self.actual_output
 
-    def calculate_abatement(self):
-        abatement_cost_function = self.abatement_cost_function
-        out, em = sp.symbols('out em')
-        abatement = abatement_cost_function.subs({x: self.actual_output - self.emission, y: self.emission})
-        return abatement.evalf()
 
-    def calculate_trading(self):
-        sector = self.sector
-        regulator = self.regulator
-        # Sum of all other outputs
 
-        #Get the price of the permits
-        permit_price = regulator.permit_price
-        # Get the free emission multiplier of the firm
-        free_emission_multiplier = sector.free_emission_multiplier
-        out, em = sp.symbols('out em')
-        trading = permit_price * (em -free_emission_multiplier * out)
-        return trading.subs({out: self.actual_output, em: self.emission}).evalf()
 
     def calculate_output(self, verbose=False, writeLP=False, BAU=False):
         # Calculate the output of the firm
