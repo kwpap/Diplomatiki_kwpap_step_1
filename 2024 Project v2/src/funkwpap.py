@@ -519,7 +519,7 @@ class Regulator:
             print(f"Permit price: {ppp.X}")
         return m
     
-    def optimization_with_positive_constaints(self, BAU = False, gurobi_print = True, lp_file = "least_squares.lp", print_output = True):
+    def optimization_with_positive_constaints(self, BAU = False, gurobi_print = True, lp_file = "optimization_with_positive_constaints.lp", print_output = True):
     
         m = Model("Positive Constraints")
         
@@ -604,7 +604,7 @@ class Regulator:
             print(f"Permit price: {ppp.X}")
         return m
     
-    def optimization_with_least_squares_ab(self, BAU = False, gurobi_print = True, lp_file = "least_squares_e.lp", print_output = True):
+    def optimization_with_least_squares_ab(self, BAU = False, gurobi_print = False, lp_file = "least_squares_e.lp", print_output = False):
     
         m = Model("Least Squares e")
         
@@ -697,7 +697,7 @@ class Regulator:
             print(f"Permit price: {ppp.X}")
         return m
     
-    def optimization_with_positive_constraints_ab(self, BAU = False, gurobi_print = True, lp_file = "positive_constraints_ab.lp", print_output = True):
+    def optimization_with_positive_constraints_ab(self, BAU = False, gurobi_print = False, lp_file = "positive_constraints_ab.lp", print_output = False):
     
         m = Model("positive_constraints_ab")
         
