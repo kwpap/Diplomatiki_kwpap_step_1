@@ -1128,6 +1128,8 @@ class Firm:
         self.permits_costs = 0
         self.sales = 0
         self.permits_used = 0
+        self.free_permits = 0
+        self.permits_bought = 0
 
         # Register this firm in the global registry
         regulator.firm_registry[self.id] = self
@@ -1165,9 +1167,12 @@ class Firm:
         income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
         self.sales = income.subs(out, self.actual_output).evalf()
         self.abatement = abatement_cost_function.subs({x: self.actual_output - self.emission, y: self.emission}).evalf()
-        self.permits_costs = permit_price * (self.emission - sector.free_emission_multiplier * self.actual_output)
+        self.permits_used = self.emission
+        self.free_permits = sector.free_emission_multiplier * self.actual_output
+        self.permits_bought = self.permits_used - self.free_permits
+        self.permits_costs = permit_price * self.permits_bought
         self.profit = self.sales - self.abatement - self.permits_costs
-        self.permits_used = self.emission - sector.free_emission_multiplier * self.actual_output
+        
 
 
 

@@ -1,12 +1,11 @@
 \ Model Least Squares e
 \ LP format - for model browsing. Use MPS format to capture full model detail.
 Minimize
-  quad_aux_13281 + quad_aux_13285 + quad_aux_13289 + quad_aux_13293
-   + quad_aux_13297 + quad_aux_13301 + quad_aux_13305 + quad_aux_13309
-   + quad_aux_13313 + 10000 quad_aux_13315 + 10000 quad_aux_13317
-   + 10000 quad_aux_13319 + 22500 quad_aux_13321 + 22500 quad_aux_13323
-   + 22500 quad_aux_13325 + 40000 quad_aux_13331 + 40000 quad_aux_13337
-   + 40000 quad_aux_13343
+  quad_aux_741 + quad_aux_745 + quad_aux_749 + quad_aux_753 + quad_aux_757
+   + quad_aux_761 + quad_aux_765 + quad_aux_769 + quad_aux_773
+   + 10000 quad_aux_775 + 10000 quad_aux_777 + 10000 quad_aux_779
+   + 22500 quad_aux_781 + 22500 quad_aux_783 + 22500 quad_aux_785
+   + 40000 quad_aux_791 + 40000 quad_aux_797 + 40000 quad_aux_803
 Subject To
  R0: qq1 - ab1 >= 0
  R1: ab1 >= 0
@@ -28,81 +27,84 @@ Subject To
  R17: ab9 >= 0
  R18: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
    + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 = 1784.68072606113
- R19: - ab5 + pow_base_aux_13278 = 0
- R20: 12 ab5 - ppp + 6 quad_aux_13279 + pow_base_aux_13280 = -1
- R21: - ab3 + pow_base_aux_13282 = 0
- R22: 6 ab3 - ppp + 6 quad_aux_13283 + pow_base_aux_13284 = -1
- R23: - ab4 + pow_base_aux_13286 = 0
- R24: 10 ab4 - ppp + 9 quad_aux_13287 + pow_base_aux_13288 = -7
- R25: - ab9 + pow_base_aux_13290 = 0
- R26: 20 ab9 - ppp + 33 quad_aux_13291 + pow_base_aux_13292 = -5
- R27: - ab8 + pow_base_aux_13294 = 0
- R28: 18 ab8 - ppp + 30 quad_aux_13295 + pow_base_aux_13296 = -4
- R29: - ab7 + pow_base_aux_13298 = 0
- R30: 16 ab7 - ppp + 12 quad_aux_13299 + pow_base_aux_13300 = -3
- R31: - ab2 + pow_base_aux_13302 = 0
- R32: 6 ab2 - ppp + 6 quad_aux_13303 + pow_base_aux_13304 = -3
- R33: - ab6 + pow_base_aux_13306 = 0
- R34: 14 ab6 - ppp + 9 quad_aux_13307 + pow_base_aux_13308 = -2
- R35: - ab1 + pow_base_aux_13310 = 0
- R36: 4 ab1 - ppp + 6 quad_aux_13311 + pow_base_aux_13312 = -2
- R37: 0.001 qq1 + 0.001 qq2 + 0.002 qq3 + pow_base_aux_13314 = 1
- R38: 0.001 qq1 + 0.002 qq2 + 0.001 qq3 + pow_base_aux_13316 = 1
- R39: 0.002 qq1 + 0.001 qq2 + 0.001 qq3 + pow_base_aux_13318 = 1
+ R19: - ab5 + pow_base_aux_738 = 0
+ R20: 12 ab5 - ppp + 6 quad_aux_739 + pow_base_aux_740 = -1
+ R21: - ab2 + pow_base_aux_742 = 0
+ R22: 6 ab2 - ppp + 6 quad_aux_743 + pow_base_aux_744 = -11
+ R23: - ab1 + pow_base_aux_746 = 0
+ R24: 4 ab1 - ppp + 6 quad_aux_747 + pow_base_aux_748 = -10
+ R25: - ab4 + pow_base_aux_750 = 0
+ R26: 10 ab4 - ppp + 9 quad_aux_751 + pow_base_aux_752 = -7
+ R27: - ab9 + pow_base_aux_754 = 0
+ R28: 20 ab9 - ppp + 33 quad_aux_755 + pow_base_aux_756 = -5
+ R29: - ab3 + pow_base_aux_758 = 0
+ R30: 8 ab3 - ppp + 15 quad_aux_759 + pow_base_aux_760 = -5
+ R31: - ab8 + pow_base_aux_762 = 0
+ R32: 18 ab8 - ppp + 30 quad_aux_763 + pow_base_aux_764 = -4
+ R33: - ab7 + pow_base_aux_766 = 0
+ R34: 16 ab7 - ppp + 12 quad_aux_767 + pow_base_aux_768 = -3
+ R35: - ab6 + pow_base_aux_770 = 0
+ R36: 14 ab6 - ppp + 9 quad_aux_771 + pow_base_aux_772 = -2
+ R37: 0.001 qq1 + 0.001 qq2 + 0.002 qq3 + 0.00929292929292929 ppp
+   + pow_base_aux_774 = 1
+ R38: 0.001 qq1 + 0.002 qq2 + 0.001 qq3 + 0.00929292929292929 ppp
+   + pow_base_aux_776 = 1
+ R39: 0.002 qq1 + 0.001 qq2 + 0.001 qq3 + 0.00929292929292929 ppp
+   + pow_base_aux_778 = 1
  R40: 6.6666666666666664e-04 qq4 + 6.6666666666666664e-04 qq5
-   + 0.00133333333333333 qq6 + 0.00333333333333333 ppp + pow_base_aux_13320
+   + 0.00133333333333333 qq6 + 0.00666666666666667 ppp + pow_base_aux_780
    = 1
  R41: 6.6666666666666664e-04 qq4 + 0.00133333333333333 qq5
-   + 6.6666666666666664e-04 qq6 + 0.00333333333333333 ppp
-   + pow_base_aux_13322 = 1
+   + 6.6666666666666664e-04 qq6 + 0.00666666666666667 ppp
+   + pow_base_aux_782 = 1
  R42: 0.00133333333333333 qq4 + 6.6666666666666664e-04 qq5
-   + 6.6666666666666664e-04 qq6 + 0.00333333333333333 ppp
-   + pow_base_aux_13324 = 1
- R43: - qq7 - qq8 - qq9 + pow_base_aux_13326 = 0
- R44: - qq7 - qq8 - qq9 + pow_base_aux_13328 = 0
- R45: - qq7 - qq8 - qq9 + pow_base_aux_13332 = 0
- R46: - qq7 - qq8 - qq9 + pow_base_aux_13334 = 0
- R47: - qq7 - qq8 - qq9 + pow_base_aux_13338 = 0
- R48: - qq7 - qq8 - qq9 + pow_base_aux_13340 = 0
- qc0: quad_aux_13279 + [ - pow_base_aux_13278 ^2 ] = 0
- qc1: quad_aux_13281 + [ - pow_base_aux_13280 ^2 ] = 0
- qc2: quad_aux_13283 + [ - pow_base_aux_13282 ^2 ] = 0
- qc3: quad_aux_13285 + [ - pow_base_aux_13284 ^2 ] = 0
- qc4: quad_aux_13287 + [ - pow_base_aux_13286 ^2 ] = 0
- qc5: quad_aux_13289 + [ - pow_base_aux_13288 ^2 ] = 0
- qc6: quad_aux_13291 + [ - pow_base_aux_13290 ^2 ] = 0
- qc7: quad_aux_13293 + [ - pow_base_aux_13292 ^2 ] = 0
- qc8: quad_aux_13295 + [ - pow_base_aux_13294 ^2 ] = 0
- qc9: quad_aux_13297 + [ - pow_base_aux_13296 ^2 ] = 0
- qc10: quad_aux_13299 + [ - pow_base_aux_13298 ^2 ] = 0
- qc11: quad_aux_13301 + [ - pow_base_aux_13300 ^2 ] = 0
- qc12: quad_aux_13303 + [ - pow_base_aux_13302 ^2 ] = 0
- qc13: quad_aux_13305 + [ - pow_base_aux_13304 ^2 ] = 0
- qc14: quad_aux_13307 + [ - pow_base_aux_13306 ^2 ] = 0
- qc15: quad_aux_13309 + [ - pow_base_aux_13308 ^2 ] = 0
- qc16: quad_aux_13311 + [ - pow_base_aux_13310 ^2 ] = 0
- qc17: quad_aux_13313 + [ - pow_base_aux_13312 ^2 ] = 0
- qc18: quad_aux_13315 + [ - pow_base_aux_13314 ^2 ] = 0
- qc19: quad_aux_13317 + [ - pow_base_aux_13316 ^2 ] = 0
- qc20: quad_aux_13319 + [ - pow_base_aux_13318 ^2 ] = 0
- qc21: quad_aux_13321 + [ - pow_base_aux_13320 ^2 ] = 0
- qc22: quad_aux_13323 + [ - pow_base_aux_13322 ^2 ] = 0
- qc23: quad_aux_13325 + [ - pow_base_aux_13324 ^2 ] = 0
- qc24: 0.0025 ppp + 0.0001 pow_aux_13327 + pow_base_aux_13330 + [
-   0.00015 qq7 * pow_aux_13329 ] = 1
- qc25: quad_aux_13331 + [ - pow_base_aux_13330 ^2 ] = 0
- qc26: 0.0025 ppp + 0.0001 pow_aux_13333 + pow_base_aux_13336 + [
-   0.00015 qq8 * pow_aux_13335 ] = 1
- qc27: quad_aux_13337 + [ - pow_base_aux_13336 ^2 ] = 0
- qc28: 0.0025 ppp + 0.0001 pow_aux_13339 + pow_base_aux_13342 + [
-   0.00015 qq9 * pow_aux_13341 ] = 1
- qc29: quad_aux_13343 + [ - pow_base_aux_13342 ^2 ] = 0
+   + 6.6666666666666664e-04 qq6 + 0.00666666666666667 ppp
+   + pow_base_aux_784 = 1
+ R43: - qq7 - qq8 - qq9 + pow_base_aux_786 = 0
+ R44: - qq7 - qq8 - qq9 + pow_base_aux_788 = 0
+ R45: - qq7 - qq8 - qq9 + pow_base_aux_792 = 0
+ R46: - qq7 - qq8 - qq9 + pow_base_aux_794 = 0
+ R47: - qq7 - qq8 - qq9 + pow_base_aux_798 = 0
+ R48: - qq7 - qq8 - qq9 + pow_base_aux_800 = 0
+ qc0: quad_aux_739 + [ - pow_base_aux_738 ^2 ] = 0
+ qc1: quad_aux_741 + [ - pow_base_aux_740 ^2 ] = 0
+ qc2: quad_aux_743 + [ - pow_base_aux_742 ^2 ] = 0
+ qc3: quad_aux_745 + [ - pow_base_aux_744 ^2 ] = 0
+ qc4: quad_aux_747 + [ - pow_base_aux_746 ^2 ] = 0
+ qc5: quad_aux_749 + [ - pow_base_aux_748 ^2 ] = 0
+ qc6: quad_aux_751 + [ - pow_base_aux_750 ^2 ] = 0
+ qc7: quad_aux_753 + [ - pow_base_aux_752 ^2 ] = 0
+ qc8: quad_aux_755 + [ - pow_base_aux_754 ^2 ] = 0
+ qc9: quad_aux_757 + [ - pow_base_aux_756 ^2 ] = 0
+ qc10: quad_aux_759 + [ - pow_base_aux_758 ^2 ] = 0
+ qc11: quad_aux_761 + [ - pow_base_aux_760 ^2 ] = 0
+ qc12: quad_aux_763 + [ - pow_base_aux_762 ^2 ] = 0
+ qc13: quad_aux_765 + [ - pow_base_aux_764 ^2 ] = 0
+ qc14: quad_aux_767 + [ - pow_base_aux_766 ^2 ] = 0
+ qc15: quad_aux_769 + [ - pow_base_aux_768 ^2 ] = 0
+ qc16: quad_aux_771 + [ - pow_base_aux_770 ^2 ] = 0
+ qc17: quad_aux_773 + [ - pow_base_aux_772 ^2 ] = 0
+ qc18: quad_aux_775 + [ - pow_base_aux_774 ^2 ] = 0
+ qc19: quad_aux_777 + [ - pow_base_aux_776 ^2 ] = 0
+ qc20: quad_aux_779 + [ - pow_base_aux_778 ^2 ] = 0
+ qc21: quad_aux_781 + [ - pow_base_aux_780 ^2 ] = 0
+ qc22: quad_aux_783 + [ - pow_base_aux_782 ^2 ] = 0
+ qc23: quad_aux_785 + [ - pow_base_aux_784 ^2 ] = 0
+ qc24: 0.005 ppp + 0.0001 pow_aux_787 + pow_base_aux_790 + [
+   0.00015 qq7 * pow_aux_789 ] = 1
+ qc25: quad_aux_791 + [ - pow_base_aux_790 ^2 ] = 0
+ qc26: 0.005 ppp + 0.0001 pow_aux_793 + pow_base_aux_796 + [
+   0.00015 qq8 * pow_aux_795 ] = 1
+ qc27: quad_aux_797 + [ - pow_base_aux_796 ^2 ] = 0
+ qc28: 0.005 ppp + 0.0001 pow_aux_799 + pow_base_aux_802 + [
+   0.00015 qq9 * pow_aux_801 ] = 1
+ qc29: quad_aux_803 + [ - pow_base_aux_802 ^2 ] = 0
 Bounds
 General Constraints
- GC0: pow_aux_13327 = POW ( pow_base_aux_13326 ^ 1.5 )
- GC1: pow_aux_13329 = POW ( pow_base_aux_13328 ^ 0.5 )
- GC2: pow_aux_13333 = POW ( pow_base_aux_13332 ^ 1.5 )
- GC3: pow_aux_13335 = POW ( pow_base_aux_13334 ^ 0.5 )
- GC4: pow_aux_13339 = POW ( pow_base_aux_13338 ^ 1.5 )
- GC5: pow_aux_13341 = POW ( pow_base_aux_13340 ^ 0.5 )
+ GC0: pow_aux_787 = POW ( pow_base_aux_786 ^ 1.5 )
+ GC1: pow_aux_789 = POW ( pow_base_aux_788 ^ 0.5 )
+ GC2: pow_aux_793 = POW ( pow_base_aux_792 ^ 1.5 )
+ GC3: pow_aux_795 = POW ( pow_base_aux_794 ^ 0.5 )
+ GC4: pow_aux_799 = POW ( pow_base_aux_798 ^ 1.5 )
+ GC5: pow_aux_801 = POW ( pow_base_aux_800 ^ 0.5 )
 End
