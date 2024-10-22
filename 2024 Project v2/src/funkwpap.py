@@ -885,7 +885,7 @@ class Regulator:
         return m
 
 
-    def optimization_concave_formulation_ab(self, BAU = False, gurobi_print = False, lp_file = "optimization_concave_formulation_ab.lp", print_output = False):
+    def optimization_concave_formulation_ab(self, BAU = False, success_print = False, gurobi_print = False, lp_file = "optimization_concave_formulation_ab.lp", print_output = False):
     
         m = Model("optimization_concave_formulation_ab")
         
@@ -956,11 +956,11 @@ class Regulator:
         m.params.OutputFlag = 1 if gurobi_print else 0
         m.write(lp_file)
         m.optimize()
-
-        if m.status == gb.GRB.OPTIMAL:
-            print("Optimal solution found")
-        else:
-            print("No solution found")
+        if success_print:
+            if m.status == gb.GRB.OPTIMAL:
+                print("Optimal solution found")
+            else:
+                print("No solution found")
         
         if BAU:
             for firm in self.firm_registry.values():
@@ -979,7 +979,8 @@ class Regulator:
         return m
 
 
-    def equilibrium_tester(self, precision = 0.001, output = False, full_output = False):
+    def equilibrium_tester(self, print_header = True, precision = 0.001, output = False, full_output = False):
+        print_header = print_header and (full_output or output)
         x, y = sp.symbols('x y')
         q1, x1 = sp.symbols('q1 x1')
         firms_data = []
@@ -1016,10 +1017,11 @@ class Regulator:
         if output and not full_output:
             firms_data = firms_data[0:1]
             # print(firms_data)
-        if full_output or output:
-                # Print table header
+        if print_header:
+            # Print table header
             print(f"{'Firm':<10} | {'FOC 1':<12} | {'FOC 2':<13} | {'SOC 1':<13} | {'SOC 2':<12} | {'Hessian':<12} | Status")
             print("-" * 85)
+        if full_output or output:
                 # Iterate through each firm's data and print the status
             for firm_data in firms_data:
                 firm_name, cond1, cond2, cond3, cond4, cond5 = firm_data
@@ -1071,6 +1073,12 @@ class Sector:
 
     def __repr__(self):
         return f"Sector(id={self.id}, name='{self.name}', firms={len(self.firms)})"
+
+    def get_consumer_surplus(self):
+        sum_of_production = 0
+        for firm in self.firms:
+            sum_of_production += firm.actual_output
+        return sp.integrate(self.price_demand_function, (x, 0, sum_of_production)) - sum_of_production * self.price_demand_function.subs(x, sum_of_production).evalf()
 
 class Country:
     _id_counter = 1
