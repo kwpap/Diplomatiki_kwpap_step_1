@@ -28,6 +28,4 @@ for (year in c(2015:2020)) {
                        country = "none", 
                        weights = c(1,1,1,1,1,1,1,1), 
                        path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/")
-  
-  
 }

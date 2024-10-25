@@ -34,6 +34,7 @@ Manufacturing_Industry_Agriculture_as_percentage <- TRUE
 cached_data <- hash()
 cached_free <- hash()
 
+data_path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Data/"
 
   # DEFINITIONS FOR DATABASE
 db <- "eu_ets"           # name of database
@@ -81,15 +82,15 @@ read_data_2 <- function(year = 0) {
     #print (paste("Using Cached Data from hash for: ", year_for_comparison))
     return(cached_data[[text_s]])
   }
-  if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
+  if (!force_fresh_data & file.exists(paste(data_path,"created_csvs/",text_s, sep = ""))) {
     #print ("Using Cached Data from csv")
-    cached_data[[text_s]] <- data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
-    return(data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
+    cached_data[[text_s]] <- data.frame(read.csv(file = paste(data_path,"created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
+    return(data.frame(read.csv(file = paste(data_path,"created_csvs/",text_s, sep = ""),
                                header = TRUE)[-c(1)]))
   }
   
   # import countries from databse
-  kanali <- dbConnect(RMariaDB::MariaDB(),
+  kanali <- dbConnect(RMySQL::MySQL(),
                       user = use,
                       password = passwor,
                       dbname = db,
@@ -120,7 +121,7 @@ read_data_2 <- function(year = 0) {
     # Unit: KGOE_TEUR_PPS
 
     
-    df_ei <- read.csv(file = "./Data/nrg_ind_ei_linear.csv",
+    df_ei <- read.csv(file = paste0(data_path,"nrg_ind_ei_linear.csv"),
                         header = TRUE,
                         as.is = TRUE)
     df_ei <- df_ei[which(df_ei$nrg_bal=="EI_GDP_PPS"),]
@@ -150,7 +151,7 @@ read_data_2 <- function(year = 0) {
     # Year: 1990 - 2021
     # Unit: K tons of Co2 equivalent
     
-    df_emis <- read.csv(file = "./Data/Historical emissions_data_2.csv",
+    df_emis <- read.csv(file = paste0(data_path,"Historical emissions_data_2.csv"),
                         header = TRUE,
                         as.is = TRUE)
     names(df_emis) <- c("Main.Activity", "Country","Year","ETS.information","Emissions.Unit","ETS.Information")
@@ -182,7 +183,7 @@ read_data_2 <- function(year = 0) {
     # Year: 1990 - 2021
     # Unit: K tons of Co2 equivalent
     
-    df_free <- read.csv(file = "./Data/Historical emissions_data.csv",
+    df_free <- read.csv(file = paste0(data_path,"Historical emissions_data.csv"),
                         header = TRUE,
                         as.is = TRUE)
     names(df_free) <- c("Main.Activity", "Country","Year","ETS.information","Emissions.Unit","ETS.Information")
@@ -218,12 +219,12 @@ read_data_2 <- function(year = 0) {
     # Year: 1960 - 2021
     # Unit: US$
     
-    headers <- read.csv(file = "./Data/GDP_per_capita_1960_2021.csv",
+    headers <- read.csv(file = paste0(data_path,"GDP_per_capita_1960_2021.csv"),
                         skip = 4,
                         header = FALSE,
                         nrows = 1,
                         as.is = TRUE)
-    df_GDPpc <- read.csv(file = "./Data/GDP_per_capita_1960_2021.csv",
+    df_GDPpc <- read.csv(file = paste0(data_path,"GDP_per_capita_1960_2021.csv"),
                          skip = 5, header = FALSE)
     colnames(df_GDPpc) <- headers
     # Autos o ilithios tropos diavasmatos ginetai gia na apofigoume na peiraxthoun ta headers
@@ -250,12 +251,12 @@ read_data_2 <- function(year = 0) {
     # Unit: %
     
     # Headers are on the 4rth row
-    headers <- read.csv(file = "./Data/Inflation_1960_2021.csv",
+    headers <- read.csv(file = paste0(data_path,"Inflation_1960_2021.csv"),
                         skip = 4,
                         header = FALSE,
                         nrows = 1,
                         as.is = TRUE)
-    df_inflation <- read.csv(file = "./Data/Inflation_1960_2021.csv",
+    df_inflation <- read.csv(file = paste0(data_path,"Inflation_1960_2021.csv"),
                              skip = 4, header = FALSE)
     colnames(df_inflation) <- headers
     
@@ -282,12 +283,12 @@ read_data_2 <- function(year = 0) {
     # Unit: Persons
     
     # Headers are on the 4rth row
-    headers <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
+    headers <- read.csv(file = paste0(data_path,"API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv"),
                         skip = 4,
                         header = FALSE,
                         nrows = 1,
                         as.is = TRUE)
-    df_population <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
+    df_population <- read.csv(file = paste0(data_path,"API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv"),
                               skip = 4, header = FALSE)
     colnames(df_population) <- headers
     
@@ -330,7 +331,7 @@ read_data_2 <- function(year = 0) {
     # Άρα για το 2020: 67.026.292 people * 95,9,9 GJoule/ capita * 0.0239 -> 153624931.52 ktoe -> 153,624.931 gtoe. Άρα το περνώ αυτό καρφωτά στην στον κώδικά.
     # https://www.iea.org/data-and-statistics?country=UNITED%20KINGDOM&fuel=Energy%20supply&indicator=Totals
     
-    d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
+    d <- read.csv(file = paste0(data_path,"nrg_bal_s__custom_4143365_linear.csv"),
                   header = TRUE)
     d <- d[-c(1, 2, 3, 5, 6, 10)]
     df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
@@ -359,7 +360,7 @@ read_data_2 <- function(year = 0) {
     # Unit: Billions USD and percentage
     # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
     # Had to select the whole dataset 
-    my_data <- read.csv(file = "./Data/2dbe830a-5afc-4ed9-b478-f5349450364b_Data.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
+    my_data <- read.csv(file = paste0(data_path,"2dbe830a-5afc-4ed9-b478-f5349450364b_Data.csv"), sep = ",", header = TRUE, stringsAsFactors = FALSE)
     
     buffer <- my_data[my_data$"Country.Name" %in% df_1$"GEO",]
     buffer_GDP <- buffer[buffer$"Series.Name" == "GDP (current US$)",]
@@ -481,7 +482,7 @@ read_data_2 <- function(year = 0) {
                   (if(will_use_industry) "_ind" else ""),
                   (if(will_use_manufacturing) "_man" else ""),
                   ".csv", sep = "")
-  write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
+  write.csv(df_1, file = paste(data_path,"created_csvs/",text_t, sep = "" ), row.names = TRUE)
   cached_data[[text_t]] <- df_1
   return(df_1)
 }
@@ -508,10 +509,10 @@ read_data <- function(year = 0) {
       #print (paste("Using Cached Data from hash for: ", year_for_comparison))
       return(cached_data[[text_s]])
   }
-    if (!force_fresh_data & file.exists(paste("./Data/created_csvs/",text_s, sep = ""))) {
+    if (!force_fresh_data & file.exists(paste(data_path,"created_csvs/",text_s, sep = ""))) {
         #print ("Using Cached Data from csv")
         cached_data[[text_s]] <- data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
-        return(data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""),
+        return(data.frame(read.csv(file = paste(data_path,"created_csvs/",text_s, sep = ""),
                         header = TRUE)[-c(1)]))
     }
     # import countries from databse
@@ -877,7 +878,7 @@ read_free <- function(year = 0){
     #print (paste("Using Cached Free Data from hash for: ", year_for_comparison))
     return(cached_free[[text_s]])
   }
-    kanali <- dbConnect(RMariaDB::MariaDB(),
+    kanali <- dbConnect(RMySQL::MySQL(),
                       user = use,
                       password = passwor,
                       dbname = db,
@@ -2452,7 +2453,7 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   df_year$Pop_norm <- df_year$Population / sum(df_year$Population)
   df_next_year$Pop_norm <- df_next_year$Population / sum(df_next_year$Population)
   # Let's read the data from GDP per capita PPS 
-  GDPpps <- read.csv("./Data/tec00114_linear.csv", header = TRUE, sep = ",")
+  GDPpps <- read.csv(paste0(data_path,"/tec00114_linear.csv"), header = TRUE, sep = ",")
   GDPpps <- GDPpps[-c(1,2,3,4,5,9)]
   # convert eu 2letter abbriviation to country name
   eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
@@ -2593,7 +2594,7 @@ check_the_proxy_energy_intensity <- function(){
   # Renewable energy sources in heating and cooling   -> REN_HEAT_CL
   # Total energy supply             -> NRGSUP
   # Available for final consumption -> AFC
-  green_percent <- read.csv("./Data/nrg_ind_ren_linear.csv")
+  green_percent <- read.csv(paste0(data_path,"nrg_ind_ren_linear.csv"))
   green_percent <- green_percent[which(green_percent$nrg_bal=="REN"),]
   green_percent <- green_percent[which (green_percent$TIME_PERIOD == year_for_comparison),]
   green_percent <- green_percent[-c(1,2,3,4,5,7,9)]
@@ -2667,7 +2668,7 @@ create_second_proxy_for_energy_intensity <- function(){
 
 
 # Set the file path to your downloaded CSV file
-file_path <- "./Data/ETS_Database_v50_Apr23.csv"
+file_path <- paste0(data_path,"ETS_Database_v50_Apr23.csv")
 text <- read.csv(file_path, sep = "\t", header = TRUE) # I hate \t seperated shit.
 
 #filter_dataframe(text, "ETS.information")
@@ -2680,7 +2681,7 @@ View(text)
 
 # Read GDP per capita pps
 #eurostat dataset 
-gdpps <- read.csv("./Data/sdg_10_10__custom_6312863_linear.csv")[-c(1,2,3,4,5,6,10)]
+gdpps <- read.csv(paste0(data_path,"sdg_10_10__custom_6312863_linear.csv"))[-c(1,2,3,4,5,6,10)]
 gdpps <- gdpps[which(gdpps$TIME_PERIOD == year_for_comparison),][-c(2)]
 eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
                          eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
@@ -2692,7 +2693,7 @@ colnames(gdpps) <- c("GEO", "GDPpps")
 
 
 # Read green Percentage
-green_percent <- read.csv("./Data/nrg_ind_ren_linear.csv")
+green_percent <- read.csv(paste0(data_path,"nrg_ind_ren_linear.csv"))
 green_percent <- green_percent[which(green_percent$nrg_bal=="REN"),]
 green_percent <- green_percent[which (green_percent$TIME_PERIOD == year_for_comparison),]
 green_percent <- green_percent[-c(1,2,3,4,5,7,9)]
@@ -2737,7 +2738,7 @@ summary(gg)
 # ORDER BY mat.kwdikos
 
 dummy_function_for_graph_for_presentation <- function(){
-  dat <- read.csv(file = "./Data/sdg_13_10_page_linear_for_small_graph.csv",
+  dat <- read.csv(file = paste0(data_path,"sdg_13_10_page_linear_for_small_graph.csv"),
                     header = TRUE,
                     as.is = TRUE)
   dat <- dat[-c(1,2,3,4,5,6,7,10)]
