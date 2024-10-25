@@ -1086,7 +1086,7 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   
 
   #df_data <-read_data( TRUE, 2016,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-  df_data <-read_data(year_for_comparison)
+  df_data <-read_data_2(year_for_comparison)
   #df_free <- read_free(df_data$GEO, year = 2016 ,TRUE, TRUE)
   df_free <- read_free(year_for_comparison)
 
@@ -1173,22 +1173,83 @@ find_slopes_with_one_country_with_weights <- function( year = 0, country = "none
   return (buffer)
 }
 
-create_graph_for_one <- function (year = 0, name = "", country = "none", weights = c(1,1,1,1,1,1,1,1)){
-    if(year != 0) {year_for_comparison <- year}
-    buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+
+create_graph_for_one <- function(year = 0, name = "",type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
+  # Set the comparison year
+  if (year != 0) {
+    year_for_comparison <- year
+  }
+  
+  # Fetch data and linear model
+  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison,
+                                         weight_population = weights[1], weight_GDPpc = weights[2],
+                                         weight_inflation = weights[3], weight_agriculture = weights[4],
+                                         weight_industry = weights[5], weight_manufacturing = weights[6],
+                                         weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  
   df_1D <- buffer$data
   lm <- buffer$linear
   country <- buffer$country
-  print(country)
-  # print(df_1D)
-  # Create png with the regression line
-  #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
-  png(paste(name, country, " ", year_for_comparison,".png",sep=""), width = 1000, height = 1000)
-  #plot(df_1D$"df_distance", df_1D$"d f_free_distance", xlab = "Combined calculated distance", ylab = "Free distance", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))  # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance",main = paste( country, " year: ", year_for_comparison, " with r^2: ", summary(lm)$r.squared, sep = ""))
-  abline(lm, col = "blue")
-  text(df_1D$"df_distance",df_1D$"df_free_distance"+0.02,df_1D$GEO,col='red')
+  
+  # Print country for verification
+  print(paste("Generating plot for country:", country))
+  
+  # Construct the file path and name
+  file_name <- paste0(path, name, country, "_", year_for_comparison, ".",type)
+  
+  # Start PNG device
+  if (type == "png"){
+    png(file_name, width = 1000, height = 1000) 
+    file_name <- paste0(path, name, country, "_", year_for_comparison, ".png")
+  } else if (type =="svg"){
+    svg(file_name)
+    file_name <- paste0(path, name, country, "_", year_for_comparison, ".svg")
+  }
+
+  # Define color scheme
+  color_near_origin <- '#E24A33'   # Distinct color for points near (0,0)
+  color_main <- '#348ABD'          # Main color for points
+  color_regression <- 'black'      # Color for regression line
+  color_grid <- 'grey'             # Grid color
+  
+  # Define threshold for "near origin" points
+  origin_threshold <- 0.1
+  
+  # Identify points near (0,0) for special treatment
+  near_origin <- abs(df_1D$df_distance) < origin_threshold & abs(df_1D$df_free_distance) < origin_threshold
+  
+  plot(df_1D$df_distance, df_1D$df_free_distance,
+       xlab = "Combined Calculated Distance",
+       ylab = "Free Distance",
+       main = paste(country, "Year:", year_for_comparison, " (R² = ", round(summary(lm)$r.squared, 3), ")", sep = ""),
+       pch = 20, col = ifelse(near_origin, color_near_origin, color_main),  # Color points near (0,0) differently
+       cex.main = 1.8)  # Increase title size
+  
+  # Add grid lines for clarity
+  grid(col = color_grid)
+  
+  # Add regression line in black
+  abline(lm, col = color_regression, lwd = 2)
+  
+  # Label points near the origin
+  if (any(near_origin)) {
+    text(df_1D$df_distance[near_origin], df_1D$df_free_distance[near_origin] + 0.02, 
+         labels = df_1D$GEO[near_origin], col = color_near_origin, cex = 1.2)
+  }
+  
+  # Label other points in standard color
+  text(df_1D$df_distance[!near_origin], df_1D$df_free_distance[!near_origin] + 0.02, 
+       labels = df_1D$GEO[!near_origin], col = "darkgrey", cex = 1.2)
+  
+  # Add a legend with new entry for points near the origin
+  legend("bottomright", legend = c("Regression Line", "Main Points", "Near Origin Points"),
+         col = c(color_regression, color_main, color_near_origin), lty = c(1, NA, NA), 
+         pch = c(NA, 20, 20), pt.cex = c(NA, 1, 1))
+  
+  # Close the graphics device
   dev.off()
+  
+  print(paste("Plot saved to:", file_name))
 }
 
 # Create a table for all the countries with the the r^2 value for each country and each year 2005 to 2018 on the columns and the countries on the rows
