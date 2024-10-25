@@ -924,7 +924,7 @@ find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weigh
   
 
   #df_data <-read_data( TRUE, 2016,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-  df_data <-read_data(year_for_comparison)
+  df_data <-read_data_2(year_for_comparison)
   #df_free <- read_free(df_data$GEO, year = 2016 ,TRUE, TRUE)
   df_free <- read_free(year_for_comparison)
 
