@@ -878,7 +878,7 @@ read_free <- function(year = 0){
     #print (paste("Using Cached Free Data from hash for: ", year_for_comparison))
     return(cached_free[[text_s]])
   }
-    kanali <- dbConnect(RMySQL::MySQL(),
+  kanali <- dbConnect(RMySQL::MySQL(),
                       user = use,
                       password = passwor,
                       dbname = db,
@@ -893,11 +893,15 @@ read_free <- function(year = 0){
 
   for (i in 1:length(list_eur_countries)) { # nolint
     querr <- paste(
-      "SELECT SUM(freeAlloc) FROM `eutl_compliance` WHERE country = '",
+      "SELECT CAST(SUM(freeAlloc) AS DOUBLE) FROM `eutl_compliance` WHERE country = '",
       countries$eu_abbr2L[which (countries$name == list_eur_countries[i])], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
-    res <- dbSendQuery(kanali, querr) # send query to database
-    free <- dbFetch(res, n = -1) # fetch all data from querry
-    dbClearResult(res) # clear result
+    #res <- dbSendQuery(kanali, querr) # send query to database
+    #free <- dbFetch(res, n = -1) # fetch all data from querry
+    # Use dbGetQuery to send and fetch results in one step
+    free <- dbGetQuery(kanali, querr)
+
+    #dbClearResult(res) # clear result
+
     if (i == 1){
       df_free <- data.frame("GEO" = list_eur_countries[i], "Free" = free[1,1])
     } else {
@@ -1170,12 +1174,107 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   
 find_slopes_with_one_country_with_weights <- function( year = 0, country = "none", weights = c(1,1,1,1,1,1,1,1)){
   if(year != 0) { year_for_comparison <- year}
-  buffer <- find_slopes_with_one_country(country = country, year = year, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
-  return (buffer)
+  return (find_slopes_with_one_country(country = country, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8]))
+}
+
+create_graph_for_one <- function(year = 0, name = "", type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
+  # Set the comparison year
+  if (year != 0) {
+    year_for_comparison <- year
+  }
+  
+  # Fetch data and linear model
+  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison,
+                                         weight_population = weights[1], weight_GDPpc = weights[2],
+                                         weight_inflation = weights[3], weight_agriculture = weights[4],
+                                         weight_industry = weights[5], weight_manufacturing = weights[6],
+                                         weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  
+  df_1D <- buffer$data
+  lm <- buffer$linear
+  country <- buffer$country
+  
+  # Print country for verification
+  print(paste("Generating plot for country:", country))
+  
+  # Construct the file path and name
+  file_name <- paste0(path, name, country, "_", year_for_comparison, ".", type)
+  
+  # Start device
+  if (type == "png") {
+    png(file_name, width = 1000, height = 1000)
+    # png(file_name)
+  } else if (type == "svg") {
+    svg(file_name)
+  }
+  # Define color scheme
+  color_below_threshold <- '#E24A33'   # Color for points with x < 2e08
+  color_main <- '#348ABD'              # Main color for other points
+  color_regression <- 'black'          # Color for regression line
+  color_grid <- 'grey'                 # Grid color
+  
+  
+  
+  # Define color palette with 30 distinct colors
+  color_palette <- c("#E24A33", "#348ABD", "#988ED5", "#777777", "#FBC15E",
+                     "#8EBA42", "#FFB5B8", "#FF7F0E", "#1F77B4", "#AEC7E8",
+                     "#FF9896", "#C5B0D5", "#C49C94", "#9467BD", "#8C564B",
+                     "#D62728", "#BCBD22", "#17BECF", "#9EDAE5", "#2CA02C",
+                     "#98DF8A", "#FFBB78", "#F7B6D2", "#C7C7C7", "#DBDB8D",
+                     "#B5BD61", "#17BECF", "#C49C94", "#FFBB78", "#9EDAE5")
+  
+  # Set size of points
+  if (type == 'png'){
+    point_size <- 2
+  } else {
+    point_size <- 1
+  }
+
+  
+  # Define axis limits based on the data range
+  xlim_range <- c(0, max(df_1D$df_distance, na.rm = TRUE))
+  ylim_range <- c(0, max(df_1D$df_free_distance, na.rm = TRUE))
+  
+  # Identify points with x < 2e08 and separate them
+  below_threshold <- df_1D$df_distance < max(df_1D$df_distance, na.rm = TRUE)/2
+  df_below_threshold <- df_1D[below_threshold, ]    # Subset with x < 2e08
+  df_above_threshold <- df_1D[!below_threshold, ]   # Subset with x >= 2e08
+  
+  # Plot main points (x >= 2e08) with defined axis limits
+  plot(df_above_threshold$df_distance, df_above_threshold$df_free_distance,
+       xlab = "Combined Calculated Distance",
+       ylab = "Free Distance",
+       main = paste(country, "Year:", year_for_comparison, " (R² = ", round(summary(lm)$r.squared, 3), ")", sep = ""),
+       pch = 20, cex = point_size, col = color_main,
+       xlim = xlim_range, ylim = ylim_range,  # Set axis limits
+       cex.main = 1.8)
+  
+  # Add labels for points with x >= 2e08 directly after plotting
+  text(df_above_threshold$df_distance, df_above_threshold$df_free_distance + 0.02, 
+       labels = df_above_threshold$GEO, pos = 3, col = color_main, cex = 1.2)
+  
+  # Add grid lines for clarity
+  grid(col = color_grid)
+  
+  # Add regression line in black
+  abline(lm, col = color_regression, lwd = 2)
+  
+  # Plot each point with x < 2e08 in unique color from the color palette
+  for (i in seq_len(nrow(df_below_threshold))) {
+    points(df_below_threshold$df_distance[i], df_below_threshold$df_free_distance[i],
+           pch = 20, cex = point_size, col = color_palette[i])
+  }
+  
+  # Add a legend with unique colors for each country with x < 2e08
+  legend("bottomright", legend = df_below_threshold$GEO, col = color_palette[seq_len(nrow(df_below_threshold))], 
+         pch = 20, title = "Countries with x < 2e08")
+  
+  # Close the device
+  dev.off()
 }
 
 
-create_graph_for_one <- function(year = 0, name = "",type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
+create_graph_for_one_old <- function(year = 0, name = "",type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
   # Set the comparison year
   if (year != 0) {
     year_for_comparison <- year
@@ -1256,12 +1355,15 @@ create_graph_for_one <- function(year = 0, name = "",type = "png", country = "no
 # Create a table for all the countries with the the r^2 value for each country and each year 2005 to 2018 on the columns and the countries on the rows
 
 create_table_for_all_countries <- function(year = 0, weights = c(1,1,1,1,1,1,1,1)){
+  #browser()
   if(year != 0) {year_for_comparison <- year}
-  df <- data.frame(GEO = character(), slope = numeric(), r_squared = numeric())
   df_free <- read_free()
-  for (i in 1 : nrow(df_free)) { #nolint
-    buffer <- find_slopes_with_one_country(country = df_free[i, 1], year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
-    df[i, 1] <- df_free[i, 1]
+  l = nrow(df_free)
+  df <- data.frame(GEO = rep(NA, l), slope = rep(NA, l), r_squared = rep(NA, l))
+  df$GEO <- df_free$GEO
+  for (i in seq_along(df$GEO)) {
+    country <- df$GEO[i]    
+    buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
     df[i, 2] <- summary(buffer$linear)$coefficients[2, 1]
     df[i, 3] <- summary(buffer$linear)$r.squared
   }
@@ -1310,17 +1412,17 @@ find_the_best_combo <- function(){
 find_the_best_combo_with_one <- function(){
   weights <- rep(1,8)
   r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
-  step <- 1
+  step <- 10
   low <- 0
   high <- 100
-  for (i in 1:100){
+  for (i in 1:96){
     index <- i %% 8 +1
     
-    #if (i %% 2 == 0 ){
-     # index <- (i/2) %% 8+1
-    #} else {
-    #  index <- sample(1:8, 1)
-    #}
+    if (i %% 2 == 0 ){
+      index <- (i/2) %% 8+1
+    } else {
+      index <- sample(1:8, 1)
+    }
     
     #index <- sample(1:8, 1)
     for (j in 1:10){
@@ -1388,17 +1490,17 @@ MSE <- function(modelobject){
 }
 
 is_first_linear_regration_better <- function(lm1, lm2){
-  return(summary(lm1)$r.squared > summary(lm2)$r.squared && p_val(lm1) < 0.05 && MSE(lm1) < MSE(lm2)*1.5)
+  return(summary(lm1)$r.squared > summary(lm2)$r.squared && (p_val(lm1) < 0.05 || p_val(lm1) < p_val(lm2)) && MSE(lm1) < MSE(lm2)*1.5)
 }
 
 how_much_good <-function(lm){
   return(paste("R^2:", summary(lm)$r.squared, "p-value:", p_val(lm), "MSE:", MSE(lm)))
 }
 
-find_the_better_best_combo <- function(){
+find_the_better_best_combo <- function(year = 0){
   weights <- rep(1,8)
 
-  old <- find_slopes_with_one_country()$linear
+  old <- find_slopes_with_one_country(year = year)$linear
   step <- 1
   low <- 0
   high <- 10
@@ -1422,7 +1524,7 @@ find_the_better_best_combo <- function(){
       }
       if (weights[index]<high){
         weights[index] <- weights[index] + step
-        raised <- find_slopes_with_one_country_with_weights(weights)$linear
+        raised <- find_slopes_with_one_country_with_weights(weights = weights)$linear
         weights[index] <- weights[index] - step
         if(is_first_linear_regration_better(raised, old)){
           old <- raised
@@ -1441,14 +1543,16 @@ All_the_middle_countries <- function(){
     dat <-data.frame(matrix(ncol=5, nrow = 11))
     colnames(dat) <- c("Year", "R^2", "p-value", "MSE", "Country")
     dat$Year <- c(2008:2018)
+    
     for (i in 1:11){
-      dat$Country[i] <- find_slopes_with_one_country(year = i + 2007)$country
-      dat$"R^2"[i] <- summary(find_slopes_with_one_country(year = i + 2007)$linear)$r.squared
-      dat$"p-value"[i] <- p_val(find_slopes_with_one_country(year = i + 2007)$linear)
-      dat$MSE[i] <- MSE(find_slopes_with_one_country(year = i + 2007)$linear)
+      buffer <- find_slopes_with_one_country(year = i + 2007)
+      dat$Country[i] <- buffer$country
+      dat$"R^2"[i] <- summary(buffer$linear)$r.squared
+      dat$"p-value"[i] <- p_val(buffer$linear)
+      dat$MSE[i] <- MSE(buffer$linear)
     }
-  #  <<results=tex>>
-  #    xtable(dat)
+    #<<results=tex>>
+    #  xtable(dat)
   #@
 }
 
@@ -1518,6 +1622,7 @@ let_s_compare_problematic_poland_france <-function(){
 }
 
 find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015 ){
+  #country <-"Hungary"
   weights <- rep(1,8)
   old <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
   step <- 10
