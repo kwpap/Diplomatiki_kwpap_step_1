@@ -486,7 +486,6 @@ read_data_2 <- function(year = 0) {
   return(df_1)
 }
 
-
 read_data <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
     information_text <- list() # To kef errors and missing data
@@ -1014,49 +1013,69 @@ find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weigh
 # print(summary(X2014$linear)$r.squared)
 # print(X2014$data)
 #####################################
-create_graph <- function (year = 0, name = "default", weights = c(1,1,1,1,1,1,1,1)){
-    if(year != 0) {year_for_comparison <- year}
-  df_1D <- find_slopes(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$data
-  lm <- find_slopes(year = year_for_comparison, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])$linear
-  print(df_1D)
-  # Create png with the regression line
-  #png(paste("Newscatterplot_with_regression_line_",year_for_comparison,"_with_all_data_and_log=", will_use_log, ".png") , width = 1000, height = 1000)
-  png(paste(name,".png",sep=""), width = 1000, height = 1000)
-  #plot(df_1D$"df_distance", df_1D$"d f_free_distance", xlab = "Combined calculated distance", ylab = "Free distance", main = paste( "Scatterplot of calculated distance and actual distance for the year ", year_for_comparison, sep = ""))  # Color red the points of the scatterpolit where df_1D[3,] contains "Germany"
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Combined calculated distance", ylab = "Free distance")
-  points(df_1D[ str_detect(df_1D$"pair", regex(".Germany")), 1], df_1D[str_detect(df_1D$"pair", regex(".Germany")), 2], col = "red")
-  points(df_1D[ str_detect(df_1D$"pair", regex("Germany.")), 1], df_1D[str_detect(df_1D$"pair", regex("Germany.")), 2], col = "red")
 
-  # Color blue the points of the scatterpolit where df_1D[3,] contains "Greece"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".Greece")), 1], df_1D[str_detect(df_1D$"pair", regex(".Greece")), 2], col = "blue")
-  points(df_1D[ str_detect(df_1D$"pair", regex("Greece.")), 1], df_1D[str_detect(df_1D$"pair", regex("Greece.")), 2], col = "blue")
+create_graph <- function (year = 0, type = "png", name = "01_distances_from_features_to_frees_all_countries_", path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/distnaces_all_from_all/", weights = c(1,1,1,1,1,1,1,1)) {
+  
+  if (year != 0) {
+    year_for_comparison <- year
+  }
+  
+  
+  # Assuming weights is already passed correctly
+  slopes <- find_slopes(year = year_for_comparison, 
+                       weight_population = weights[1], weight_GDPpc = weights[2], 
+                       weight_inflation = weights[3], weight_agriculture = weights[4], 
+                       weight_industry = weights[5], weight_manufacturing = weights[6], 
+                       weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  df_1D <- slopes$data
+  
+  lm <- slopes$linear
+  
+  if (type == "png"){
+    # Set up plot file
+    png(paste(path, name, year, ".png", sep=""), width = 1000, height = 1000)
+  }else if(type == "svg"){
+    svg(paste(path, name, year, ".svg", sep=""))
+  }
 
-  # Color green the points of the scatterpolit where df_1D[3,] contains "Italy"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".Italy")), 1], df_1D[str_detect(df_1D$"pair", regex(".Italy")), 2], col = "green")
-  points(df_1D[ str_detect(df_1D$"pair", regex("Italy.")), 1], df_1D[str_detect(df_1D$"pair", regex("Italy.")), 2], col = "green")
-
-  # Color yellow the points of the scatterpolit where df_1D[3,] contains "Ukraine"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".Ukraine")), 1], df_1D[str_detect(df_1D$"pair", regex(".Ukraine")), 2], col = "yellow")
-  points(df_1D[ str_detect(df_1D$"pair", regex("Ukraine.")), 1], df_1D[str_detect(df_1D$"pair", regex("Ukraine.")), 2], col = "yellow")
-
-  # Color Yellow the points of the scatterpolit where df_1D[3,] contains "France"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".France")), 1], df_1D[str_detect(df_1D$"pair", regex(".France")), 2], col = "yellow")
-  points(df_1D[ str_detect(df_1D$"pair", regex("France.")), 1], df_1D[str_detect(df_1D$"pair", regex("France.")), 2], col = "yellow")
-
-  # Color orange the points of the scatterpolit where df_1D[3,] contains "United Kingdom"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".United Kingdom")), 1], df_1D[str_detect(df_1D$"pair", regex(".United Kingdom")), 2], col = "orange")
-  points(df_1D[ str_detect(df_1D$"pair", regex("United Kingdom.")), 1], df_1D[str_detect(df_1D$"pair", regex("United Kingdom.")), 2], col = "orange")
-
-  # Color purple the points of the scatterpolit where df_1D[3,] contains "Luxembourg"
-  points(df_1D[ str_detect(df_1D$"pair", regex(".Luxembourg")), 1], df_1D[str_detect(df_1D$"pair", regex(".Luxembourg")), 2], col = "purple")
-  points(df_1D[ str_detect(df_1D$"pair", regex("Luxembourg.")), 1], df_1D[str_detect(df_1D$"pair", regex("Luxembourg.")), 2], col = "purple")
-
-  #Create a legend with the colors of the points
-  legend("topright", legend = c("Germany", "Greece", "Italy", "France", "United Kingdom", "Luxembourg"), col = c("red", "blue", "green", "yellow", "orange", "purple"), pch = 20)
-
-  abline(lm, col = "red")
+  
+  # Base plot with grid lines
+  plot(df_1D$"df_distance", df_1D$"df_free_distance", 
+       xlab = "Combined calculated distance", 
+       ylab = "Free distance", 
+       main = paste("Scatterplot of calculated distance and actual distance for the year ", year, sep = ""),
+       pch = 20, col = "black")  # Base points in black
+  
+  grid()  # Add grid lines
+  
+  # Define countries and colors in a vector for reuse
+  countries <- c("Germany", "Greece", "Italy", "Ukraine", "France", "United Kingdom", "Luxembourg")
+  colors <- c("red", "blue", "green", "yellow", "orange", "purple")
+  
+  # Use a loop to color points by country
+  for (i in seq_along(countries)) {
+    country <- countries[i]
+    color <- colors[i]
+    
+    # Highlight points for each country with the corresponding color
+    points(df_1D[str_detect(df_1D$"pair", regex(paste0(".", country))), 1], 
+           df_1D[str_detect(df_1D$"pair", regex(paste0(".", country))), 2], 
+           col = color, pch = 20)
+    points(df_1D[str_detect(df_1D$"pair", regex(paste0(country, "."))), 1], 
+           df_1D[str_detect(df_1D$"pair", regex(paste0(country, "."))), 2], 
+           col = color, pch = 20)
+  }
+  
+  # Add regression line
+  abline(lm, col = "red", lwd = 2)
+  
+  # Add a legend
+  legend("bottomright", legend = countries, col = colors, pch = 20, title = "Countries")
+  
+  # Close the file device
   dev.off()
 }
+
 
 find_slopes_with_weights <- function(weights){
   return (find_slopes(weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8]))

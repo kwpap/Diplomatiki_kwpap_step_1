@@ -1,0 +1,115 @@
+\section{Facility Location on general metrics}
+
+In the section, we are going to present the most interesting results of the Facility Location games in more general metric spaces than the line. As we saw in the previous section, the problem becomes much more difficult as the number of facilities increases. In general metric areas, however, even the placement of one facility is not trivial.
+
+\subsection{Tree Metrics}
+The first metric space that we are going to focus on is the tree, because it has similar properties to the line. For the problem of locating one facility on a tree, we can obtain the same result as in the line. 
+
+\begin{theorem}
+The mechanism that selects the median location of the reported instance is strategyproof and optimal for the social cost objective.
+\end{theorem}
+\begin{proof}
+Using the same arguments as in the line we can easily show that the median location is the optimal solution. The median on the tree is the location that when is viewed as the root all the subtrees have at most half of the nodes. Suppose the facility is placed at a location $x$ that is on subtree $T_1$. Then, the connection cost for all agents on $T_1$ (at most half) has decreased by $d(x,med(\vec{x}))$, but the connection cost for the rest of the agents (at least half) has increased by $d(x,med(\vec{x}))$. This makes the social cost of $x$ worst than the median location.
+
+The median location is also strategyproof since the only way that an agent can change the median location is by reporting a location in a different subtree of the median. But this will only move the facility further away from her true location. 
+\end{proof}
+
+It gets a lot more complicated even if we consider $2$-Facility Location games on tree metric. For the next theorem we consider the star metric space. It consist of 3 half-lines $[0,\infty)$ with a common origin point $O$. We can see it as 3 long branches starting from $O$. So, we refer to this metric as $S_3$, and  to the branches as $b_1$,$b_2$ and $b_3$. A location $(x,b_l)$ in $S_3$ is determined by the distance $x\ge 0$ from the center and the corresponding branch. The distance between any two locations  $(x,b_l)$ and $(x',b_{l'})$ in $S3$ is $|x-x'|$, if $l=l'$ and $x+x'$ otherwise.
+
+\begin{theorem}\cite{Fotakis2014}
+Any deterministic strategy proof mechanism for 2-Facility Location game with $n\ge3$ agents in $S_3$ has an unbounded approximation ratio.
+\end{theorem}
+
+The proof again relies on well-separated instances with 3 agents. The idea is that even in those instances with an ``obvious" optimal solution, there is no deterministic and strategyproof way to determine where to place the facility that serves the two nearby agents.
+
+
+\subsection{Circle}
+We know that the tree is an acyclic graph, so the next natural question is what guarantees can we get when we have a circle. Schummer and Vohra \cite{Schummer2002} prove that any strategyproof and onto mechanism for locating one facility on a circle is dictatorial. 
+
+%{?μπορεί και να μη χρειάζεται?}
+The circle metric space $(S^1,d)$, where $S^1 \subset \mathbb{R}^2$ is a circle in the two dimensional Euclidean space and the distance function $d(x,y)$ for $x,y \in S^1$ is the length of the minor arc spanned by $x$ and $y$.  
+
+
+The approximation ratio of any dictatorial mechanism is $n-1$. This can be verified by a simple example. Suppose $n-1$ agents are located at $x$ and one agent is located at $y$. The obvious optimal solution is to place the facility at $x$ with social cost equal to $d(x,y)$. If the dictator is located at $y$ then the social cost of that solution is equal to $(n-1)d(x,y)$  
+
+
+Once again, we can use randomization to get a better approximation ratio. By selecting uniformly at random any location we can achieve constant approximation ratio.
+
+\begin{definition}[Random Dictator]
+The mechanism that selects a location uniformly at random from the reported locations is strategyproof and has an approximation ratio of $2-\frac{2}{n}$.
+\end{definition}
+
+\begin{proof}
+The mechanism is strategyproof because an agent that deviates if selected loses since the location is further away from her ideal location and, if not selected, cannot change the outcome of the mechanism.
+
+For the approximation ratio, let $y$ be the optimal solution. Since the mechanism selects a location uniformly at random the expected social cost is:
+\begin{align*}
+    cost(\x,M(\x)) &= \frac{1}{n} \sum_{i\in N}\sum_{j\ne i} d(x_i,x_j)  \\
+    &=\frac{1}{n} \sum_{i\in N}\sum_{j\ne i} d(x_i,y)+d(y,x_j)\\
+    &=\frac{1}{n} \sum_{i\in N} \Big( (n-1)d(x_i,y) + SC^*-d(x_i,y) \Big)\\
+    &= \frac{1}{n}\sum_{i\in N} \Big( (n-2)d(x_i,y) + SC^* \Big)\\
+    &=SC^* + \frac{n-2}{n}SC^*
+\end{align*}
+\end{proof}
+
+There is also a mechanism for 2-Facilities in a circle. Since the mechanism for one facility in the circle is dictatorial, we cannot expect that to change for 2 facilities. The mechanism works as follows: it places the first facility at the location of the dictator, then it cuts the circle in half and allocates the second facility based on the maximum distance in each semi-circle to the first facility.
+
+
+\begin{definition}[Circle mechanism for 2 Facilities]
+Given a location profile $\vec{x}=(x_1,...x_n)$ the first facility is allocated at $x_1$, the location of the first agent. Let $\hat{x}_1$ denote the antipodal of $x_1$. There are two semi-circles formed with $x_1$ and $\hat{x}_1$ as endpoints, the left circle $\mathcal{L}$ and the right circle $\mathcal{R}$. Let $\mathcal{A}$ and $\mathcal{B}$ be the set of agents on $\mathcal{L}$ and $\mathcal{R}$ respectively. We assume agents at location $x_1$ and $\hat{x}_1$  appear only in $\mathcal{A}$, and thus $\mathcal{A}\cap \mathcal{B}= \emptyset$. Define $d_A = max_{i \in \mathcal{A}} d(x_1,x_i)$ and $d_B = max_{i \in \mathcal{B}} d(x_1,x_i)$. If $\mathcal{B}$ is empty then $d_B = 0$. The second facility is allocated as follows:
+\begin{itemize}
+    \item If $d_A < d_B$ facility $c_2$ is placed on $\mathcal{R}$ with distance $min\{max\{ d_B, 2d_A\},1/2 \}$ to $c_1$ 
+    \item If $d_A \ge d_B$ facility $c_2$ is placed on $\mathcal{L}$ with distance $min\{max\{ d_A, 2d_B\},1/2 \}$ to $c_1$
+\end{itemize}
+\end{definition}
+
+
+
+\begin{theorem}\cite{Lu2010}
+The circle mechanism for the $2$-Facility Location game is strategyproof and has an approximation ratio of at most $n-1$
+\end{theorem}
+
+There is a simple instance for which the circle mechanism has an approximation ration equal to $n-1$. Consider the location profile $\x=(x_1,...,x_n)$, where $d(x_1,x_2)=d(x_1,x_3)=0.1$ and $x_3,...x_n$. But $x_2$ and $x_3$ are in different sides of $x_1$. The optimal solution is to place one facility at $x_1$ (or $x_2$) and the second facility at $x_3$. The cost of the optimal solution is 0.1. But the circle mechanism will place one facility at $x_1$ and the second facility at the left semi-circle at a distance 0.2 to the first. The cost is $(n-1)0.1$
+
+\subsection{Euclidean Space}
+%coordinate wise median location 
+
+For a set of points in a two dimensional Euclidean space the geometric median is the point that minimizes the sum of the distances to the data points. The distance function is the $L_2$-Norm. Formally given a set of points $x_1,...,x_n\in R^m$ the geometric median is:
+\[ med =  \underset{y\in\mathbb{R}^2}{\mathrm{argmin}}  \bigg\{ \sum_{i=1}^n d(x_i,y) \bigg\} \]
+
+
+However, the geometric median can only be approximated. 
+
+
+\begin{definition}
+In the Euclidean metric space with $X = \mathbb{R}^m$, a mechanism f is called a generalized coordinate-wise median voting scheme with k constant points if there exists a coordinate system and points $a_1,...,a_k \in (\mathbb{R}\cup \{-\infty,\infty\})^m$ so that for every profile $\x \in \mathbb{R}^m$ and every $j=1,2,...,m$:
+
+\[M^j(\x) \coloneqq \text{med}(x_1^j,x_2^j,...,x_n^j,a_1^j,...,a_k^j)\]
+
+Where ``med" denotes the median of the subsequent real numbers, and all coordinates are expressed with respect to the given coordinate system. 
+
+\end{definition}
+ 
+
+\begin{lemma}\cite{Peters1992}
+In the Euclidean metric space with $X=\mathbb{R}^2$ and an odd number of agents, a mechanism $M$ is Pareto optimal, anonymous and strategyproof if, and only if, it is a coordinate-wise median scheme with 0 constant points.
+\end{lemma}
+The coordinate-wise median is strategyproof because it handles each coordinate separately. Using the same ideas as in the median on the line, the only way to change the median location is by reporting a location on the other side. But this will move the median further away.   
+
+
+
+\begin{lemma} \cite{Meir2019}
+For $X=\mathbb{R}^m$ and  the social cost objective, the coordinate-wise median mechanism has an approximation ratio of at most $\sqrt{m}$ for any number of agents $n$.
+\end{lemma}
+
+
+
+%\subsubsection{Conclusion}
+
+
+
+
+
+
+
+

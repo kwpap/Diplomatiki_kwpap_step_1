@@ -1,0 +1,8 @@
+%\section{Facility Location}
+\input{2aPreliminaries}
+\input{2bFacilityLine}
+\input{2cFacilityGeneral}
+
+\section{Conclusion}
+
+In this chapter, we look at various settings for the $k$-Facility Location games. However, the goal was the same: the design of a mechanism with desirable proprieties such as strategyproofness, Pareto optimality, anonymity, and a bounded approximation ratio. Unfortunately, in most cases, this was infeasible. Since strategyproofness is a property we always want to have, we need to sacrifice one of the other two properties. We can have strategyproofness and a bounded approximation ratio on the circle metric space, but not anonymity since the mechanisms admit a dictator. On the other hand, in the case of the percentile mechanism, we have strategyproofness and anonymity but not a bounded approximation ratio. The trade-off between strategyproofness and approximability is the most interesting because it shows that those properties are incompatible. Intuitively, to achieve a bounded approximation ratio in the multi-facility setting, we need to place one facility in each optimal cluster; otherwise, we can construct an instance with an unbounded approximation ratio. But, as we saw for 3-Facility Location games with 4 agents, there is no deterministic strategyproof way to identify the optimal clusters and place the facilities even in well-separated instances.

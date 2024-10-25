@@ -1,0 +1,84 @@
+\begin{proof}
+The mechanism returns the optimal solution, so we only need to prove that it is strategyproof. Let any $(2+\sqrt{3})$-stable instance with optimal clustering $\CC = (C_1,..., C_k)$. Suppose agent $x_i \in C_i$ reports a location $y$ in order to decrease her cost. Let $\y = (\x_{-i},y)$ be the instance after the deviation, and $\Y$ be its optimal clustering.There are three possible deviations:
+\begin{enumerate}[1.]
+    \item If $y$ is in the area of $C_i$, then the clustering structure would not change. But the median location for one facility on trees is strategyproof and thus she cannot benefit from such deviation.
+    \item If $y$ is a singleton cluster in $\Y$, then the mechanism would not allocate any facilities, making her cost infinite times larger.
+    \item If $y$ is cluster together with agents from different clusters in $\CC$. 
+\end{enumerate}
+
+We will only focus on the third case since this is the only way she could benefit. In order for the mechanism to be strategyproof, we need to show that either the deviation is not profitable ($d(x_i,\CC) < d(x_i,\Y)$) or that the cluster separation property is violated and no facilities are allocated. 
+
+We have that $y$ is clustered together with agents belonging in one or two clusters of $\CC$, let that clusters be $C_j$ and $C_l$. In $\Y$ the number of facilities serving agents from $C_j\cup C_l \cup \{y \}$ are at least the number of facilities serving agents from $C_j\cup C_l$ in $\CC$, because both $\CC$ and $\Y$ are optimal clusterings. Suppose one facility is placed to an agent in $C_j$. The original instance is $2+\sqrt{3}$-stable, so by the separation property we have that every agent is closer to every agent from her own cluster that to any other agent from a different cluster. This implies that no agent in $C_j$ is served by a facility in $\x\setminus C_j$. 
+ 
+\begin{description}
+\item[Case 1:] \textit{ $y$ is not allocated a facility in $\Y$}: This can happen in one of two ways:
+    \begin{description}
+        \item[Case 1a:] $y$ is clustered together with some agents from cluster $C_j$ and no facility placed in $C_j$ serves agents in $\x\setminus C_j$ in $\Y$. 
+        
+        \item[Case 1b:] $y$ is clustered together with some agents from a cluster $C_j$ and at least one of the facilities placed in $C_j$ serve agents in $\x\setminus C_j$ in $\Y$.
+\end{description}
+        
+\item[Case 2:] \textit{$y$ is allocated a facility in $\Y$}. This can happen in one of two ways:
+
+ \begin{description}
+        \item[Case 2a:] $y$ only serves agents that belong in $C_j$ (by optimality, $y$ must be the median location of the new cluster, which implies that either $y$ is not in the area of $C_j$ and only serves one agent from $C_l$ or $y$ is in the area of $C_j$ and serves multiple agents).
+        \item[Case 2b:] In $\Y$, $y$ serves agents that belong in both $C_{j-1}$ and $C_j$.
+\end{description}
+\end{description}
+
+We first consider the cases 1a and 2a, namely the cases where in $\Y$ there is a facility in $C_j$ that only serves agents in $C_j$. If there is only one facility allocated in $C_j\cup\{y\}$ then both clusterings $\CC$ and $\Y$ have the same structure, making $x_i$'s deviation not profitable. So, in $\Y$ there must be two facilities in $C_j\cup\{y\}$. Suppose there is a location $y$ such that the deviation is profitable, $d(x_i,\CC) > d(x_i,\Y)$. Since $\Y$ is the optimal clustering for $\y$ we have that:
+\begin{align*}
+    cost(\y,\CC) &> cost(\y,\Y) \iff \\
+    cost(\x,\CC) + d(y,\CC) - d(x_i,\CC) &> cost(\x,\Y) + d(y,\Y) - d(x_i,\Y) \iff \\
+    d(y,\CC) - d(y,\Y) &> cost(\x,\Y) - cost(\x,\CC)  + d(x_i,\CC) - d(x_i,\Y)
+\end{align*}
+
+Since $i$'s deviation to $y$ is profitable ($d(x_i,\CC) - d(x_i,\Y)>0$) we get:
+
+\begin{align}
+\begin{split}
+d(y,\CC) - d(y,\Y) &> cost(\x,\Y) - cost(\x,\CC)\label{eq:gainy} \\
+&= cost(C_j,\Y)-cost(C_j,\CC)-cost(\x\setminus C_j,\Y)-cost(\x\setminus C_j,\CC)
+\end{split}
+\end{align}
+
+
+    
+%{???}
+
+We now consider a valid $\gamma$-perturbation $\xx$ of the original instance $\x$: We first remove from the instance all the agents from $C_j$ and all the edges connected to them. This may break the instance in more than one connected components. By observation \ref{obs:subtrees}, we have that there is no cluster whose agents belong in more than one connected components. Then, we scale down by $\g$ all the distances between consecutive agents that are in the same connected component. By stability, the clustering $\CC$ remains the unique optimal clustering for $\xx$ therefore $cost(\xx,\CC) < cost(\xx,\Y)$. Since, in cases 1a and 2a, the facility allocated to an agent of $C_j\cup \{y\}$ does not serve agents in $\x \setminus C_j$ in $\CC$ and $\Y$ we have:
+\begin{align*}
+ cost(\xx, \CC) = cost(C_j,\CC)+\frac{1}{\gamma}cost(\x\setminus C_j,\CC)\\
+ cost(\xx, \Y) = cost(C_j,\Y)+\frac{1}{\gamma} cost(\x\setminus C_j,\Y)
+\end{align*}
+Using that $cost(\xx,\CC) < cost(\xx,\Y)$ and  that for any $\gamma\ge2$ it holds $\frac{1}{\gamma} \le 1-\frac{1}{\gamma} $ we get:
+\begin{align}
+   cost(C_j,\CC) - cost(C_j,\Y) &< \frac{1}{\gamma} \left( cost(\x\setminus C_j,\Y) - cost(\x\setminus C_j,\CC) \right)\label{eq:costIneq1} \\
+    &\le (1 -\frac{1}{\gamma}) \left( cost(\x\setminus C_j,\Y) - cost(\x\setminus C_j,\CC) \right) \label{eq:costIneq}
+\end{align}
+
+Rearranging (\ref{eq:costIneq}) we get:
+\begin{equation}
+    cost(\x,\Y) - cost(\x,\CC) > \frac{1}{\gamma}\left( cost(\x\setminus C_j,\Y) - cost(\x\setminus C_j,\CC) \right)\label{eq:lowerBcostY}
+\end{equation}
+
+%{?????????????}
+ 
+%To prove the previous inequality it suffice to show that the decrease in the cost of $y$ due to the additional facility in $\Y$ is at most the decrease in the cost of an agent from $C_j$ in $\Y$.
+We know that there are at least two facilities serving $C_j\cup\{y\}$. Let $Y_{j_1}$ be the cluster that contains $y$ and some agents of $C_j$. In case 1a, let $x_j \in Y_{j_1}$ be the agent that has the facility. Then the decrease in the cost of $y$ due to the additional facility in $\Y$ is at most the decrease in the cost of an agent from $C_j$ in $\Y$. In case 2a, where agent $y$ has a facility, by optimally of $\Y$, we have that $y$ is the median of the new cluster. If we view $c_j$ as the root of the tree then $y$ has at least one agent from $C_j$ as a child; otherwise it would not be the median location. Therefore, the decrease in the cost of $y$ is at most the decrease in the cost of an agent from $C_j$ in $\Y$. (The case where $y$ is not in the area of $C_j$ and only serves one agent is equivalent to placing the facility on the other agent and serving $y$ from there). In both cases, we can bound from below the total decrease in the cost of $C_j$ due to the additional facility.
+
+\begin{align*}
+   d(y,\CC)-d(y,\Y)  &\le cost(C_j,\CC)-cost(C_j,\Y) \xRightarrow{(\ref{eq:costIneq1})}\\
+   &\le \frac{1}{\gamma} \left( cost(\x\setminus C_j,\Y) - cost(\x\setminus C_j,\CC) \right) \xRightarrow{(\ref{eq:lowerBcostY})}\\
+   &< cost(\x,\Y) - cost(\x,\CC)
+\end{align*}
+
+Which contradicts equation (\ref{eq:gainy}).
+
+
+%---------------------------------------------------------------------------------------------
+
+\bigskip
+
+Now we consider cases 1b and 2b, namely the cases where some agents of $C_j$ are clustered with agents of $C_l$. Let $Y_{j_1}$ and $Y_{j_2}$ denote the clusters of $\Y$ that include all the agents of $C_j$. Let $Y_{j_1}$ be the cluster that has agents from $C_j$ and $C_l$. Consider $x_1 \in Y_{j_1} \cap C_j$, $z\in Y_{j_1} \cap C_l$ and $x_2 \in Y_{j_2}\cap C_j$. By the cluster separation property $d(x_1,z) \ge D_{x_1}$, where $D_{x_1}$ is the largest intra-cluster distance from $x_1$. Since $x_1$ and $x_2$ belong in the same cluster in $\CC$ we have that $d(x_1,x_2)<D_{x_1}$. Therefore, $d(x_1,z)>d(x_1,x_2)$ which violates the cluster separation property, since an intra-cluster distance is greater than an inter-cluster distance. In this case, the mechanism will not allocate any facilities. 
+\end{proof}

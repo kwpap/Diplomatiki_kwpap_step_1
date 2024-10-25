@@ -1,0 +1,118 @@
+
+In this chapter, we will present the main results of the Facility Location Problem in more detail. To better understand the problem, we will start with some useful definitions from the relevant field of Social Choice. Then we will formally define the setting and the basic concepts of \emph{Algorithmic Mechanism Design}.
+
+\section{Social Choice and Single Peaked Preferences}
+
+Social choice theory is the study of collective decision processes and procedures. How can a group of individuals choose a winning outcome (e.g., policy, electoral candidate) from a given set of options? In the most general setting there is a set $N$ of $n$ agents and a set $\A$ of alternatives. Each agent has a private order of the alternatives $\succ_i$ over the alternatives in $\A$. Let $L$ be the set of all linear orders of $\A$. A \emph{social choice function} $f:L^n \rightarrow \A$ maps the agents' preferences to a single alternative. A social choice function must satisfy the following properties:
+\begin{definition}[Unanimous]
+A social choice function $f$ is unanimous if, when all player prefer a certain outcome more than anything else, then that outcome must be the alternative chosen by the mechanism. That is, if $\exists a \in\A$ such that $\forall b\in\A$ and $i \in  N$, $a \succ_i b$ then $f(\succ_1,...,\succ_n) =a$.
+\end{definition}
+\begin{definition}[Onto]
+ A social choice function $f$ is onto if any alternative can be reached given the appropriate preference profiles That is, $\forall a \in\A$, $\exists \x\in L^n$ such that $f(\x) = a$.
+\end{definition}
+\begin{definition}[Pareto Optimal]
+ A social choice function $f$ is Pareto optimal if no other alternative is more preferred by every agent than the alternative chosen by the mechanism. That is, if $f(\x)=a$ for a $\x\in L^n$, then $\nexists b\in\A$ such that $b\succ_i$, $\forall i \in N$.
+\end{definition}
+\begin{definition}[Strategyproof]
+A social choice function $f$ is strategyproof if no agent can change the outcome to a more preferable by misreporting her preferences. That is, for all preference profiles $\succ_1,...,\succ_n$ and any agent $i$, and any alternative preference $\succ_i'$: $f(\succ_1,...,\succ_i,...,\succ_n) \succ_i f(\succ_1,...,\succ_i',...,\succ_n)$.
+\end{definition}
+
+Our goal is to find the best possible outcome given the agents' preferences. The first three properties ensure that the selected outcome is efficient, namely desirable for all the agents. The agents, on the other hand, are selfish and strategic, aiming to maximize their utility. This is why, if we want the social function to be fair, the fourth property is crucial.
+
+An other important property of social choice function is \emph{anonymity}, namely that the selection is based on the preference profiles only and not on the agent reporting it. This implies that all agents count the same in decision making.
+\begin{definition}[Anonymous]
+A social choice $f$ is anonymous if for all permutations $\pi$ and all profiles $(\succ_1,...,\succ_n)\in L^n$: $f(\succ_1,...,\succ_n) =f(\succ_{\pi(1)},...,\succ_{\pi(n)})$ 
+\end{definition}
+
+There are social choice functions that do not satisfy anonymity. For example, a \emph{dictatorial} social choice function that always selects the most preferred alternative for a particular agent, ignoring the preference profiles of the rest of the agents. We will call this agent a dictator. A dictatorial social choice function is strategyproof and Pareto optimal, but not fair because not all agents count the same.
+
+
+\begin{definition}[Dictator]
+An agent $i$ is a dictator in a social choice function $f$ if for all $\succ_1,...,\succ_n\in L$: $f(\succ_1,...,\succ_n)=a$ where $a\succ_i b, \forall b\in \A$ with $b\ne a$.
+\end{definition}
+
+
+
+A simple and intuitive example of a social choice function is the majority vote. If there are only two alternatives then the majority is strategyproof. If there are $3$ or more alternatives, however, the majority is not strategyproof. An agent may change her preference profile to prevent her least liked option from being selected. Unfortunately, there is an impossibility result that states we cannot do anything better than a dictatorship when there are more that 3 alternatives. 
+
+
+
+\begin{theorem}[Gibbard \cite{Gibbard1973} - Satterthwaite \cite{Satterthwaite1975}]
+Let $f$ be an incentive compatible
+social choice function onto $\A$, where $\A \ge 3$, then $f$ is a dictatorship.
+\end{theorem} 
+
+One way to overcome the impossibility result of the previous theorem is to introduce payments into the model. There are many strategyproof mechanisms with money. The idea is that if an agent misreports in an attempt to benefit, the extra payment from the mechanism will be more than the actual decrease in the cost. However, as we mentioned before, we are interested in applications where payments are not an option. So, in order to overcome the impossibility result without money, we are going to restrict the domain of possible preference profiles to single-peaked preferences. Preferences are said to be single-peaked if the alternatives can be represented as points on a line, and each agent has a unique most preferred point (``"peak" preference) and points that are further from her peak are preferred less. It is natural to assume that the agents have single-peaked preferences for many problems. For example, in the Facility Location setting, where the government wants to place public facilities, any agent would prefer the facility closest to her ideal location since any other facility will only increase the transportation cost.
+
+
+\begin{definition}[Single-Peaked Preferences]
+Preferences are said to be single-peaked if the alternatives can be represented as points on a line, and there exists an alternative $a \in \A$ (the peak) such that if $x<y<a \implies y \succ x$ and if  $a<x<y \implies x\succ y$. 
+\end{definition}
+
+Moulin \cite{Moulin1980} showed that if all the agents have single-peaked preferences, there exists a strategy-proof mechanism that only depends on the peak of each agent.
+
+
+\begin{theorem}
+Assuming single peakedness, a rule $f$ is strategyproof, onto and anonymous if and only if there exists $a_1,a_2,...,a_n\in [0,1]$ such that for all peaks $(x_1,...,x_n)\in \mathbb{R}$.
+\end{theorem}
+
+
+
+
+\section{Preliminaries for Facility Location Games}
+
+By the definition of single-peaked preferences we can see that a profile is single-peaked if for any two points on the same side of the peak the agent always prefers the one which is closer to her peak. But there is no way to now by ``how much" agent $i$ prefers alternative $x$ over $y$. From now on, we are going to assume that the agents rank the all the alternative locations based on the distance from their peak.
+
+
+\begin{definition}[Facility Location]
+Let $N= \{1,..,n\}$ be a set of agents. The agents are located in a metric space $(X,d)$, where $d:X \times X \rightarrow  \mathbb R_{\ge 0} $ is the distance function. The function $d$ is a metric on $X$ satisfying $d(x,x)=0$ for all $x\in X$, $d(x,y)=d(y,x)$ for all $x,y\in X$ (\emph{symmetry}) and, $d(x,z)\le d(x,y)+d(x,z)$ for all $x,y,z\in X$ (\emph{triangle inequality}). Each agent $i\in N$ has a private location $x_i \in X$. We refer to the tuple $\x=(x_1,...x_n)$ as the \emph{location profile} or \emph{instance}.
+\end{definition}
+
+
+For a location profile $\x$ and an agent $i$, let $\x_{-i}$ denote the tuple $\x$ without the coordinate $x_i$. Similarly, for a non-empty set $S$ of indices, let $\x_S=(x_i)_{i\in S}$ be the locations of agents in $S$ and $\x_{-S}=(x_i)_{i\notin S}$ the tuple $\x$ without the location of agents in $S$.  
+
+Each agent reports her ideal location to the mechanism $M$. A \emph{deterministic mechanism} $M$ for $k$-Facility Location maps an instance $\x$  to a $k$-tuple $\vec{c}=(c_1,...,c_k)\in X^k$. We let $M(\x)$ denote the outcome of $M$ in instance $\x$. Similarly, a \emph{randomized mechanism} $M$ maps an instance $\x$ to a probability distribution over $k$-tuples $(c_1,...,c_k)\in X^k$.
+
+For a location profile $\x$ and a mechanism $M$, we define the \emph{connection cost} of agent $i$ as the minimum distance of her private location to the closest facility, $cost(x_i,M(\x)) = min_{1\le j \le k} \{d(x_i,c_j) \}$. The \emph{social cost} of a mechanism $M$ is the total distance of the agents' locations to the nearest facility, $cost(\x,M(\x)) = \sum_{i=1}^n d(x_i,M(\x))$. 
+%The \emph{maximum cost} of $M$ is the maximum distance of an agent to her closest location, $MC(\x,M(\x)) =  max_{i\in N } \{ d(x_i,M(\x))\}$
+
+Since each agent is strategic, it is easy to see that the goal of each agent is different from the mechanism's. The mechanism's objective is to minimize the social cost, but each strategic agent seeks to minimize its connection cost. This divergence between the two goals motivates an agent to manipulate the mechanism by reporting a false location to achieve a better connection cost. This is why strategyproofness is a crucial property that any mechanism should satisfy.
+
+\begin{definition}[Strategyproof]
+A mechanism is strategyproof if for all location profiles $\x$, any agent $i$, and all locations $y$: 
+\[cost(x_i,M(x)) < cost(x_i, M(x_{-i},y))\]
+\end{definition}
+
+A mechanism can also be \emph{group strategyproof} if for any coalition misreporting their location simultaneously, at least one does not benefit. Formally: 
+ 
+\begin{definition}[Group Strategyproof]
+A mechanism is strategyproof if for location profiles $\x$, all coalitions $S \subset N$ and all location profiles $\xx = (\x_{-S},x_S')$, there exists an agent $i\in S$ such that
+\[ cost(x_i,M(\x)) \le cost(x_i,M(\xx))\]
+\end{definition}
+
+\begin{definition}[Image Set]\label{imageSet}
+For any mechanism $M$, the \emph{image set} of agent $i$ with respect to a location profile $\x_{-i}$ is the set of all the possible facility locations the agent can obtain by varying her reported location. Formally:
+\[ I_i(\x_{-i}) = \{a \in  X: \exists \;y \in X \; with \; M(\x_{-i},y)\}\]
+\end{definition}
+
+We can see the image set as the power an agent has on the mechanism. Any strategyproof mechanism $M$ always outputs some location in $I_i(\x_{-i})$ that is closest to the reported location as shown in the following lemma.
+
+\begin{lemma}\label{imageSetLemma}
+Let $M$ be a strategyproof mechanism for the $k$-Facility game. For every location profile $\x \in X^n$ and any agent $i\in N$ we have:
+\[ cost(y,M(\x_{-i},y)) = \inf_{a\in I_i(\x_{-i})} \{d(a,y)\}\]
+\end{lemma}
+
+\begin{proof}
+For the location profile $\xx=(\x_{-i},y)$ let $a\in M(\xx)$. Assume for contradiction that exists $a^*\in I_i(\x_{-i})$ such that $d(a^*,y) < d(a,y)$. By the definition of the image set there exists a $y^*$ such that $a^* \in M(\x_{-i},y^*)$. Then, if agent $i$ is located at y she can benefit by misreporting to $y^*$ lowering her connection cost from $cost(y, M(\x_{-i},y))$ to $d(a^*,y)$. This contradicts the assumption that $M$ is strategyproof
+\end{proof}
+
+We can extend the previous definition of image set from a single agent to a group of agents. For a given mechanism $M$ we define the image set of agents in a subset $S$ with respect to a location profile $\x_{-S}$ as the set of all possible facility locations they can obtain by varying their reported location:
+
+\[ I_S(\x_{-S}) = \{a \in X: \exists\;\vec{y} \in X^{|S|} \; with \; M(\x_{-S},\vec{y})\}\]
+
+We can also extend the previous lemma to hold for partial group strategyproof mechanisms, when all agents in the coalition report the same location.
+\begin{lemma}
+Let $M$ be a strategyproof mechanism for the $k$-Facility Location game. For every location profile $\x \in X^n$, any non-empty set of agents $S\subset N$, $\vec{y}$ and $\vec{y}=(y,...,y)$ we have:
+\[ cost(y,M(\x_{-S},\vec{y})) = \inf_{a\in I_S(\x_{-S})} \{d(a,y)\}\]
+\end{lemma}
+

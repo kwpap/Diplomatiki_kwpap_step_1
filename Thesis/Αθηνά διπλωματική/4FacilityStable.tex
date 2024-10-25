@@ -1,0 +1,128 @@
+%\section{Facility Location in Stable Instances}
+
+In the previous section we saw that when we focus on the average instances of a problem, namely the "real-world" instances, we can avoid the hardness results and design better algorithms. Since clustering and facility location games are closely related problems, in this section we are going to see how perturbation stability in $k$-facility location games affects the design of mechanisms. Can we design strategyproof mechanisms with a bounded approximation ratio using the properties of stability? We have seen that in the simple setting where we want to locate $2$ facilities in the line any deterministic mechanism has $(n-1)$-approximation ratio because the agents have the power to change the clustering by misreporting their preferred location. So naturally it is very interesting to investigate the power any agent has in changing the structure of the clustering when the instance is stable and the clusters are well defined.
+
+
+\section{Facility Location in Trees}
+
+
+In this section, the agents are located in a Tree. With out loss of generality, we can view the tree with the location of agent $x_1$ as the root. We first need to adapt the definition of perturbation stability for the Facility Location games.
+
+\begin{definition}[$\g$-Perturbation and $\g$-Stability]
+Let $N$ be a set of $n$ agents located on a tree $(T,d)$, where $d$ is a metric distance function. Let $\x=(x_1,...,x_n)$ be a location profile. Let $\vec{z}= (z_1,...,z_m)$ denote the intersections on the tree, we will refer to them as phantom agents. A location profile $\xx=(x_1',...,x_n') \in (T,d')$ is a $\g$-perturbation of $\x$, for some $\g$, if for every pair of consecutive agents $x$ and $y$ (agents $x$ and $y$ can be any of $x_i-z_j$,$x_i-x_j$ or $z_i-z_j$ pairs) it holds:
+\[ d'(x,y) \in  \bigg[\frac{1}{\g}d(x,y),d(x,y) \bigg]\]
+ 
+A $k$-Facility Location instance $\x$, with optimal clustering $\CC=(c_1,...,c_k)$, is $\g$-(perturbation) stable, if for every $\g$-perturbation $\xx$ of $\x$ $\CC$ remains the unique optimal $k$-clustering.
+\end{definition}
+
+
+In order to properly define it we are going to assign phantom agents $\vec{z}=(z_1,...z_m)$ on every intersection of the tree. A $\g$-perturbation $\xx$ of an instance $\x$ can be obtained by scaling down any subset of pairs of consecutive agents, including the phantom agents, by a factor of at most $\g$. We can see that every valid metric-perturbation (Definition \ref{metricPer}) of the instance $\x$ (only agents' locations) can be performed by the process described above. Note that the distance between any pair of actual agents $x_i$ and $x_j$ is scaled down by a factor of at most $\g$ because the length of every pair of consecutive agents in the unique path that connects them is scaled down by a factor of at most $\g$. Moreover, the perturbed space is metric because the distance between $x_i$ and $x_j$ is the length of the unique shortest path between $x_i$ and $x_j$. Therefore, this class of $\g$-stable instances includes the class of $\g$-metric stable instances.  This notion of $\g$-perturbation captures all the perturbations that can be depicted on the same tree.
+
+%We can perform every metric-perturbation but also perturbations that are not allowed by the definition for the clustering. For example we could scale down only the distance between an agent $x_i$ and a phantom agent $z_i$. 
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=8cm]{Images/Perturbation1.png}
+    \caption{An example of a location profile $\x$ (black points) with phantom agents $\vec{z}$ on the intersections (gray points)}
+    \label{fig:per}
+\end{figure}
+
+
+
+In the previous section, we showed that in general metric spaces in $\g$-stable instances, with $\g\ge2$, every cluster in the optimal solution forms a subtree in the minimum spanning tree. Similarly, we can show that this property holds when the underline metric space is a tree $T$. 
+\begin{obs}\label{obs:subtrees}
+Let $\x$ be a $\g$-stable, with $\g\ge2$, then in the optimal clustering $\CC$ every cluster $C_i$ forms a subtree.
+\end{obs}
+
+\begin{proof}
+For contradiction suppose there exist a cluster $C_j$ that does not form a subtree, like in Figure \ref{fig:subtree}. Since the instance is stable we have that $d(x_{j_2},x_i)>(\g-1)d(x_{j_2},c_j)$. We also have that the distance between any two points is equal to the length of the unique path that connects those points, thus $d(x_{j_2},c_j) = d(x_{j2},x_i) + d(x_i,c_j)$. Using the previous inequality we get $d(x_{j_2},c_j)> (\g-1)d(x_{j2},c_j) + d(x_i,c_j) \implies d(x_i,c_j) < (2-\g) d(x_{j_2},c_j)$. When $\g\ge2$ the distance between $d(x_i,c_j)$ is negative but every distance function is non-negative.
+\end{proof}
+
+  
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=10cm]{Images/FCStableTree.png}
+    \caption{Example of a cluster that does not form a subtree.}
+    \label{fig:subtree}
+\end{figure}
+
+
+
+As we mentioned before, perturbation stability implies that there is a structure in the original location profile. In other words, the optimal solution is resilient to minor changes. In the facility location setting, the agents are strategic, which means they are motivated to misreport in order to reduce their connection cost. The idea is to see how much power a strategic agent has to change the outcome of a mechanism with a single deviation now that the instance has a well-defined optimal solution. Let us point out that an agent's deviation is entirely different from a perturbation of an instance. An agent can misreport at any location in the metric space, which may result in a non-stable instance. However, after a perturbation, the distance between any two agents is at most $\g$ times smaller than in the original instance. 
+
+%\subsection{The Optimal solution is strategyproof for $(2+\sqrt{3})$-stable instances}
+\subsection{The Optimal solution is strategyproof for \texorpdfstring{$(2+\sqrt{3})$}-stable instances}
+
+
+
+\begin{algorithm}[ht]
+\label{algorithm:optimal}
+\DontPrintSemicolon
+\SetAlgoLined
+\LinesNumbered
+\KwResult{An allocation of $k$-facilities}
+\KwIn{A $k$-Facility Location instance $\x$.}
+Compute the optimal clustering
+ $(C_1, \ldots, C_k)$. Let $c_i$ be the median point of each cluster $C_i$.\;
+
+ \uIf{\big($\exists i \in [k]$ with $|C_i|=1$\big) or \big($\exists \;x_i,x_i'\in Ci$ and  $x_j,x_j'\in C_j$ with $\max\{ d(x_i,x_i'), d(x_j,x_j')\} \geq d(x_i,x_j) $\big)}{
+ \KwOut {``FACILITIES ARE NOT ALLOCATED''.}}\uElse{
+ 
+\KwOut {The $k$-facility allocation $(c_1, \ldots, c_k)$ \;}}
+
+\caption{\textsc{Optimal}}
+\end{algorithm}
+
+We next show that the the mechanism that returns the optimal solution is strategyproof for $(2+\sqrt{3})$-stable instances whose optimal clustering does not include singleton clusters. We need to exclude the stable instances with singleton clusters in their optimal solution from the mechanism because there is always an agent that can benefit by becoming a singleton cluster. Consider a $\g$-stable instance $\x$. Suppose an agent $x_i \in C_i$ reports a location $x'$ far away from any location in $\x$ creating a different instance $\x\,'$. Since the mechanism allocates the facilities optimally $x'$ becomes a singleton cluster. Now the mechanism has to allocate $k-1$ facilities to the remaining agents, which means two clusters from the original optimal solution merge. We can always create an instance in which cluster $C_i$ merges with its neighbor cluster $C_j$ which makes the new median closer to $x_i$. The main problem is that the new instance $\x\,'$ is also $\g$-stable as the original and there is no way to determine whether or not there is a deviation. 
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Images/singleton.png}
+    \caption{Singleton Deviation}
+    \label{fig:singleton}
+\end{figure}
+
+It is also important to remember that we cannot efficiently estimate the stability factor of a given instance. This is why we rely on the properties that derive from stability, since the properties are necessary but not sufficient for stability. That also means that the mechanism serves instances that are non-stable but satisfy the cluster separation property. We can efficiently check if the cluster separation property is violated between any to clusters. Since every cluster in the optimal solution forms a subtree, we only have to check if any of the $k-1$ edges between 2 different clusters violates the cluster separation property.
+
+
+\begin{theorem}
+The \textsc{Optimal} Mechanism applied to $(2+\sqrt{3})$-stable instances of $k$-Facility Location without singleton cluster in their optimal clustering is strategyproof and minimizes the social cost. 
+\end{theorem}
+
+
+%proof optimal
+\input{4optimal}
+
+
+\iffalse
+\section{Lower bound on stability }
+
+
+
+
+\begin{theorem}
+For every $k\ge3$ and $\delta>0$, any deterministic anonymous strategy proof mechanism for $(\sqrt{2}-\delta)$-stable instances of $k$-facility location on the line with $n\ge k+1$ agents has an unbounded approximation ratio.
+\end{theorem}
+\fi
+%----------------------------------------------------------------------------------------------
+
+%\section{General metrics}
+%\subsection{The \textsc{Random} mechanism is strategyproof for 5-Stable instances}
+
+%\input{4random}
+
+\section{Conclusion and Future Work}
+Remember that without making any assumptions about the instance, we cannot design strategyproof mechanisms with a bounded approximation because we cannot identify the optimal clusters in a strategyproof way. However, if we focus on perturbation stable instances, the structure helps us avoid that problem. Now we can efficiently find the optimal solution and place the facilities within each optimal cluster. We also showed that the strategic agents do not have the power to change the structure of the instance for a stability factor $\g\ge2+\sqrt{3}$ because all the inter-cluster distances are greater than the intra-cluster distances. This allows us to reduce the multi-facility location games on stable instances to a one-facility location game and use all the known results.
+
+In the \textsc{Optimal} mechanism, we saw that we have to exclude the instances that contain singleton clusters because an agent can deviate to a location far away and bring a facility closer to her true location (singleton deviation). One way to overcome this problem is to limit the range of possible locations each player can declare based on their actual locations. In this case, we must also see how stable the instance must be in order for the optimal solution to be strategyproof.
+
+Another direction is to assume a ``weaker" notion of stability in the instances. In the literature, $(\g,\epsilon)$-perturbation stability was also proposed, which states that at most $\epsilon n$ total points can swap into or out of each cluster under any $\g$ perturbation. These instances are more likely to describe ``real world"  instances. However, the non-stable points may be harder to handle.
+
+
+
+
+
+
+
