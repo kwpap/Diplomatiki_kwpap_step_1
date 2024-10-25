@@ -1625,9 +1625,10 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
   #country <-"Hungary"
   weights <- rep(1,8)
   old <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
+  r_squared <- summary(old)$r.squared
   step <- 10
   low <- 0
-  high <- 1000
+  high <- 50
   for (i in 1:100){
     #index <- i %% 8 +1
     index <- sample (c(1:8), size=1)
@@ -1645,6 +1646,7 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
           old <- lowered
           worth_doing_it <- TRUE
           weights[index] <- weights[index] - step
+          r_squared <- summary(old)$r.squared
         }
       }
       if (weights[index]<high){
@@ -1655,9 +1657,17 @@ find_the_better_best_combo_with_one <- function(country = "Hungary", year = 2015
           old <- raised
           worth_doing_it <- TRUE
           weights[index] <- weights[index] + step
+          r_squared <- summary(old)$r.squared
         }
       }
     }
+    shit <- data.frame(type = c(paste("Population: ", weights[1]), paste("GDPpc: ", weights[2]), paste( "Inflation: ", weights[3]), paste("Agriculture: ", weights[4]), paste("Industry: ", weights[5]), paste("Manufacturing: ", weights[6]), paste("Total Energy Supply: ", weights[7]), paste("Verified Emissions: ", weights[8]))
+                       , value = weights)
+    
+    print(ggplot(shit, aes(x = type, y=value)) +
+            geom_bar(stat = "identity") + 
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+            ggtitle(paste("R^2 = ", r_squared)))
   }
   # print(weights)
   # print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
@@ -1733,34 +1743,41 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   #@
   #make a heatmap of the countries and their R^2 values for each year
 
-  #gg <- dat[,-c(12,13)]
-  #matrixgg <- as.matrix(gg)
-  #heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
+  gg <- dat[,-c(12,13)]
+  matrixgg <- as.matrix(gg)
+  heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
 }
 
 visualize_population <- function(){
   will_normalise <- FALSE
-  pop <- data.frame(matrix(ncol = 3))
-  colnames(pop) <- c("Country", "Population","Year")
-  for(i in (1:11)){
+  pop <- data.frame(Country = character(), Population = numeric(), Year = integer(), stringsAsFactors = FALSE)  # Correctly initialize an empty data frame
+  for (i in 1:11) {
     print(i)
-    gg <-read_data(year = 2007+i)[-c(2,3,5,6,7,8,9)]
-    for (j in 1:length(gg[,1])){
-      pop[nrow(pop) + 1,] <- c(gg$GEO[j], as.numeric(gg$Population[j]), 2007+i)
+    gg <- read_data_2(year = 2007 + i)
+    
+    # Find the columns we need: the first column and the "Population" column
+    population_col <- grep("Population", colnames(gg), ignore.case = TRUE)  # Find column with "Population" in the name
+    gg <- gg[, c(1, population_col)]  # Keep only the first and the Population columns
+    
+    
+    # Iterate over rows in gg
+    for (j in 1:nrow(gg)) {
+      # Add a new row to pop with correct column values
+      pop[nrow(pop) + 1, ] <- c(gg$GEO[j], as.numeric(gg$Population[j]), (2007 + i))
     }
   }
-  pop <- pop[-c(1),]
+ # pop <- pop[-c(1),]
   
- # ggplot(data = pop) + 
- #   geom_point(aes(x = Country, y = Population),fill = 'grey') + 
-  #  labs(title = "Population vs Country", x = "Country", y = "Population") +
-  #  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  print(sapply(pop, class)) 
+ #print(ggplot(data = pop) + 
+  # geom_point(aes(x = Country, y = Population),fill = 'grey') + 
+ # labs(title = "Population vs Country", x = "Country", y = "Population") +
+# theme(axis.text.x = element_text(angle = 45, hjust = 1)))
+
   
   # Syntax
   pop$Population = as.numeric(as.character(pop$Population))
-  
-  
+  pop$Year = as.numeric(as.character(pop$Year))
+
   ggplot(pop, aes(x=Country, y=Population)) + 
     geom_boxplot(
       # custom boxes
@@ -1776,14 +1793,13 @@ visualize_population <- function(){
     )+
     labs(title = "Population vs Country", x = "Country", y = "Population in Millions")+
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  
 
   # pop[which(pop$Country == "Greece" | pop$Country == "Belgium"),]
   
-  ggplot(pop, aes(x= Year, y = Population, group = Country))+
+  print(ggplot(pop, aes(x= Year, y = Population, group = Country))+
     geom_point(aes(colour = Country))+
     geom_line (aes(colour = Country)) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)))
   
   
   #Let's make some latex tables
@@ -1796,20 +1812,24 @@ visualize_population <- function(){
     }
     po[,i] <- as.numeric(as.character(po[,i]))
   }
-  for(i in 1:length(list_eur_countries)){
-    po[i,12] <- min(po[i,1:11])
-    po[i,13] <- quantile(po[i,1:11], 0.25)
-    po[i,14] <- median(as.numeric(po[i,1:11]))
-    po[i,15] <- quantile(po[i,1:11], 0.75)
-    po[i,16] <- max(po[i,1:11])
-    po[i,17] <- sd(po[i,1:11])
-
+  for(i in 1:length(list_eur_countries)) {
+    # Convert po[i, 1:11] to a numeric vector to avoid the data frame issue
+    values <- as.numeric(po[i, 1:11])
+    
+    po[i, 12] <- min(values, na.rm = TRUE)
+    po[i, 13] <- quantile(values, 0.25, na.rm = TRUE)
+    po[i, 14] <- median(values, na.rm = TRUE)
+    po[i, 15] <- quantile(values, 0.75, na.rm = TRUE)
+    po[i, 16] <- max(values, na.rm = TRUE)
+    po[i, 17] <- sd(values, na.rm = TRUE)
   }
+  
   po2 <- po[,-c(1:11)]
   po3 <- po2/1000000
   #<<results=tex>>
   #  xtable(po3)
   #@
+  return (po)
 }
 
 visualize_Manufacturing  <- function(){
