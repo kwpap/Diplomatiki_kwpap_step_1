@@ -1746,289 +1746,260 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   gg <- dat[,-c(12,13)]
   matrixgg <- as.matrix(gg)
   heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
+  return(dat)
+  }
+
+
+# Main function to visualize attribute trends and summarize data
+visualize_attribute <- function(attribute_name, year_range = 2008:2018) {
+  # Initialize an empty data frame to store data over years
+  attribute_data <- data.frame(Country = character(), Value = numeric(), Year = integer(), stringsAsFactors = FALSE)
+  
+  # Load and combine data for each year
+  for (year in year_range) {
+    yearly_data <- read_data_2(year = year)
+    attribute_col_index <- grep(attribute_name, colnames(yearly_data), ignore.case = TRUE)
+    yearly_data <- yearly_data[, c(1, attribute_col_index)]
+    yearly_data$Year <- year
+    colnames(yearly_data) <- c("Country", "Value", "Year")  # Standardize column names
+    attribute_data <- rbind(attribute_data, yearly_data)
+  }
+  
+  # Convert columns to numeric types where needed
+  attribute_data <- attribute_data %>%
+    mutate(Value = as.numeric(as.character(Value)), Year = as.numeric(Year))
+  
+  # Generate plot objects
+  scatter_plot <- plot_scatter(attribute_data, attribute_name)
+  box_plot <- plot_box(attribute_data, attribute_name)
+  trends_plot <- plot_trends(attribute_data, attribute_name)
+  
+  # Prepare the summary table
+  summary_table <- create_summary_table(attribute_data, year_range, attribute_name)
+  
+  # Return a list containing the plots and the summary table
+  return(list(
+    scatter_plot = scatter_plot,
+    box_plot = box_plot,
+    trends_plot = trends_plot,
+    summary_table = summary_table
+  ))
 }
 
-visualize_population <- function(){
-  will_normalise <- FALSE
-  pop <- data.frame(Country = character(), Population = numeric(), Year = integer(), stringsAsFactors = FALSE)  # Correctly initialize an empty data frame
-  for (i in 1:11) {
-    print(i)
-    gg <- read_data_2(year = 2007 + i)
-    
-    # Find the columns we need: the first column and the "Population" column
-    population_col <- grep("Population", colnames(gg), ignore.case = TRUE)  # Find column with "Population" in the name
-    gg <- gg[, c(1, population_col)]  # Keep only the first and the Population columns
-    
-    
-    # Iterate over rows in gg
-    for (j in 1:nrow(gg)) {
-      # Add a new row to pop with correct column values
-      pop[nrow(pop) + 1, ] <- c(gg$GEO[j], as.numeric(gg$Population[j]), (2007 + i))
-    }
-  }
- # pop <- pop[-c(1),]
-  
- #print(ggplot(data = pop) + 
-  # geom_point(aes(x = Country, y = Population),fill = 'grey') + 
- # labs(title = "Population vs Country", x = "Country", y = "Population") +
-# theme(axis.text.x = element_text(angle = 45, hjust = 1)))
-
-  
-  # Syntax
-  pop$Population = as.numeric(as.character(pop$Population))
-  pop$Year = as.numeric(as.character(pop$Year))
-
-  ggplot(pop, aes(x=Country, y=Population)) + 
-    geom_boxplot(
-      # custom boxes
-      color="blue",
-      fill="blue",
-      alpha=0.2,
-      
-
-      # custom outliers
-      outlier.colour="red",
-      outlier.fill="red",
-      outlier.size=3
-    )+
-    labs(title = "Population vs Country", x = "Country", y = "Population in Millions")+
+# Plot functions
+plot_scatter <- function(data, attribute_name) {
+  ggplot(data) +
+    geom_point(aes(x = Country, y = Value), fill = 'grey') +
+    labs(title = paste("Country-Wise", attribute_name, "Scatter Plot"), x = "Country", y = attribute_name) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-  # pop[which(pop$Country == "Greece" | pop$Country == "Belgium"),]
-  
-  print(ggplot(pop, aes(x= Year, y = Population, group = Country))+
-    geom_point(aes(colour = Country))+
-    geom_line (aes(colour = Country)) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)))
-  
-  
-  #Let's make some latex tables
-  po <- data.frame(matrix(nrow = length(list_eur_countries), ncol = 17))
-  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","25-quantile","median","75-quantile","max","Std")
-  rownames(po) <- list_eur_countries
-  for (i in 1:11){
-    for(j in 1:length(list_eur_countries)){
-      po[j,i]<- pop[which(pop$Year==2007+i & pop$Country==list_eur_countries[j]),]$Population
-    }
-    po[,i] <- as.numeric(as.character(po[,i]))
-  }
-  for(i in 1:length(list_eur_countries)) {
-    # Convert po[i, 1:11] to a numeric vector to avoid the data frame issue
-    values <- as.numeric(po[i, 1:11])
-    
-    po[i, 12] <- min(values, na.rm = TRUE)
-    po[i, 13] <- quantile(values, 0.25, na.rm = TRUE)
-    po[i, 14] <- median(values, na.rm = TRUE)
-    po[i, 15] <- quantile(values, 0.75, na.rm = TRUE)
-    po[i, 16] <- max(values, na.rm = TRUE)
-    po[i, 17] <- sd(values, na.rm = TRUE)
-  }
-  
-  po2 <- po[,-c(1:11)]
-  po3 <- po2/1000000
-  #<<results=tex>>
-  #  xtable(po3)
-  #@
-  return (po)
 }
 
-visualize_Manufacturing  <- function(){
-    will_use_log <- FALSE
-    will_normalise <- FALSE
-  pop <- data.frame(matrix(ncol = 3))
-  colnames(pop) <- c("Country", "Manufacturing","Year")
-  for(i in (1:11)){
-    print(i)
-    gg <-read_data(year = 2007+i)[-c(2,3,4,5,6,8,9)]
-    for (j in 1:length(gg[,1])){
-      pop[nrow(pop) + 1,] <- c(gg$GEO[j], as.numeric(gg$Manufacturing [j]), 2007+i)
-    }
-  }
-  pop <- pop[-c(1),]
-  
- # ggplot(data = pop) + 
- #   geom_point(aes(x = Country, y = Population),fill = 'grey') + 
-  #  labs(title = "Population vs Country", x = "Country", y = "Population") +
-  #  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  print(sapply(pop, class)) 
-  
-  # Syntax
-  pop$Manufacturing  = as.numeric(as.character(pop$Manufacturing ))
-  
-  
-  #Let's make some latex tables
-  po <- data.frame(matrix(nrow = length(list_eur_countries), ncol = 17))
-  colnames(po) <- c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,"min","25-quantile","median","75-quantile","max","Std")
-  rownames(po) <- list_eur_countries
-  for (i in 1:11){
-    for(j in 1:length(list_eur_countries)){
-      po[j,i]<- pop[which(pop$Year==2007+i & pop$Country==list_eur_countries[j]),]$Manufacturing 
-    }
-    po[,i] <- as.numeric(as.character(po[,i]))
-  }
-  po <- po/1000000000
-  for(i in 1:length(list_eur_countries)){
-    po[i,12] <- min(po[i,1:11])
-    po[i,13] <- quantile(po[i,1:11], 0.25)
-    po[i,14] <- median(as.numeric(po[i,1:11]))
-    po[i,15] <- quantile(po[i,1:11], 0.75)
-    po[i,16] <- max(po[i,1:11])
-    po[i,17] <- sd(po[i,1:11])
-
-  }
-  po2 <- po[,-c(1:11)]
-  #<<results=tex>>
-  #  xtable(po2)
-  #@
-
-  ggplot(pop, aes(x=Country, y=Manufacturing )) + 
-    geom_boxplot(
-      # custom boxes
-      color="blue",
-      fill="blue",
-      alpha=0.2,
-      
-      
-      # custom outliers
-      outlier.colour="red",
-      outlier.fill="red",
-      outlier.size=3
-    )+
-    labs(title = "Manufacturing  vs Country", x = "Country", y = " Manufacturing ")+
+plot_box <- function(data, attribute_name) {
+  ggplot(data, aes(x = Country, y = Value)) +
+    geom_boxplot(color = "blue", fill = "blue", alpha = 0.2, outlier.colour = "red", outlier.size = 3) +
+    labs(title = paste(attribute_name, "Distribution by Country"), x = "Country", y = paste(attribute_name, "in Millions")) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+plot_trends <- function(data, attribute_name) {
+  ggplot(data, aes(x = Year, y = Value, group = Country, colour = Country)) +
+    geom_point() +
+    geom_line() +
+    labs(title = paste(attribute_name, "Trends Over Time by Country"), x = "Year", y = attribute_name) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+# Helper function to create a summary table for any attribute
+create_summary_table <- function(data, year_range, attribute_name) {
+  summary_table <- data.frame(matrix(nrow = length(list_eur_countries), ncol = length(year_range) + 6))
+  colnames(summary_table) <- c(year_range, "Min", "Q1", "Median", "Q3", "Max", "StdDev")
+  rownames(summary_table) <- list_eur_countries
+  
+  # Populate yearly data for each country
+  for (year in year_range) {
+    year_column <- year - min(year_range) + 1  # Adjust column index based on the range start
+    for (country in list_eur_countries) {
+      yearly_value <- data %>%
+        filter(Year == year, Country == country) %>%
+        pull(Value)
+      summary_table[country, year_column] <- as.numeric(yearly_value)
+    }
   }
+  
+  # Calculate and assign summary statistics for each country
+  summary_table[, (length(year_range) + 1):ncol(summary_table)] <- t(apply(summary_table[, 1:length(year_range)], 1, calculate_summary_stats))
+  
+  return(summary_table)
+}
+
+# Helper function to calculate summary statistics for a vector of values
+calculate_summary_stats <- function(values) {
+  values <- as.numeric(values)  # Ensure values are numeric
+  stats <- c(
+    Min = min(values, na.rm = TRUE),
+    Q1 = quantile(values, 0.25, na.rm = TRUE),
+    Median = median(values, na.rm = TRUE),
+    Q3 = quantile(values, 0.75, na.rm = TRUE),
+    Max = max(values, na.rm = TRUE),
+    StdDev = sd(values, na.rm = TRUE)
+  )
+  return(stats)
+}
+
+
   # write a function that compares free allocation between 2012 and 2013
-
-compare_2012_2013 <-function(){
-  gg <-read_free(year = 2012)
-  gg2 <-read_free(year = 2013)
-  output <- data.frame(matrix(ncol = 4))
-  colnames(output) <- c("Country", "2012","2013","Percentage drop")
-  for(i in 1:length(gg[,1])){
-    output[nrow(output)+1,] <- c(gg$GEO[i], as.numeric(gg$Free[i]), as.numeric(gg2$Free[i]), as.numeric((as.numeric(gg2$Free[i])-as.numeric(gg$Free[i]))/as.numeric(gg$Free[i])))
+compare_free_in_two_years <- function(year1 = 2012, year2 = 2013) {
+  # Read data for the specified years
+  data_year1 <- read_free(year = year1)
+  data_year2 <- read_free(year = year2)
+  
+  # Ensure that 'Country' and 'Free' columns exist in both datasets
+  if (!("GEO" %in% colnames(data_year1)) || !("Free" %in% colnames(data_year1)) ||
+      !("GEO" %in% colnames(data_year2)) || !("Free" %in% colnames(data_year2))) {
+    stop("Expected columns 'GEO' and 'Free' not found in data.")
   }
-  output <- output[-c(1),]
-  output$"Percentage drop" <- as.numeric(output$"Percentage drop" )* 100
-  output <- output[order(output$"Percentage drop"),]
-  output$"Percentage drop" <- round(output$"Percentage drop",2)
-
-  output$"2012" <- as.numeric(output$"2012")/1000000
-  output$"2013" <- as.numeric(output$"2013")/1000000
-
+  
+  # Join data for both years by 'Country' (GEO column)
+  output <- data_year1 %>%
+    rename(Country = GEO, Free_Year1 = Free) %>%
+    inner_join(data_year2 %>% rename(Country = GEO, Free_Year2 = Free), by = "Country") %>%
+    mutate(
+      Free_Year1 = as.numeric(Free_Year1) / 1e6,  # Convert to millions
+      Free_Year2 = as.numeric(Free_Year2) / 1e6,  # Convert to millions
+      Percentage_Drop = round(((Free_Year2 - Free_Year1) / Free_Year1) * 100, 2)
+    ) %>%
+    select(Country, Free_Year1, Free_Year2, Percentage_Drop) %>%
+    arrange(Percentage_Drop)  # Order by percentage drop
+  
+  # Rename columns for clarity
+  colnames(output) <- c("Country", as.character(year1), as.character(year2), "Percentage Drop (%)")
+  
+  # Print as LaTeX table
   print(xtable(output), format.args = list(big.mark = ",", decimal.mark = "."))
+  
+  return(output)
 }
 
-calculate_all_with_given_weights <-function(weights){
-    # write a function that calculates all the r^2 values for all the countries and all the years with given weights
- weights <- c(60,20,15,70,410,10,170,850)
-dat <- data.frame(matrix(ncol=13, nrow = length(list_eur_countries)))
-  colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "max p-value", "max MSE")
+calculate_all_with_given_weights <- function(weights = c(60, 20, 15, 70, 410, 10, 170, 850)) {
+  # Initialize the results data frame
+  dat <- data.frame(matrix(ncol = 13, nrow = length(list_eur_countries)))
+  colnames(dat) <- c("2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "Max P-Value", "Max MSE")
   rownames(dat) <- list_eur_countries
-  newi = 0
-  for (i in 1:length(list_eur_countries)){
-    pv <- 0
-    mse <- 0
-    if(newi !=i){
-      newi <- i
-      print(paste("Working on: ",list_eur_countries[i]))
-    }
-    for (j in 1:11){
-      gg<- find_slopes_with_one_country_with_weights(country = list_eur_countries[i], year =  2007+j,weights =  weights)$linear
-      dat[i,j] <- summary(gg)$r.squared
-      if (p_val(gg) > pv){
-        pv <- p_val(gg)
-      }
-      if (MSE(gg) > mse){
-        mse <- MSE(gg)  
-      }
-      dat[i,12] <- pv
-      dat[i,13] <- mse
-    } 
-  }
+  
+  # Loop over countries and years to calculate R^2, p-values, and MSE
+  for (i in seq_along(list_eur_countries)) {
+    country <- list_eur_countries[i]
+    max_pv <- 0
+    max_mse <- 0
     
+    message(paste("Working on:", country))
+    
+    # Calculate R^2 values for each year and update max p-value and max MSE
+    r_squared_values <- sapply(2008:2018, function(year) {
+      model <- find_slopes_with_one_country_with_weights(country = country, year = year, weights = weights)$linear
+      r_squared <- summary(model)$r.squared
+      
+      # Update max p-value and max MSE for the country
+      max_pv <<- max(max_pv, p_val(model))
+      max_mse <<- max(max_mse, MSE(model))
+      
+      return(r_squared)
+    })
+    
+    # Assign calculated R^2 values, max p-value, and max MSE to the data frame
+    dat[i, 1:11] <- r_squared_values
+    dat[i, 12] <- max_pv
+    dat[i, 13] <- max_mse
+  }
+  
+  # Display the final table
   print(xtable(dat), format.args = list(big.mark = ",", decimal.mark = "."))
+  
+  return(dat)
 }
+
 #calculate_all_with_given_weights(c(60,20,15,70,410,10,170,850))
 
 minMax <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
 
-clustering <- function(normalize = "Mean", minNc = 2, maxNc = 10){
-  # Let's cluster the countries based on their features from the read_data() function
-  # We will use the k-means algorithm
-  # We will use the elbow method, the silhouette method, and the gap statistic to find the optimal number of clusters
+# Helper function for normalization
+normalize_data <- function(data, method) {
+  data <- data %>% mutate(across(-GEO, ~ as.numeric(as.character(.))))
+  if (method == "Mean") {
+    data %>% mutate(across(-GEO, ~ . / mean(., na.rm = TRUE)))
+  } else if (method == "MinMax") {
+    data %>% mutate(across(-GEO, minMax))
+  } else if (method == "Germany") {
+    data %>% mutate(across(-GEO, ~ . / .[GEO == "Germany"]))
+  } else if (method == "max") {
+    data %>% mutate(across(-GEO, ~ . / max(., na.rm = TRUE)))
+  } else {
+    stop("Invalid normalization method. Choose from 'Mean', 'MinMax', 'Germany', or 'max'.")
+  }
+}
 
-  will_normalise <- FALSE
+clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10) {
+  # Read and prepare data
   features <- read_data_2()
-  names_of_df <-names(features)
-  for (i in 2:ncol(features)){
-    features[[i]] <- as.numeric(as.character(features[[i]]))
-  }
+  features <- normalize_data(features, normalize)
   
-  # Normalize the data
-  if (normalize == "Mean"){
-    # Normalize average
-    for(i in 2:ncol(features)){
-    features[[i]] <- features[[i]] / mean(features[[i]])
-    }
-  } else if (normalize == "MinMax"){
-    # Normalize min-Max
-    for(i in 2:ncol(features)){
-      features[[i]] <- minMax(features[[i]])
-    }
-  } else if (normalize == "Germany"){
-    # Normalize based on Germany
-    for(i in 2:ncol(features)){
-      features[[i]] <- features[[i]] / features[[i]][9]
-    }
-  } else if (normalize == "max"){
-    # Normalize max
-    for(i in 2:ncol(features)){
-      features[[i]] <- features[[i]] / max(features[[i]])
-    }
-  } else{
-    print("Invalid normalization method")
-  }
-
-
-  gg <- NbClust(features[-c(1)], distance = "euclidean", min.nc = minNc, max.nc = maxNc, method = "kmeans", index = "all")
-
-  #print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
-  features$partition <- gg$Best.partition
+  # Perform clustering using multiple estimators
+  clustering_results <- NbClust(features %>% select(-GEO), 
+                                distance = "euclidean", 
+                                min.nc = minNc, 
+                                max.nc = maxNc, 
+                                method = "kmeans", 
+                                index = "all")
   
-   #gg <- kmeans(features[-c(1)], 3, 50, 100)
-   #features$partition <- gg$cluster
+  # Print all values from different estimators
+  estimators_table <- clustering_results$All.index
+  print(xtable(estimators_table, 
+               caption = "Estimator Values for Best Number of Clusters", 
+               format.args = list(big.mark = ",", decimal.mark = ".")))
   
-  features <- features[order(features$partition),]
-  #print(xtable(features[-c(2:9)]), format.args = list(big.mark = ",", decimal.mark = "."))
+  # Assign clusters and arrange data by cluster
+  features$partition <- clustering_results$Best.partition
+  features <- features %>% arrange(partition)
+  
   return(features)
 }
-clustering_per_capita <-function(){
-  will_normalise <- FALSE
-  features <- read_data()
-  features$Total_energy_supply <- features$Total_energy_supply / features$Population
-  features$Verified_emissions <- features$Verified_emissions / features$Population
-  features$Agriculture <- features$Agriculture / features$Population
-  features$Manufacturing <- features$Manufacturing / features$Population
-  features$Industry <- features$Industry / features$Population
 
-  # normalise the data
+clustering_per_capita <- function(normalize_method = "max", minNc = 2, maxNc = 10) {
+  # Load data
+  features <- read_data_2()
   
-  names_of_df <-names(features)
-  for (i in 2:length(names_of_df)){
-    features[[i]] <- as.numeric(as.character(features[[i]])) / max(as.numeric(as.character(features[[i]])))
-  }
-  gg <- NbClust(features[-c(1,4)], distance = "euclidean", min.nc = 2, max.nc = 10, method = "kmeans", index = "all")
-
-
-  print(xtable(gg$All.index[,14:26]), format.args = list(big.mark = ",", decimal.mark = "."))
-  features$partition <- gg$Best.partition
-  features <- features[order(features$partition),]
-  print(xtable(features[c(1,4,10)]), format.args = list(big.mark = ",", decimal.mark = "."))
+  # Convert columns to numeric and calculate per capita values
+  features <- features %>%
+    mutate(across(c(Total_energy_supply, Verified_emissions, Agriculture, Manufacturing, Industry),
+                  ~ as.numeric(as.character(.)) / Population))
+  
+  # Normalize the data using the specified method
+  features <- features %>% rename(GEO = GEO)  # Rename for consistency if needed
+  features <- normalize_data(features, method = normalize_method)
+  
+  # Perform clustering (excluding GEO and Population columns)
+  clustering_results <- NbClust(features %>% select(-GEO, -Population), 
+                                distance = "euclidean", min.nc = minNc, max.nc = maxNc, 
+                                method = "kmeans", index = "all")
+  
+  # Assign clusters and order data by partition
+  features$partition <- clustering_results$Best.partition
+  features <- features %>% arrange(partition)
+  
+  # Print clustering metrics and final features table
+  print(xtable(clustering_results$All.index[, 14:26], 
+               caption = "Clustering Metrics", 
+               format.args = list(big.mark = ",", decimal.mark = ".")))
+  print(xtable(features %>% select(GEO, partition, Population), 
+               caption = "Per Capita Clustering Results", 
+               format.args = list(big.mark = ",", decimal.mark = ".")))
+  
+  return(features)
 }
 
-can_countries_explain_their_own_cluster <-function(){
+can_countries_explain_their_own_cluster_2 <-function(){
   # ÎÎ¹Î± Î½Î± ÏÏÎ­Î¾ÎµÎ¹ ÏÏÎ­ÏÎµÎ¹ ÏÏÏÏÎ± Î½Î± Î­ÏÎ¿ÏÎ¼Îµ Î²Î¬Î»ÎµÎ¹ ÏÎ»ÎµÏ ÏÎ¹Ï ÏÏÏÎµÏ Î¾Î±Î½Î¬.
   will_normalise <- FALSE
   
@@ -2060,28 +2031,185 @@ can_countries_explain_their_own_cluster <-function(){
   # graph the linear regration
 }
 
-#Let's find out if we can find a relation between the features of each country and the free allocation it got
-
-features_linear_free <- function(){
-  will_normalise <- FALSE
-  dat <- read_data()
-  free <- read_free()
-  dat <- merge(dat, free, by = "GEO")
-  select <- 2
-  # keep only the countries of the list "clusters"
-  dat <- dat[dat$GEO %in% clusters[[select]],]
-  #dat <- dat[-which(dat$GEO == "Germany"),]
-  linear <- list()
-  linear[[select]] <- lm(dat$Free ~    dat$Population)
-  summary(linear[[select]])
-  summary(linear[[select]])$r.squared
+can_countries_explain_their_own_cluster <- function(cluster_to_plot = 2) {
+  # Perform clustering
+  features <- clustering()
   
-  ggplot(dat, aes(x = Population, y = Free)) + 
-    geom_point(aes(color = GEO)) + 
+  # Initialize lists to store features and slopes by cluster
+  cluster_features <- list()
+  cluster_slopes <- list()
+  
+  # Loop through clusters and analyze each
+  for (cluster in unique(features$partition)) {
+    # Subset features for the current cluster
+    cluster_features[[cluster]] <- features %>% filter(partition == cluster)
+    
+    # Temporarily set the list of countries to those in the current cluster
+    temp_countries <- list_eur_countries
+    list_eur_countries <- cluster_features[[cluster]]$GEO  # Update global country list temporarily
+    
+    # Find slopes for the current cluster and store results
+    cluster_slopes[[cluster]] <- find_slopes_with_one_country()
+    
+    # Restore the original list of countries
+    list_eur_countries <- temp_countries
+  }
+  
+  # Plot results for the selected cluster
+  if (cluster_to_plot %in% names(cluster_slopes)) {
+    slope_data <- cluster_slopes[[cluster_to_plot]]$data
+    plot_title <- paste("Distances from", cluster_slopes[[cluster_to_plot]]$country,
+                        "in Cluster", cluster_to_plot, 
+                        "| R² =", round(summary(cluster_slopes[[cluster_to_plot]]$linear)$r.squared, 2))
+    
+   print( ggplot(slope_data, aes(x = df_distance, y = df_free_distance)) + 
+      geom_point(aes(color = GEO)) + 
+      geom_smooth(method = "lm", se = FALSE) +
+      xlab("Distance in Features") + 
+      ylab("Distance in Free") +
+      labs(title = plot_title))
+  } else {
+    message("Invalid cluster selected for plotting.")
+  }
+  
+  # Return results for further analysis if needed
+  return(list(features = cluster_features, slopes = cluster_slopes))
+}
+
+
+visualize_clustering_results <- function(normalize = "max", minNc = 3, maxNc = 10, use_pca = TRUE) {
+  # Run clustering with specified normalization and cluster range
+  if (use_pca) {
+    # Use PCA-reduced features for clustering
+    clustered_data <- clustering_with_pca(normalize = normalize, minNc = minNc, maxNc = maxNc, n_components = 2)
+    
+    # Perform PCA again for visualization
+    pca_results <- prcomp(clustered_data %>% select(-GEO, -partition), scale. = TRUE)
+    pca_data <- as.data.frame(pca_results$x[, 1:2])  # Select the first two principal components
+  } else {
+    # Use original features for clustering
+    clustered_data <- clustering(normalize = normalize, minNc = minNc, maxNc = maxNc)
+    
+    # Perform PCA for visualization only
+    pca_results <- prcomp(clustered_data %>% select(-GEO, -partition), scale. = TRUE)
+    pca_data <- as.data.frame(pca_results$x[, 1:2])
+  }
+  
+  # Add cluster assignment and country names to the PCA data for plotting
+  pca_data$Cluster <- as.factor(clustered_data$partition)  # Cluster assignments
+  pca_data$Country <- clustered_data$GEO  # Country names for labeling
+  
+  # Create scatter plot of the first two principal components colored by cluster
+  plot <- ggplot(pca_data, aes(x = PC1, y = PC2, color = Cluster)) +
+    geom_point(size = 3) +
+    geom_text(aes(label = Country), hjust = 0.5, vjust = 1.5, size = 2, check_overlap = TRUE) +
+    labs(title = ifelse(use_pca, "Clustering with PCA Visualization", "Clustering without PCA Visualization"),
+         x = "Principal Component 1 (PC1)",
+         y = "Principal Component 2 (PC2)",
+         color = "Cluster") +
+    theme_minimal()
+  
+  # Print the plot
+  print(plot)
+  
+  # Return the clustered data with cluster assignments
+  return(clustered_data)
+}
+
+clustering_with_pca <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2) {
+  # Step 1: Read and normalize the data
+  features <- read_data_2()
+  features <- normalize_data(features, normalize)
+  
+  # Step 2: Apply PCA for dimensionality reduction
+  pca_results <- prcomp(features %>% select(-GEO), scale. = TRUE)
+  
+  # Step 3: Select the top `n_components` principal components
+  pca_data <- as.data.frame(pca_results$x[, 1:n_components])
+  pca_data$GEO <- features$GEO  # Keep GEO (country names) for reference
+  
+  # Step 4: Perform clustering on the principal components
+  clustering_results <- NbClust(pca_data %>% select(-GEO), 
+                                distance = "euclidean", 
+                                min.nc = minNc, 
+                                max.nc = maxNc, 
+                                method = "kmeans", 
+                                index = "all")
+  
+  # Step 5: Assign clusters to the original data based on PCA clustering
+  features$partition <- clustering_results$Best.partition
+  
+  # Print the recommended number of clusters by various indices
+  estimator_table <- clustering_results$All.index
+  print(xtable(estimator_table, 
+               caption = "Estimator Values for Best Number of Clusters (Using PCA)", 
+               format.args = list(big.mark = ",", decimal.mark = ".")))
+  
+  # Return the original data with cluster assignments
+  return(features)
+}
+
+compare_clustering_methods <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2) {
+  # Perform clustering on the original features
+  original_clusters <- clustering(normalize = normalize, minNc = minNc, maxNc = maxNc)
+  
+  # Perform clustering on the PCA-reduced features
+  pca_clusters <- clustering_with_pca(normalize = normalize, minNc = minNc, maxNc = maxNc, n_components = n_components)
+  
+  # Combine results into a single data frame for comparison
+  comparison_df <- original_clusters %>%
+    select(GEO, partition) %>%
+    rename(Original_Cluster = partition) %>%
+    left_join(pca_clusters %>% select(GEO, partition) %>% rename(PCA_Cluster = partition), by = "GEO")
+  
+  # Plot the differences in clustering between the two methods
+  plot <- ggplot(comparison_df, aes(x = Original_Cluster, y = PCA_Cluster, label = GEO)) +
+    geom_jitter(width = 0.3, height = 0.3, size = 3, aes(color = Original_Cluster != PCA_Cluster)) +
+    geom_text(vjust = -0.5, check_overlap = TRUE) +
+    scale_color_manual(values = c("grey", "red"), labels = c("Same", "Different"), name = "Cluster Match") +
+    labs(title = "Comparison of Clustering Assignments: Original vs PCA",
+         x = "Cluster Assignment (Original Features)",
+         y = "Cluster Assignment (PCA-Reduced Features)") +
+    theme_minimal()
+  
+  # Print the plot
+  print(plot)
+  
+  # Return the comparison data frame
+  return(comparison_df)
+}
+
+
+features_linear_free <- function(select = 2) {
+  # Load datasets
+  dat <- read_data_2()
+  free <- read_free()
+  
+  # Merge data by country and filter by selected cluster
+  dat <- merge(dat, free, by = "GEO") %>%
+    filter(GEO %in% clusters[[select]])
+  
+  # Fit linear model
+  linear_model <- lm(Free ~ Population, data = dat)
+  r_squared <- summary(linear_model)$r.squared
+  
+  # Print R-squared value for reference
+  print(paste("R-squared for cluster", select, ":", round(r_squared, 4)))
+  
+  # Plot the relationship
+  plot <- ggplot(dat, aes(x = Population, y = Free, color = GEO)) + 
+    geom_point() + 
     geom_smooth(method = "lm", se = FALSE) +
-    xlab("Industry in Billios USD (as calculated in GDP)") + 
-    ylab("Free allocation") +
-    labs(title = paste("Relationship of the", as.character(select)," cluster and r^2 = ", as.character(summary(linear[[select]])$r.squared)))
+    xlab("Population") + 
+    ylab("Free Allocation") +
+    labs(title = paste("Relationship in Cluster", select, "- R² =", round(r_squared, 4))) +
+    theme_minimal()
+  
+  # Display the plot
+  print(plot)
+  
+  # Return the linear model object
+  return(linear_model)
 }
 
 # Are these correlated?
