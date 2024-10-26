@@ -12,6 +12,7 @@ library("dplyr")
 library("lpSolve")
 library("svglite")
 library("shiny")
+library(corrplot)
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -1935,6 +1936,9 @@ normalize_data <- function(data, method) {
     data %>% mutate(across(-GEO, ~ . / .[GEO == "Germany"]))
   } else if (method == "max") {
     data %>% mutate(across(-GEO, ~ . / max(., na.rm = TRUE)))
+  } else if (method == 'none'){
+    message("Not normalizing")
+    return (data)
   } else {
     stop("Invalid normalization method. Choose from 'Mean', 'MinMax', 'Germany', or 'max'.")
   }
@@ -1943,6 +1947,11 @@ normalize_data <- function(data, method) {
 clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10) {
   # Read and prepare data
   features <- read_data_2()
+  # Remove the "Free" column if it exists
+  if ("Free" %in% colnames(features)) {
+    features <- features %>% select(-Free)
+  }
+  
   features <- normalize_data(features, normalize)
   
   # Perform clustering using multiple estimators
@@ -1969,6 +1978,11 @@ clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10) {
 clustering_per_capita <- function(normalize_method = "max", minNc = 2, maxNc = 10) {
   # Load data
   features <- read_data_2()
+  
+  # Remove the "Free" column if it exists
+  if ("Free" %in% colnames(features)) {
+    features <- features %>% select(-Free)
+  }
   
   # Convert columns to numeric and calculate per capita values
   features <- features %>%
@@ -2119,6 +2133,12 @@ visualize_clustering_results <- function(normalize = "max", minNc = 3, maxNc = 1
 clustering_with_pca <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2) {
   # Step 1: Read and normalize the data
   features <- read_data_2()
+  
+  # Remove the "Free" column if it exists
+  if ("Free" %in% colnames(features)) {
+    features <- features %>% select(-Free)
+  }
+  
   features <- normalize_data(features, normalize)
   
   # Step 2: Apply PCA for dimensionality reduction
@@ -2180,27 +2200,32 @@ compare_clustering_methods <- function(normalize = "max", minNc = 3, maxNc = 10,
 }
 
 
-features_linear_free <- function(select = 2) {
-  # Load datasets
+features_linear_free <- function(select = 2, attribute = "Population") {
+  # Load data (including "Free" and other attributes)
   dat <- read_data_2()
-  free <- read_free()
   
-  # Merge data by country and filter by selected cluster
-  dat <- merge(dat, free, by = "GEO") %>%
-    filter(GEO %in% clusters[[select]])
+  # Ensure the attribute exists in the data
+  if (!(attribute %in% colnames(dat))) {
+    stop("Specified attribute does not exist in the data.")
+  }
   
-  # Fit linear model
-  linear_model <- lm(Free ~ Population, data = dat)
+  # Filter data by the selected cluster
+  dat <- dat %>% filter(GEO %in% clusters[[select]])
+  
+  # Fit linear model to find relationship between the chosen attribute and Free allocation
+  formula <- as.formula(paste("Free ~", attribute))
+  linear_model <- lm(formula, data = dat)
   r_squared <- summary(linear_model)$r.squared
   
   # Print R-squared value for reference
   print(paste("R-squared for cluster", select, ":", round(r_squared, 4)))
   
-  # Plot the relationship
-  plot <- ggplot(dat, aes(x = Population, y = Free, color = GEO)) + 
+  # Plot the relationship with abline
+  plot <- ggplot(dat, aes_string(x = attribute, y = "Free", color = "GEO")) + 
     geom_point() + 
     geom_smooth(method = "lm", se = FALSE) +
-    xlab("Population") + 
+    geom_abline(intercept = coef(linear_model)[1], slope = coef(linear_model)[2], color = "blue", linetype = "dashed") +
+    xlab(attribute) + 
     ylab("Free Allocation") +
     labs(title = paste("Relationship in Cluster", select, "- R² =", round(r_squared, 4))) +
     theme_minimal()
@@ -2212,18 +2237,24 @@ features_linear_free <- function(select = 2) {
   return(linear_model)
 }
 
-# Are these correlated?
-simple_lm <-function(){
-  g<- read_data()
-  ff <- lm(g$Agriculture ~ g$GDPpc)
-  summary(ff)
-  ggplot(g, aes(x = Agriculture, y = Industry)) + 
-    geom_point(aes(color = GEO)) + 
-    geom_smooth(method = "lm", se = FALSE) +
-    xlab("Agriculture") + 
-    ylab("GDPpc")
-    
+# Function to create and visualize the correlation matrix
+plot_correlation_matrix <- function(year) {
+  # Read the data
+  dat <- read_data_2(year)
+  
+  # Select numeric columns, excluding the first column (GEO)
+  cor.mat <- dat %>%
+    dplyr::select(-GEO) %>%
+    dplyr::select(where(is.numeric)) %>%
+    cor(use = "pairwise.complete.obs")  # Calculates correlations for non-missing pairs
+  
+  # Plot the correlation matrix
+  corrplot(
+    cor.mat, type = 'lower', order = 'hclust', 
+    tl.col = 'black', tl.srt = 90
+  )
 }
+
 
 Fotakis_s <- function(){
   features <- clustering()
