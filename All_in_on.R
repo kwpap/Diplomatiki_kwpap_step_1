@@ -2256,28 +2256,46 @@ plot_correlation_matrix <- function(year) {
 }
 
 
-Fotakis_s <- function(){
-  features <- clustering()
+Fotakis_s <- function() {
+  # Perform clustering and load free allocation data
+  year_for_comparison <- 2008
+  features <- clustering(minNc = 2, maxNc = 4, normalize = "max")
   free <- read_free()
   features <- merge(features, free, by = "GEO")
-  for (i in 1:25){
-    if (features$partition[i] == 1){
-      features$partition[i] <- "Industrialized"
-    }
-    if (features$partition[i] == 2){
-      features$partition[i] <- "USSR"
-    }
-    if (features$partition[i] == 3){
-      features$partition[i] <- "REST"
-    }
-  }
   
-
-  ggplot(features, aes(x = Verified_emissions, y = Free)) + 
-    geom_point(aes(color = partition)) + 
-    geom_smooth(method = "lm", se = FALSE) +
-    xlab("Verified 2008") + 
-    ylab("Free") 
+  # Assign descriptive names to clusters
+  features <- features %>%
+    mutate(partition = case_when(
+      partition == 1 ~ "Industrialized",
+      partition == 2 ~ "USSR",
+      partition == 3 ~ "REST",
+      TRUE ~ as.character(partition)
+    ))
+  
+  # Fit linear model to add R² and p-value in title
+  linear_model <- lm(Free ~ Verified_emissions, data = features)
+  r_squared <- summary(linear_model)$r.squared
+  p_value <- summary(linear_model)$coefficients[2, 4]
+  
+  # Plot with cluster-based colors and simplified legend
+  ggplot(features, aes(x = Verified_emissions, y = Free, color = partition)) + 
+    geom_point(size = 3) + 
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified Emissions (2008)") + 
+    ylab("Free Allocation") +
+    labs(
+      title = paste("Linear Regression of Verified Emissions vs Free Allocation",
+                    "\nR² =", round(r_squared, 4), "| p-value =", round(p_value, 4)),
+      color = "Cluster"
+    ) +
+    scale_color_manual(
+      values = c("Industrialized" = "blue", "USSR" = "red", "REST" = "green"),
+      breaks = c("Industrialized", "USSR", "REST"),
+      labels = c("Industrialized", "USSR", "REST")
+    ) +
+    theme_minimal() +
+    theme(legend.title = element_text(size = 10),
+          legend.text = element_text(size = 9))
 }
 #-------------------------------------------------------------------------------------------------------------
 Peirama_1 <-function(){

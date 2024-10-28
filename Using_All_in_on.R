@@ -52,5 +52,50 @@ latex_code <- print(
   sanitize.text.function = identity
 )
 
-find_the_best_combo_with_one()
+find_the_best_combo_with_one() # obv
 
+dat <- All_the_countries_throught_the_years_with_best_combo()
+
+###########################################################################################################
+############################ This helps visualize and present the data ####################################
+#result <- visualize_attribute("Population")
+#result <- visualize_attribute("Manufacturing")
+result <- visualize_attribute("Total_energy_supply")
+# Possible attributes: Free Verified_emissions Total_energy_supply GDPpc Population Inflation Agriculture Industry Manufacturing Energy_Intensity
+
+for (item in result) {
+  print(item)
+}
+# Access the individual components
+scatter_plot <- result$scatter_plot
+box_plot <- result$box_plot
+trends_plot <- result$trends_plot
+summary_table <- result$summary_table
+
+############################################################################################################
+compare_free_in_two_years(2010, 2015)
+
+calculate_all_with_given_weights(c(60,20,15,70,410,10,170,850))
+#Normalize takes values: Mean, MinMax, Germany, max
+clustering(normalize = "max",  minNc = 3, maxNc = 10)
+
+clustering_per_capita("max", minNc = 3, maxNc = 10)
+
+can_countries_explain_their_own_cluster()
+
+can_countries_explain_their_own_cluster(cluster_to_plot = 2) # OLD SHIT
+
+clustered_data <- clustering_with_pca(normalize = "max", minNc = 2, maxNc = 7, n_components = 2)
+
+# Example usage to visualize clustering with PCA
+visualized_data_pca <- visualize_clustering_results(normalize = "max", minNc = 2, maxNc = 7, use_pca = TRUE)
+
+# Example usage to visualize clustering without PCA
+visualized_data_no_pca <- visualize_clustering_results(normalize = "max", minNc = 2, maxNc = 7, use_pca = FALSE)
+
+comparison_results <- compare_clustering_methods(normalize = "max", minNc = 2, maxNc = 7, n_components = 2)
+
+# Choose from: Free Verified_emissions Total_energy_supply      GDPpc Population Inflation Agriculture Industry Manufacturing Energy_Intensity
+model <- features_linear_free(select = 2, attribute = "Industry")
+
+plot_correlation_matrix(2020)  # Replace 2020 with the desired year

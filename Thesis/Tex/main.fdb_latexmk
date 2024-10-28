@@ -1,0 +1,23 @@
+# Fdb version 4
+["pdflatex"] 1730024630.57596 "main.tex" "main.pdf" "main" 1730024631.758 2
+  "C:/Users/Kostas/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1724683634 24265805 68e52f32065a2299fec304ffc269c79e ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmr10.tfm" 1136765053 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/base/bk11.clo" 1719393830 8303 f1946c16de2ec7925c5416e2d15a241f ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/fontspec/fontspec.sty" 1715414856 3755 4872b99d810c024f9c09bb1c62ffee3b ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics-cfg/graphics.cfg" 1465894292 1224 978390e9c2234eab29404bc21b268d1e ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics-def/pdftex.def" 1713599642 19440 9da9dcbb27470349a580fca7372d454b ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphics.sty" 1718270727 18363 b79c83eab17bf475b508f05e9807e605 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics/graphicx.sty" 1718270727 8010 6f2ad8c2b2ffbd607af6475441c7b5e4 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics/keyval.sty" 1718270727 2671 70891d50dac933918b827d326687c6e8 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/graphics/trig.sty" 1718270727 4023 2c9f39712cf7b43d3eb93a8bbd5c8f67 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1716480499 29785 9f93ab201fe5dd053afcc6c1bcf7d266 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/l3kernel/expl3.sty" 1722584446 6565 7e70b0b6215591329b4c82651584e425 ""
+  "C:/Users/Kostas/AppData/Local/Programs/MiKTeX/tex/latex/l3packages/xparse/xparse.sty" 1716378382 9327 090c6c81eff433de1562ec6a5b1b31ee ""
+  "main.aux" 1730024630 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "main.tex" 1730017348 3475 14c3444e27b1825e118748f1286f6c46 ""
+  "softlab-thesis.cls" 1730017348 54513 739387e513aef50dce37dfa153cde1cf ""
+  (generated)
+  "main.aux"
+  "main.log"
+  "main.pdf"
+  (rewritten before read)
