@@ -1,0 +1,20 @@
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Βέλτιστη λύση για μία υπηρεσία στη γραμμή}}{15}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Αντιπαράδειγμα του single-linkage}}{17}{figure.caption.15}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Τα βέλτιστα cluster είναι υποδέντρα του ΕΣΔ.}}{17}{figure.caption.16}%
+\contentsline {figure}{\numberline {1.6}{\ignorespaces Πιθανή κερδοφόρα αλλαγή}}{18}{figure.caption.19}%
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces $\vec {x}$}}{24}{figure.caption.21}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces $\vec {y}$}}{24}{figure.caption.22}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces $\vec {z}$}}{24}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Example of $(0.25,0.75)$-percentile mechanism for 9 agents}}{24}{figure.caption.24}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Example of non stable instance that satisfies all the properties.}}{29}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Classes of stable instances}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces An example that single linkage fails to find the optimal solution}}{30}{figure.caption.27}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces The optimal cluster $C_j$ do not form a subtree of $T$}}{30}{figure.caption.28}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces An example of a location profile $\vec {x}$ (black points) with phantom agents $\vec {z}$ on the intersections (gray points)}}{31}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Example of a cluster that does not form a subtree.}}{32}{figure.caption.30}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Singleton Deviation}}{32}{figure.caption.32}%
