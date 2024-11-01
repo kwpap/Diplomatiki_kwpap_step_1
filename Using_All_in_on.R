@@ -1,6 +1,8 @@
 # Load the functions defined in functions.R
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/All_in_on.R")
 
+final_data <- analyze_european_data(list_eur_countries, "log_file.txt", "plots/", 2008, 2018)
+
 # Create plots for all the distances from all countries to all the others
 for (year in c(2005:2020)) {
   create_graph(year = year, 
@@ -31,9 +33,16 @@ for (year in c(2008:2020)) {
                        weights = c(1,1,1,1,1,1,1,1), 
                        path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/")
 }
+create_graph_for_one(year = 2018, 
+                     name = "02_distances_from_one_",
+                     type = "png", 
+                     country = "Germany", 
+                     weights = c(1,1,1,1,1,1,1,1), 
+                     path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/")
+
 
 # Calculate the best combo of weights for atributes to maximize the R^2
-find_the_best_combo_with_one()
+find_the_best_combo_with_one(year = 2015, country = "Germany")
 
 find_the_better_best_combo(year = 2015) 
 df_ctfac <- create_table_for_all_countries() # How well does each country explain the rest in a table
@@ -98,4 +107,29 @@ comparison_results <- compare_clustering_methods(normalize = "max", minNc = 2, m
 # Choose from: Free Verified_emissions Total_energy_supply      GDPpc Population Inflation Agriculture Industry Manufacturing Energy_Intensity
 model <- features_linear_free(select = 2, attribute = "Industry")
 
-plot_correlation_matrix(2020)  # Replace 2020 with the desired year
+plot_correlation_matrix(2010)  # Replace 2020 with the desired 
+
+
+##################################### EXP 3 ####################################################################
+# Define file paths and year range
+log_file <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file.txt"
+plot_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/"
+RDS_03_file <-"C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/exp_03_normalized.rds"
+start_year <- 2005
+end_year <- 2018
+
+# Call the perform_analysis function
+#results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+saveRDS(results, file = RDS_03_file)
+#results <- readRDS(RDS_03_file)
+# Access the results
+r_squared_data <- results$R_Squared
+linear_models_data <- results$Linear_Models
+
+# Print or inspect the data frames
+print(r_squared_data)       # View R^2 values for each country-year
+print(linear_models_data)    
+
+################################################################################################################
+
