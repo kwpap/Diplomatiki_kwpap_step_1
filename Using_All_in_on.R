@@ -119,9 +119,10 @@ start_year <- 2005
 end_year <- 2018
 
 # Call the perform_analysis function
-results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+#results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
 saveRDS(results, file = RDS_03_file)
-results <- readRDS(RDS_03_file)
+#results <- readRDS(RDS_03_file)
 # Access the results
 r_squared_data <- results$R_Squared
 linear_models_data <- results$Linear_Models
@@ -130,4 +131,5 @@ linear_models_data <- results$Linear_Models
 print(r_squared_data)       # View R^2 values for each country-year
 print(linear_models_data)    
 
-#################################################################################################################
+################################################################################################################
+

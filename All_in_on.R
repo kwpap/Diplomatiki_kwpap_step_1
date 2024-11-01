@@ -13,6 +13,8 @@ library("lpSolve")
 library("svglite")
 library("shiny")
 library(corrplot)
+library(foreach)
+library(doParallel)
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -458,16 +460,20 @@ read_data_2 <- function(year = 0) {
     max_Agriculture <- max(abs(df_1$Agriculture))
     max_Industry <- max(abs(df_1$Industry))
     max_Manufacturing <- max(abs(df_1$Manufacturing))
+    max_Free <- max(abs(df_1$Free))
+    max_EI <- max(abs(df_1$Energy_Intensity))
     
     # devide by max value of each column to normalise data unless max value is 0
-    if(max_total_energy_supply != 0) df_1$Total_energy_supply <- df_1$Total_energy_supply / max_total_energy_supply
-    if(max_inflation != 0) df_1$Inflation <- df_1$Inflation / max_inflation
-    if(max_GDPpc != 0) df_1$GDPpc <- df_1$GDPpc / max_GDPpc
-    if(max_population != 0) df_1$Population <- df_1$Population / max_population
-    if(max_verified_emissions != 0) df_1$Verified_emissions <- df_1$Verified_emissions / max_verified_emissions
-    if(max_Agriculture != 0) df_1$Agriculture <- df_1$Agriculture / max_Agriculture
-    if(max_Industry != 0) df_1$Industry <- df_1$Industry / max_Industry
-    if(max_Manufacturing != 0) df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
+    if(max_total_energy_supply  != 0) df_1$Total_energy_supply <- df_1$Total_energy_supply / max_total_energy_supply
+    if(max_inflation            != 0) df_1$Inflation <- df_1$Inflation / max_inflation
+    if(max_GDPpc                != 0) df_1$GDPpc <- df_1$GDPpc / max_GDPpc
+    if(max_population           != 0) df_1$Population <- df_1$Population / max_population
+    if(max_verified_emissions   != 0) df_1$Verified_emissions <- df_1$Verified_emissions / max_verified_emissions
+    if(max_Agriculture          != 0) df_1$Agriculture <- df_1$Agriculture / max_Agriculture
+    if(max_Industry             != 0) df_1$Industry <- df_1$Industry / max_Industry
+    if(max_Manufacturing        != 0) df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
+    if(max_Free                 != 0) df_1$Free <- df_1$Free/max_Free
+    if(max_EI                   != 0) df_1$Energy_Intensity <- df_1$Energy_Intensity / max_EI
   }
   # print(information_text)
   
@@ -482,6 +488,8 @@ read_data_2 <- function(year = 0) {
                   (if(will_use_agriculture) "_agr" else ""),
                   (if(will_use_industry) "_ind" else ""),
                   (if(will_use_manufacturing) "_man" else ""),
+                  (if(will_use_free) "_free" else ""),
+                  (if(will_use_energy_intensity) "_ei" else ""),
                   ".csv", sep = "")
   write.csv(df_1, file = paste(data_path,"created_csvs/",text_t, sep = "" ), row.names = TRUE)
   cached_data[[text_t]] <- df_1
@@ -1255,7 +1263,7 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   
   # Set size of points
   if (type == 'png'){
-    point_size <- 2
+    point_size <- 4
   } else {
     point_size <- 1
   }
@@ -1266,7 +1274,7 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   ylim_range <- c(0, max(df_1D$df_free_distance, na.rm = TRUE))
   
   # Make the n closest be put on the legend.
-  result <- select_closest_points(df_1D, n = 12)  # Adjust 'n' as needed
+  result <- select_closest_points(df_1D, n = 14)  # Adjust 'n' as needed
   df_below_threshold <- result$df_below_threshold
   df_above_threshold <- result$df_above_threshold
   
@@ -1297,7 +1305,7 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   
   # Add a legend with unique colors for each country with x < 2e08
   legend("bottomright", legend = df_below_threshold$GEO, col = color_palette[seq_len(nrow(df_below_threshold))], 
-         pch = 20, title = "Countries with x < 2e08")
+         pch = 20, title = "Countries")
   
   # Close the device
   dev.off()
@@ -1718,6 +1726,7 @@ log_message <- function(message, log_file) {
 #EWxperiment 1-2
 perform_analysis <- function(log_file, plot_path, start_year, end_year) {
   will_normalise <- TRUE
+  
   # Define the year range
   years <- start_year:end_year
   # Initialize data frames to store R^2 and model objects
@@ -1736,7 +1745,6 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
     entry <- paste("[", timestamp, "]", message)
     write(entry, file = log_file, append = TRUE)
   }
-  
   # Iterate over each country and year
   for (country in list_eur_countries) {
     for (year in years) {
@@ -1794,6 +1802,124 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
         log_message(paste("Failed analysis for Country:", country, "Year:", year, "- Error:", e$message))
       })
     }
+  }
+  
+  # Return a list with the r_squared and linear models data frames
+  return(list(R_Squared = r_squared_df, Linear_Models = linear_models_df))
+}
+
+perform_analysis_parallel <- function(log_file, plot_path, start_year, end_year) {
+  will_normalise <- TRUE
+  
+  # Define the year range
+  years <- start_year:end_year
+  
+  # Initialize data frames to store R^2 and model objects
+  r_squared_df <- data.frame(matrix(NA, nrow = length(list_eur_countries), ncol = length(years)))
+  rownames(r_squared_df) <- list_eur_countries
+  colnames(r_squared_df) <- years
+  
+  linear_models_df <- data.frame(matrix(vector("list", length(list_eur_countries) * length(years)), 
+                                        nrow = length(list_eur_countries), ncol = length(years)))
+  rownames(linear_models_df) <- list_eur_countries
+  colnames(linear_models_df) <- years
+  
+  # Initialize parallel backend
+  numCores <- detectCores() - 1  # Use one less core than available
+  cl <- makeCluster(numCores)
+  registerDoParallel(cl)
+  
+  # Parallel processing of the inner loop
+  results <- foreach(country = list_eur_countries, .combine = list, .packages = c("doParallel", "foreach")) %dopar% {
+    foreach(year = years, .combine = list) %do% {
+      
+      # Create a temporary log file for each parallel task
+      temp_log_file <- paste0("temp_log_", country, "_", year, ".txt")
+      
+      # Helper function to log messages with timestamp
+      log_message <- function(message) {
+        timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+        entry <- paste("[", timestamp, "]", message)
+        write(entry, file = temp_log_file, append = TRUE)
+      }
+      
+      # Initialize variables to handle potential errors
+      r_squared <- NA
+      linear_model <- NULL
+      
+      # Log the start of the iteration
+      log_message(paste("Starting analysis for Country:", country, "Year:", year))
+      
+      tryCatch({
+        # Step 1: Find the best combination of weights
+        weights <- find_the_best_combo_with_one(year = year, country = country)
+        
+        # Step 2: Perform linear regression with the optimal weights
+        model_data <- find_slopes_with_one_country_with_weights(year = year, country = country, weights = weights)
+        linear_model <- model_data$linear
+        r_squared <- summary(linear_model)$r.squared
+        p_val_model <- p_val(linear_model)
+        mse_model <- MSE(linear_model)
+        
+        # Plot creation wrapped in tryCatch to handle any errors
+        tryCatch({
+          create_graph_for_one(year = year, 
+                               name = "03_best_weights",
+                               type = "png", 
+                               country = country, 
+                               weights = weights, 
+                               path = plot_path)
+        }, error = function(e) {
+          log_message(paste("Failed to create PNG plot for Country:", country, "Year:", year, "- Error:", e$message))
+        })
+        
+        tryCatch({
+          create_graph_for_one(year = year, 
+                               name = "03_best_weights",
+                               type = "svg", 
+                               country = country, 
+                               weights = weights, 
+                               path = plot_path)
+        }, error = function(e) {
+          log_message(paste("Failed to create SVG plot for Country:", country, "Year:", year, "- Error:", e$message))
+        })
+        
+        # Log successful completion of the iteration
+        log_message(paste("Completed analysis for Country:", country, "Year:", year, 
+                          "- Weights:", toString(weights), 
+                          "- R^2:", r_squared, 
+                          "- P-Value:", p_val_model, 
+                          "- MSE:", mse_model))
+        
+      }, error = function(e) {
+        # Log any error that occurs in the main analysis steps
+        log_message(paste("Failed analysis for Country:", country, "Year:", year, "- Error:", e$message))
+      })
+      
+      # Return a list of results for this iteration
+      list(
+        r_squared = r_squared,
+        linear_model = linear_model,
+        country = country,
+        year = year
+      )
+    }
+  }
+  
+  # Stop the cluster
+  stopCluster(cl)
+  
+  # Merge temporary logs into main log file
+  log_files <- list.files(pattern = "temp_log_")
+  for (temp_log in log_files) {
+    file.append(log_file, temp_log)
+    file.remove(temp_log)
+  }
+  
+  # Update the main data frames with the results
+  for (result in unlist(results, recursive = FALSE)) {
+    r_squared_df[result$country, as.character(result$year)] <- result$r_squared
+    linear_models_df[[result$country, as.character(result$year)]] <- result$linear_model
   }
   
   # Return a list with the r_squared and linear models data frames
