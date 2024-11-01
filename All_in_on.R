@@ -1233,7 +1233,7 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   country <- buffer$country
   
   # Print country for verification
-  print(paste("Generating plot for country:", country))
+  #print(paste("Generating plot for country:", country))
   
   # Construct the file path and name
   file_name <- paste0(path, name, country, "_", year_for_comparison, ".", type)
