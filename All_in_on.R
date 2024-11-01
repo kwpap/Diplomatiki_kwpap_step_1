@@ -26,8 +26,8 @@ will_use_verified_emisions <- TRUE
 will_use_  <- TRUE
 will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
-will_normalise <- FALSE
-force_fresh_data <- TRUE
+will_normalise <- TRUE
+force_fresh_data <- FALSE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
 will_use_energy_intensity <- TRUE
@@ -1020,6 +1020,35 @@ find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weigh
 # print(X2014$data)
 #####################################
 
+# Function to select 'n' points with closest Euclidean distances and move them to df_below_threshold
+select_closest_points <- function(df_1D, n) {
+  df_below_threshold <- data.frame() # Initialize empty dataframe for below threshold
+  df_remaining <- df_1D              # Copy of the original dataframe to modify
+  
+  for (i in 1:n) {
+    # Calculate Euclidean distances between all points using both x and y values
+    distance_matrix <- as.matrix(dist(df_remaining[, c("df_distance", "df_free_distance")]))
+    
+    # Set the diagonal to a large value to ignore self-distances
+    diag(distance_matrix) <- Inf
+    
+    # Find the row index of the closest pair of points
+    min_distance <- which(distance_matrix == min(distance_matrix), arr.ind = TRUE)[1,]
+    closest_point_index <- min_distance[1]  # Get index of one of the closest points
+    
+    # Move the closest point to df_below_threshold
+    df_below_threshold <- rbind(df_below_threshold, df_remaining[closest_point_index,])
+    
+    # Remove the selected point from df_remaining
+    df_remaining <- df_remaining[-closest_point_index,]
+  }
+  
+  # The remaining points are assigned to df_above_threshold
+  df_above_threshold <- df_remaining
+  
+  list(df_below_threshold = df_below_threshold, df_above_threshold = df_above_threshold)
+}
+
 create_graph <- function (year = 0, type = "png", name = "01_distances_from_features_to_frees_all_countries_", path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/distnaces_all_from_all/", weights = c(1,1,1,1,1,1,1,1)) {
   
   if (year != 0) {
@@ -1236,10 +1265,10 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   xlim_range <- c(0, max(df_1D$df_distance, na.rm = TRUE))
   ylim_range <- c(0, max(df_1D$df_free_distance, na.rm = TRUE))
   
-  # Identify points with x < 2e08 and separate them
-  below_threshold <- df_1D$df_distance < max(df_1D$df_distance, na.rm = TRUE)/2
-  df_below_threshold <- df_1D[below_threshold, ]    # Subset with x < 2e08
-  df_above_threshold <- df_1D[!below_threshold, ]   # Subset with x >= 2e08
+  # Make the n closest be put on the legend.
+  result <- select_closest_points(df_1D, n = 12)  # Adjust 'n' as needed
+  df_below_threshold <- result$df_below_threshold
+  df_above_threshold <- result$df_above_threshold
   
   # Plot main points (x >= 2e08) with defined axis limits
   plot(df_above_threshold$df_distance, df_above_threshold$df_free_distance,
@@ -1272,85 +1301,6 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   
   # Close the device
   dev.off()
-}
-
-
-create_graph_for_one_old <- function(year = 0, name = "",type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
-  # Set the comparison year
-  if (year != 0) {
-    year_for_comparison <- year
-  }
-  
-  # Fetch data and linear model
-  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison,
-                                         weight_population = weights[1], weight_GDPpc = weights[2],
-                                         weight_inflation = weights[3], weight_agriculture = weights[4],
-                                         weight_industry = weights[5], weight_manufacturing = weights[6],
-                                         weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
-  
-  df_1D <- buffer$data
-  lm <- buffer$linear
-  country <- buffer$country
-  
-  # Print country for verification
-  print(paste("Generating plot for country:", country))
-  
-  # Construct the file path and name
-  file_name <- paste0(path, name, country, "_", year_for_comparison, ".",type)
-  
-  # Start PNG device
-  if (type == "png"){
-    png(file_name, width = 1000, height = 1000) 
-    file_name <- paste0(path, name, country, "_", year_for_comparison, ".png")
-  } else if (type =="svg"){
-    svg(file_name)
-    file_name <- paste0(path, name, country, "_", year_for_comparison, ".svg")
-  }
-
-  # Define color scheme
-  color_near_origin <- '#E24A33'   # Distinct color for points near (0,0)
-  color_main <- '#348ABD'          # Main color for points
-  color_regression <- 'black'      # Color for regression line
-  color_grid <- 'grey'             # Grid color
-  
-  # Define threshold for "near origin" points
-  origin_threshold <- 0.1
-  
-  # Identify points near (0,0) for special treatment
-  near_origin <- abs(df_1D$df_distance) < origin_threshold & abs(df_1D$df_free_distance) < origin_threshold
-  
-  plot(df_1D$df_distance, df_1D$df_free_distance,
-       xlab = "Combined Calculated Distance",
-       ylab = "Free Distance",
-       main = paste(country, "Year:", year_for_comparison, " (R² = ", round(summary(lm)$r.squared, 3), ")", sep = ""),
-       pch = 20, col = ifelse(near_origin, color_near_origin, color_main),  # Color points near (0,0) differently
-       cex.main = 1.8)  # Increase title size
-  
-  # Add grid lines for clarity
-  grid(col = color_grid)
-  
-  # Add regression line in black
-  abline(lm, col = color_regression, lwd = 2)
-  
-  # Label points near the origin
-  if (any(near_origin)) {
-    text(df_1D$df_distance[near_origin], df_1D$df_free_distance[near_origin] + 0.02, 
-         labels = df_1D$GEO[near_origin], col = color_near_origin, cex = 1.2)
-  }
-  
-  # Label other points in standard color
-  text(df_1D$df_distance[!near_origin], df_1D$df_free_distance[!near_origin] + 0.02, 
-       labels = df_1D$GEO[!near_origin], col = "darkgrey", cex = 1.2)
-  
-  # Add a legend with new entry for points near the origin
-  legend("bottomright", legend = c("Regression Line", "Main Points", "Near Origin Points"),
-         col = c(color_regression, color_main, color_near_origin), lty = c(1, NA, NA), 
-         pch = c(NA, 20, 20), pt.cex = c(NA, 1, 1))
-  
-  # Close the graphics device
-  dev.off()
-  
-  print(paste("Plot saved to:", file_name))
 }
 
 # Create a table for all the countries with the the r^2 value for each country and each year 2005 to 2018 on the columns and the countries on the rows
@@ -1410,9 +1360,9 @@ find_the_best_combo <- function(){
   print(paste("R^2:", r_squared))
 }
 
-find_the_best_combo_with_one <- function(){
+find_the_best_combo_with_one <- function(year = 0, country = "none"){
   weights <- rep(1,8)
-  r_squared <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
+  r_squared <- summary(find_slopes_with_one_country_with_weights(year = 0, country = "none", weights = weights)$linear)$r.squared
   step <- 10
   low <- 0
   high <- 100
@@ -1430,17 +1380,17 @@ find_the_best_combo_with_one <- function(){
       random_val <- sample((low + (j-1)*high/10):( j*high/10), 1)
       weight_with_random_val <- weights
       weight_with_random_val[index] <- random_val
-      r_squared_with_random_val <- summary(find_slopes_with_one_country_with_weights(weights = weight_with_random_val)$linear)$r.squared
+      r_squared_with_random_val <- summary(find_slopes_with_one_country_with_weights(year = 0, country = "none", weights = weight_with_random_val)$linear)$r.squared
       if (r_squared_with_random_val > r_squared){
         r_squared <- r_squared_with_random_val
         weights[index] <- random_val
         shit <- data.frame(type = c(paste("Population: ", weights[1]), paste("GDPpc: ", weights[2]), paste( "Inflation: ", weights[3]), paste("Agriculture: ", weights[4]), paste("Industry: ", weights[5]), paste("Manufacturing: ", weights[6]), paste("Total Energy Supply: ", weights[7]), paste("Verified Emissions: ", weights[8]))
                            , value = weights)
         
-        print(ggplot(shit, aes(x = type, y=value)) +
-                geom_bar(stat = "identity") + 
-                theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-                ggtitle(paste("R^2 = ", r_squared)))
+        #print(ggplot(shit, aes(x = type, y=value)) +
+        #        geom_bar(stat = "identity") + 
+        #        theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+        #        ggtitle(paste("R^2 = ", r_squared)))
       }
     }
     worth_doing_it <- TRUE
@@ -1449,12 +1399,12 @@ find_the_best_combo_with_one <- function(){
       raised <- 0
       if (weights[index]>low+step){
         weights[index] <- weights[index] - step
-        lowered <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
+        lowered <- summary(find_slopes_with_one_country_with_weights(year = 0, country = "none", weights = weights)$linear)$r.squared
         weights[index] <- weights[index] + step
       }
       if (weights[index]<high){
         weights[index] <- weights[index] + step
-        raised <- summary(find_slopes_with_one_country_with_weights(weights = weights)$linear)$r.squared
+        raised <- summary(find_slopes_with_one_country_with_weights(year = 0, country = "none", weights = weights)$linear)$r.squared
         weights[index] <- weights[index] - step
       }
       if (lowered > r_squared){
@@ -1467,15 +1417,16 @@ find_the_best_combo_with_one <- function(){
         worth_doing_it <- FALSE
       }
       shit <- data.frame(type = c(paste("Population: ", weights[1]), paste("GDPpc: ", weights[2]), paste( "Inflation: ", weights[3]), paste("Agriculture: ", weights[4]), paste("Industry: ", weights[5]), paste("Manufacturing: ", weights[6]), paste("Total Energy Supply: ", weights[7]), paste("Verified Emissions: ", weights[8])), value = weights)
-      print(ggplot(shit, aes(x = type, y=value)) +
-              geom_bar(stat = "identity") + 
-              theme(axis.text.x = element_text(angle = 45, hjust = 1))+
-              ggtitle(paste("R^2 = ", r_squared)))
+      #print(ggplot(shit, aes(x = type, y=value)) +
+      #        geom_bar(stat = "identity") + 
+      #        theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+      #        ggtitle(paste("R^2 = ", r_squared)))
     }
   }
   print(weights)
   print(paste("Population: ", weights[1], "GDPpc: ", weights[2], "Inflation: ", weights[3], "Agriculture: ", weights[4], "Industry: ", weights[5], "Manufacturing: ", weights[6], "Total Energy Supply: ", weights[7], "Verified Emissions: ", weights[8]))
   print(paste("R^2:", r_squared))
+  return (weights)
 }
 
 p_val <- function (modelobject) {
@@ -1489,6 +1440,13 @@ MSE <- function(modelobject){
   if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
   return(mean(summary(modelobject)$residuals^2))
 }
+
+
+
+# Usage:
+# Assuming you have a dataframe 'df' and a list of European countries 'list_eur_countries'
+# final_data <- analyze_european_data(df, list_eur_countries, "log_file.txt", "plots/", 2008, 2018)
+
 
 is_first_linear_regration_better <- function(lm1, lm2){
   return(summary(lm1)$r.squared > summary(lm2)$r.squared && (p_val(lm1) < 0.05 || p_val(lm1) < p_val(lm2)) && MSE(lm1) < MSE(lm2)*1.5)
@@ -1749,6 +1707,98 @@ All_the_countries_throught_the_years_with_best_combo <- function(){
   heatmap(matrixgg, Rowv = NA, Colv = NA, scale = "none", col = colorRampPalette(c("red","white", "blue"))(100), margins = c(5, 10), trace = "none", xlab = "Year", ylab = "Country", main = "R^2 values for each country and year")
   return(dat)
   }
+
+log_message <- function(message, log_file) {
+  timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+  entry <- paste("[", timestamp, "]", message)
+  write(entry, file = log_file, append = TRUE)
+}
+
+
+#EWxperiment 1-2
+perform_analysis <- function(log_file, plot_path, start_year, end_year) {
+  will_normalise <- TRUE
+  # Define the year range
+  years <- start_year:end_year
+  # Initialize data frames to store R^2 and model objects
+  r_squared_df <- data.frame(matrix(NA, nrow = length(list_eur_countries), ncol = length(years)))
+  rownames(r_squared_df) <- list_eur_countries
+  colnames(r_squared_df) <- years
+  
+  linear_models_df <- data.frame(matrix(vector("list", length(list_eur_countries) * length(years)), 
+                                        nrow = length(list_eur_countries), ncol = length(years)))
+  rownames(linear_models_df) <- list_eur_countries
+  colnames(linear_models_df) <- years
+  
+  # Helper function to log messages with timestamp
+  log_message <- function(message) {
+    timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    entry <- paste("[", timestamp, "]", message)
+    write(entry, file = log_file, append = TRUE)
+  }
+  
+  # Iterate over each country and year
+  for (country in list_eur_countries) {
+    for (year in years) {
+      
+      # Log the start of the iteration
+      log_message(paste("Starting analysis for Country:", country, "Year:", year))
+      
+      tryCatch({
+        # Step 1: Find the best combination of weights
+        weights <- find_the_best_combo_with_one(year = year, country = country)
+        
+        # Step 2: Perform linear regression with the optimal weights
+        model_data <- find_slopes_with_one_country_with_weights(year = year, country = country, weights = weights)
+        linear_model <- model_data$linear
+        r_squared <- summary(linear_model)$r.squared
+        p_val_model <- p_val(linear_model)
+        mse_model <- MSE(linear_model)
+        
+        # Step 3: Store R^2 and the model in respective data frames
+        r_squared_df[country, as.character(year)] <- r_squared
+        linear_models_df[[country, as.character(year)]] <- linear_model
+        
+        # Plot creation wrapped in tryCatch to handle any errors
+        tryCatch({
+          create_graph_for_one(year = year, 
+                               name = "03_best_weights",
+                               type = "png", 
+                               country = country, 
+                               weights = weights, 
+                               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/")
+        }, error = function(e) {
+          log_message(paste("Failed to create PNG plot for Country:", country, "Year:", year, "- Error:", e$message))
+        })
+        
+        tryCatch({
+          create_graph_for_one(year = year, 
+                               name = "03_best_weights",
+                               type = "svg", 
+                               country = country, 
+                               weights = weights, 
+                               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/")
+        }, error = function(e) {
+          log_message(paste("Failed to create SVG plot for Country:", country, "Year:", year, "- Error:", e$message))
+        })
+        
+        # Log successful completion of the iteration
+        log_message(paste("Completed analysis for Country:", country, "Year:", year, 
+                          "- Weights:", toString(weights), 
+                          "- R^2:", r_squared, 
+                          "- P-Value:", p_val_model, 
+                          "- MSE:", mse_model))
+        
+      }, error = function(e) {
+        # Log any error that occurs in the main analysis steps
+        log_message(paste("Failed analysis for Country:", country, "Year:", year, "- Error:", e$message))
+      })
+    }
+  }
+  
+  # Return a list with the r_squared and linear models data frames
+  return(list(R_Squared = r_squared_df, Linear_Models = linear_models_df))
+}
 
 
 # Main function to visualize attribute trends and summarize data
