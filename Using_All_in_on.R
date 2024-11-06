@@ -1,20 +1,33 @@
 # Load the functions defined in functions.R
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/All_in_on.R")
 
-final_data <- analyze_european_data(list_eur_countries, "log_file.txt", "plots/", 2008, 2018)
-
 # Create plots for all the distances from all countries to all the others
 for (year in c(2005:2020)) {
-  create_graph(year = year, 
-               type = "svg",
-               name = "01_distances_from_features_to_frees_all_countries_", 
-               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/01_distnaces_all_from_all/", 
-               weights = c(1,1,1,1,1,1,1,1))
-  create_graph(year = year, 
-               type = "png",
-               name = "01_distances_from_features_to_frees_all_countries_", 
-               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/01_distnaces_all_from_all/", 
-               weights = c(1,1,1,1,1,1,1,1))
+  # Try to create the SVG graph, log any error that occurs
+  tryCatch({
+    create_graph(
+      year = year, 
+      type = "svg",
+      name = "01_distances_from_features_to_frees_all_countries_", 
+      path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/01_distnaces_all_from_all/", 
+      weights = c(1,1,1,1,1,1,1,1)
+    )
+  }, error = function(e) {
+    message(paste("Error creating SVG graph for year:", year, "-", e$message))
+  })
+  
+  # Try to create the PNG graph, log any error that occurs
+  tryCatch({
+    create_graph(
+      year = year, 
+      type = "png",
+      name = "01_distances_from_features_to_frees_all_countries_", 
+      path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/01_distnaces_all_from_all/", 
+      weights = c(1,1,1,1,1,1,1,1)
+    )
+  }, error = function(e) {
+    message(paste("Error creating PNG graph for year:", year, "-", e$message))
+  })
   
 }
 
@@ -119,8 +132,8 @@ start_year <- 2005
 end_year <- 2018
 
 # Call the perform_analysis function
-#results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
-results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
+#results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
 saveRDS(results, file = RDS_03_file)
 #results <- readRDS(RDS_03_file)
 # Access the results
@@ -129,7 +142,31 @@ linear_models_data <- results$Linear_Models
 
 # Print or inspect the data frames
 print(r_squared_data)       # View R^2 values for each country-year
-print(linear_models_data)    
+# Assuming linear_models_df contains linear regression model objects
+p_value_df <- linear_models_data  # Create a copy if you want to keep the original
+
+# Loop through each cell in the data frame
+for (i in seq_len(nrow(linear_models_data))) {
+  for (j in seq_len(ncol(linear_models_data))) {
+    # Check if the entry is a model object and has an R-squared value
+    model <- linear_models_data[[i, j]]
+    if (!is.null(model) && inherits(model, "lm")) {  # Check if it’s a valid lm object
+      p_value_df[i, j] <- p_val(model)  # Extract the R-squared value
+    } else {
+      p_value_df[i, j] <- NA  # Set to NA if there's no valid model
+    }
+  }
+}
+latex_code <- print(
+  xtable(r_squared_data, caption = "All distances", label = "tab:sample_table"),
+  type = "latex",
+  include.rownames = FALSE,
+  floating = TRUE,
+  tabular.environment = "tabular",
+  booktabs = TRUE,
+  sanitize.text.function = identity
+)
+
 
 ################################################################################################################
 
