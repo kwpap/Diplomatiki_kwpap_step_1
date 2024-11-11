@@ -13,6 +13,10 @@ library("lpSolve")
 library("svglite")
 library("shiny")
 library(corrplot)
+# Find the best weights
+library(xtable)
+library(kableExtra)
+library(tidyr) 
   # INITIAL DECLARATIONS
 
 will_use_log <- FALSE
@@ -26,7 +30,7 @@ will_use_verified_emisions <- TRUE
 will_use_  <- TRUE
 will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
-will_normalise <- TRUE
+will_normalise <- FALSE
 force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
@@ -59,6 +63,9 @@ clusters <- list(c("France","Germany","Italy","Poland","Spain","United Kingdom")
               c("Bulgaria","Estonia","Hungary","Latvia","Lithuania","Romania"), 
               c("Austria","Belgium","Cyprus","Denmark","Finland","Greece","Ireland",
                 "Luxembourg","Malta","Netherlands","Portugal","Slovenia","Sweden" ))
+
+weight_names <- c("Total_energy_supply", "GDPpc", "Population", "Inflation", 
+                  "Agriculture", "Industry", "Manufacturing", "Energy_Intensity")
 
 read_data_2 <- function(year = 0) {
   if(year != 0) {year_for_comparison <- year}
@@ -494,441 +501,132 @@ read_data_2 <- function(year = 0) {
   return(df_1)
 }
 
-read_data <- function(year = 0) {
-  if(year != 0) {year_for_comparison <- year}
-    information_text <- list() # To kef errors and missing data
-
-    # Try to find the file in the folder "Data/created_csvs"
-    # If it is not found, create it
-    will_use <- c(will_use_total_energy_supply, will_use_GDPpc, will_use_population, will_use_inflation,will_use_verified_emisions, will_use_agriculture, will_use_industry, will_use_manufacturing)
-    text_s <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
-                    (if(will_normalise) "_norm" else ""),
-                    (if(will_use_total_energy_supply) "_tes" else ""),
-                    (if(will_use_verified_emisions) "_ve" else ""),
-                    (if(will_use_GDPpc) "_gdp" else ""),
-                    (if(will_use_population) "_pop" else ""),
-                    (if(will_use_inflation) "_inf" else ""),
-                    (if(will_use_agriculture) "_agr" else ""),
-                    (if(will_use_industry) "_ind" else ""),
-                    (if(will_use_manufacturing) "_man" else ""),
-                    ".csv", sep = "")
-    if(!force_fresh_data & !is.null(cached_data[[text_s]])){
-      #print (paste("Using Cached Data from hash for: ", year_for_comparison))
-      return(cached_data[[text_s]])
+read_free <- function(year) {
+  # Ensure 'cached_free' exists in the global environment
+  if (!exists("cached_free", envir = .GlobalEnv)) {
+    cached_free <<- list()
   }
-    if (!force_fresh_data & file.exists(paste(data_path,"created_csvs/",text_s, sep = ""))) {
-        #print ("Using Cached Data from csv")
-        cached_data[[text_s]] <- data.frame(read.csv(file = paste("./Data/created_csvs/",text_s, sep = ""), header = TRUE)[-c(1)])
-        return(data.frame(read.csv(file = paste(data_path,"created_csvs/",text_s, sep = ""),
-                        header = TRUE)[-c(1)]))
-    }
-    # import countries from databse
-    kanali <- dbConnect(RMariaDB::MariaDB(),
-                        user = use,
-                        password = passwor,
-                        dbname = db,
-                        host = hos)
-    qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
-    res <- dbSendQuery(kanali, qurry_countries) # send query to database
-    countries <- dbFetch(res, n = -1) # fetch all data from querry
-    dbClearResult(res) # clear result
-    country_names <- countries[, 1]
-    country_eu_abbr2L <- countries[, 3]
-
-    df_1 <- data.frame(list_eur_countries)
-    zero_vector <- rep(1, length(list_eur_countries))
-    for (i in 1:8) {
-        df_1 <- cbind(df_1, data.frame(zero_vector))
-    }
-    colnames(df_1) <- c("GEO","Total_energy_supply","GDPpc", "Population", "Inflation", "Verified_emissions", "Agriculture", "Industry", "Manufacturing")
-
-    if (will_use_GDPpc) {
-        # Load Data from csv file
-        # Path: Data
-        # File: GDP_per_capita_1960_2021.csv
-        # Source: https://data.worldbank.org/indicator/NY.GDP.PCAP.CD
-        # Data: GDP per capita (current US$)
-        # Country: All countries
-        # Year: 1960 - 2021
-        # Unit: US$
-
-        headers <- read.csv(file = "./Data/GDP_per_capita_1960_2021.csv",
-                            skip = 4,
-                            header = FALSE,
-                            nrows = 1,
-                            as.is = TRUE)
-        df_GDPpc <- read.csv(file = "./Data/GDP_per_capita_1960_2021.csv",
-                            skip = 5, header = FALSE)
-        colnames(df_GDPpc) <- headers
-        # Autos o ilithios tropos diavasmatos ginetai gia na apofigoume na peiraxthoun ta headers
-
-        df_GDPpc <- subset(df_GDPpc, select = -c(2, 3, 4))
-        df_GDPpc <- t(df_GDPpc)
-        colnames(df_GDPpc) <- df_GDPpc[1, ]
-        df_GDPpc <- df_GDPpc[-1, ]
-        # To select precific country and year use the following syntax
-        # df_GDPpc[year-1959, which(colnames(df_GDPpc) == "country_name")]
-        for (i in 1:nrow(df_1)) {
-            df_1[i, "GDPpc"] <- as.numeric(df_GDPpc[year_for_comparison-1959, which(colnames(df_GDPpc) == df_1[i, "GEO"])])
-        }
-    }
-
-    if (will_use_inflation) {
-        # Load Inflation data from csv file
-        # Path: Data
-        # File: Inflation_1960_2021.csv
-        # Source: https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
-        # Data: Inflation, consumer prices (annual %)
-        # Country: All countries
-        # Year: 1960 - 2021
-        # Unit: %
-
-        # Headers are on the 4rth row
-        headers <- read.csv(file = "./Data/Inflation_1960_2021.csv",
-                            skip = 4,
-                            header = FALSE,
-                            nrows = 1,
-                            as.is = TRUE)
-        df_inflation <- read.csv(file = "./Data/Inflation_1960_2021.csv",
-                            skip = 4, header = FALSE)
-        colnames(df_inflation) <- headers
-
-        # Create new dataframe, where colnames are the country names
-        # and the rows are the years
-        df_inflation <- subset(df_inflation, select = -c(2, 3, 4))
-        df_inflation <- t(df_inflation)
-        colnames(df_inflation) <- df_inflation[1, ]
-        df_inflation <- df_inflation[-1, ]
-        for (i in 1:nrow(df_1)) {
-
-            df_1$"Inflation"[i] <- as.numeric(df_inflation[year_for_comparison-1959, which(colnames(df_inflation) == df_1$"GEO"[i])])
-        }
-    }
-
-
-    if (will_use_population){
-        # Load Population data from csv file
-        # Path: Data
-        # File: API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv
-        # Source: https://data.worldbank.org/indicator/SP.POP.TOTL
-        # Country: All countries
-        # Year: 1960 - 2021
-        # Unit: Persons
-
-        # Headers are on the 4rth row
-        headers <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
-                            skip = 4,
-                            header = FALSE,
-                            nrows = 1,
-                            as.is = TRUE)
-        df_population <- read.csv(file = "./Data/API_SP.POP.TOTL_DS2_en_csv_v2_4701113.csv",
-                            skip = 4, header = FALSE)
-        colnames(df_population) <- headers
-
-        # Create new dataframe, where colnames are the country names
-        # and the rows are the years
-        df_population <- subset(df_population, select = -c(2, 3, 4))
-        df_population <- t(df_population)
-        colnames(df_population) <- df_population[1, ]
-        df_population <- df_population[-1, ]
-        for (i in 1:nrow(df_1)) {
-
-            df_1$Population[i] <- as.numeric(df_population[year_for_comparison-1959, which(colnames(df_population) == df_1$"GEO"[i])])
-        }
-    }
-
-    if (will_use_verified_emisions){
-      if (year_for_comparison < 1990){
-        for (i in 1:nrow(df_1)){
-          df_1$Verified_emissions[i] <- 1
-        }
-        print(paste("NO CO2 emissions were found for year", year_for_comparison,"."))
-      }
-      else if(year_for_comparison < 2004){
-        # Load Population data from csv file
-        # Path: Data
-        # File: API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv
-        # Source: https://data.worldbank.org/indicator/EN.ATM.GHGT.KT.CE
-        # Country: All countries
-        # Year: 1990 - 2021
-        # Unit: K tons of Co2 equivalent
-        # Headers are on the 5th row
-        
-        headers <- read.csv(file = "./Data/API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv",
-                            skip = 4,
-                            header = TRUE,
-                            nrows = 1,
-                            as.is = TRUE)
-        df_emis <- read.csv(file = "./Data/API_EN.ATM.GHGT.KT.CE_DS2_en_csv_v2_4770432.csv",
-                                  skip = 4, header = FALSE)
-        colnames(df_emis) <- headers
-        
-        # Create new dataframe, where colnames are the country names
-        # and the rows are the years
-        df_emis <- subset(df_emis, select = -c(2, 3, 4))
-        df_emis <- t(df_emis)
-        colnames(df_emis) <- df_emis[1, ]
-        df_emis <- df_emis[-1, ]
-        for (i in 1:nrow(df_1)) {
-          
-          df_1$Verified_emissions[i] <- as.numeric(df_emis[year_for_comparison-1959, which(colnames(df_emis) == df_1$"GEO"[i])])
-        }
-      } else {
-      # Taking data drom the database as well
-
-
-      df_verified_emisions <- data.frame(nrow = 50,ncol = 2)
-      colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
-      for (i in 1:length(country_names)) { # nolint
-          querr <- paste(
-          "SELECT SUM(verified) FROM `eutl_compliance` WHERE country = '",
-          country_eu_abbr2L[i], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
-          res <- dbSendQuery(kanali, querr) # send query to database
-          verified <- dbFetch(res, n = -1) # fetch all data from querry
-          dbClearResult(res) # clear result
-          df_verified_emisions <- rbind(df_verified_emisions, data.frame("GEO" = country_names[i], "verified_emisions" = verified[1,1]))
-      }
-      dbDisconnect(kanali)
-      colnames(df_verified_emisions) <- c("GEO", "verified_emisions")
-
-
-      # Merge the two dataframes
-      for (i in 1:nrow(df_1)){
-          df_1$Verified_emissions[i] <- as.integer(df_verified_emisions$verified_emisions[which(df_verified_emisions$GEO == df_1$GEO[i])])
-      }
-    }
-  }
-  if (will_use_total_energy_supply) {
-    # Load Energy Balance data from csv file
-    # Path: Data
-    # File: nrg_bal_s__custom_4143365_linear.csv
-    # Source: Eurostat
-    # Data tree :  All data -> Environment and energy -> Energy -> Energy statistics -> quantities Energy statistics -> quantities, annual data -> Energy balances
-    # Data name on Eurostat : Simplified energy balances 
-    # Data: Energy balance
-    # Country: All countries
-    # Year: 1990 - 2020
-    # Unit: Thousand tonnes of oil equivalent
-    # nrg_bal codes:
-    # Primary production     		      -> PPRD
-    # Imports                	      	-> IMP
-    # Exports                         -> EXP
-    # Gross Available Energy          -> GAE
-    # Total energy supply             -> NRGSUP
-    # Available for final consumption -> AFC
-    
-    d <- read.csv(file = "./Data/nrg_bal_s__custom_4143365_linear.csv",
-                  header = TRUE)
-    d <- d[-c(1, 2, 3, 5, 6, 10)]
-    df_total_energy_supply <- subset(d, d$nrg_bal == "NRGSUP")[-c(1)]
-    
-    for (i in 1:nrow(df_1)) {
-      df_1$"Total_energy_supply"[i] <- df_total_energy_supply$OBS_VALUE[which(df_total_energy_supply$TIME_PERIOD == year_for_comparison & df_total_energy_supply$geo == countries$eu_abbr2L[which(countries$name == df_1$"GEO"[i])])]
-    }
-    df_1$Total_energy_supply <- as.numeric(gsub(",", "", df_1$Total_energy_supply))
-    
-  }
-
-  if (will_use_agriculture | will_use_industry | will_use_manufacturing){
-      # import data from World Bank
-      # Path: Data
-      # File: 4.2_Structure_of_value_added.csv
-      # Source: http://wdi.worldbank.org/table/4.2
-      # https://databank.worldbank.org/reports.aspx?source=2&series=NY.GDP.MKTP.CD,NV.AGR.TOTL.ZS,NV.IND.TOTL.ZS,NV.IND.MANF.ZS,NV.SRV.TETC.ZS,NV.SRV.TOTL.ZS#
-      # Data: GDP, Argicalture, Industry, Manufacturing, Services
-      # Country: All countries
-      # Year: 1990 - 2020
-      # Unit: Billions USD and percentage
-      # Opened teh excel file on microsoft excel and coverted it into csv file AND CALCULATED BY HAND BULAGRIA MANUFACTURING 2020
-      # Had to select the whole dataset 
-      my_data <- read.csv(file = "./Data/2dbe830a-5afc-4ed9-b478-f5349450364b_Data.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
-
-      buffer <- my_data[my_data$"Country.Name" %in% df_1$"GEO",]
-      buffer_GDP <- buffer[buffer$"Series.Name" == "GDP (current US$)",]
-      buffer_Agriculture <- buffer[buffer$"Series.Name" == "Agriculture, forestry, and fishing, value added (% of GDP)",]
-      buffer_Industry <- buffer[buffer$"Series.Name" == "Industry (including construction), value added (% of GDP)",]
-      buffer_Manufacturing <- buffer[buffer$"Series.Name" == "Manufacturing, value added (% of GDP)",]
-      buffer_Services <- buffer[buffer$"Series.Name" == "Services, value added (% of GDP)",]
-    }
-
-    if (will_use_agriculture){
-      if (Manufacturing_Industry_Agriculture_as_percentage){
-        for (i in 1:nrow(df_1)){
-          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-        }
-      }
-      else {
-        for (i in 1:nrow(df_1)){
-          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-          df_1$Agriculture[i] <- as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-        }
-      }
-    }
-    if (will_use_industry){
-      if(Manufacturing_Industry_Agriculture_as_percentage){
-        for (i in 1:nrow(df_1)){
-          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-        } 
-      }
-      else{
-        for (i in 1:nrow(df_1)){
-          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-          df_1$Industry[i] <- as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-        }        
-      }
-    }
-    if (will_use_manufacturing){
-      if(Manufacturing_Industry_Agriculture_as_percentage){
-        for (i in 1:nrow(df_1)){
-          if (df_1$GEO[i] == "Bulgaria"){
-            # Estimating Bulgaria's manufacturing value added from the rest of the GDP components
-            df_1$Manufacturing[i] <- 100 - (as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])) - (as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])) - (as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]))
-            next
-          }
-          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-        }
-      }
-      else{
-        for (i in 1:nrow(df_1)){
-          if (df_1$GEO[i] == "Bulgaria"){
-            # Estimating Bulgaria's manufacturing value added from the rest of the GDP components
-            GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-            df_1$Manufacturing[i] <- GDP_multiplier / 100 * (100 - as.numeric(buffer_Agriculture[buffer_Agriculture$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) 
-                                                    - as.numeric(buffer_Industry[buffer_Industry$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-                                                    - as.numeric(buffer_Services[buffer_Services$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]))
-            next
-          }
-          GDP_multiplier <- as.numeric(buffer_GDP[buffer_GDP$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")])
-          df_1$Manufacturing[i] <- as.numeric(buffer_Manufacturing[buffer_Manufacturing$"Country.Name" == df_1$GEO[i],paste("X",year_for_comparison, "..YR", year_for_comparison,".", sep = "")]) * GDP_multiplier / 100
-        }
-      }
-    }
-
-    if (use_mean_for_missing_data){
-        for (i in 1:ncol(df_1)){
-
-            for(j in 1:nrow(df_1)){
-                if (is.na(df_1[j,i])){
-                    information_text <- append(information_text, paste("Missing data in ", colnames(df_1)[i], " for ", df_1$GEO[j], " in year ", year_for_comparison, ". Replaced with mean value.", sep = "" ))
-                }
-            }
-            if (sum(is.na(df_1[,i])) > 0){
-                df_1[,i][is.na(df_1[,i])] <- mean(df_1[,i], na.rm = TRUE)
-            }
-        }
-    }
-
-    if (will_use_log){
-        df_1$Total_energy_supply <- log(abs(df_1$Total_energy_supply))
-
-        df_1$Inflation <- log(df_1$Inflation/100 + 1)*100
-        df_1$GDPpc <- log(abs(df_1$GDPpc))
-        df_1$Population <- log(abs(df_1$Population))
-        df_1$Verified_emissions <- log(abs(df_1$Verified_emissions))
-        df_1$Agriculture <- log(abs(df_1$Agriculture))
-        df_1$Industry <- log(abs(df_1$Industry))
-        df_1$Manufacturing <- log(abs(df_1$Manufacturing))
-    }
-    if (will_normalise){ 
-        max_total_energy_supply <- max(df_1$Total_energy_supply)
-        max_inflation <- max(abs(df_1$Inflation))
-        max_GDPpc <- max(abs(df_1$GDPpc))
-        max_population <- max(abs(df_1$Population))
-        max_verified_emissions <- max(abs(df_1$Verified_emissions))
-        max_Agriculture <- max(abs(df_1$Agriculture))
-        max_Industry <- max(abs(df_1$Industry))
-        max_Manufacturing <- max(abs(df_1$Manufacturing))
-
-        # devide by max value of each column to normalise data unless max value is 0
-        if(max_total_energy_supply != 0) df_1$Total_energy_supply <- df_1$Total_energy_supply / max_total_energy_supply
-        if(max_inflation != 0) df_1$Inflation <- df_1$Inflation / max_inflation
-        if(max_GDPpc != 0) df_1$GDPpc <- df_1$GDPpc / max_GDPpc
-        if(max_population != 0) df_1$Population <- df_1$Population / max_population
-        if(max_verified_emissions != 0) df_1$Verified_emissions <- df_1$Verified_emissions / max_verified_emissions
-        if(max_Agriculture != 0) df_1$Agriculture <- df_1$Agriculture / max_Agriculture
-        if(max_Industry != 0) df_1$Industry <- df_1$Industry / max_Industry
-        if(max_Manufacturing != 0) df_1$Manufacturing <- df_1$Manufacturing / max_Manufacturing
-    }
-    # print(information_text)
-    
-    # save csv file of df_1
-    text_t <- paste("df_all_",year_for_comparison,(if (will_use_log) "_log" else ""),
-                        (if(will_normalise) "_norm" else ""),
-                        (if(will_use_total_energy_supply) "_tes" else ""),
-                        (if(will_use_verified_emisions) "_ve" else ""),
-                        (if(will_use_GDPpc) "_gdp" else ""),
-                        (if(will_use_population) "_pop" else ""),
-                        (if(will_use_inflation) "_inf" else ""),
-                        (if(will_use_agriculture) "_agr" else ""),
-                        (if(will_use_industry) "_ind" else ""),
-                        (if(will_use_manufacturing) "_man" else ""),
-                        ".csv", sep = "")
-    write.csv(df_1, file = paste("./Data/created_csvs/",text_t, sep = "" ), row.names = TRUE)
-    cached_data[[text_t]] <- df_1
-    return(df_1)
-}
-
-read_free <- function(year = 0){
-  if(year != 0) {year_for_comparison <- year}
-  text_s <- paste("df_free_",year_for_comparison,(if (will_use_log) "_log" else ""),
-                  (if(will_normalise) "_norm" else ""),
-                  (if(will_use_total_energy_supply) "_tes" else ""),
-                  (if(will_use_verified_emisions) "_ve" else ""),
-                  (if(will_use_GDPpc) "_gdp" else ""),
-                  (if(will_use_population) "_pop" else ""),
-                  (if(will_use_inflation) "_inf" else ""),
-                  (if(will_use_agriculture) "_agr" else ""),
-                  (if(will_use_industry) "_ind" else ""),
-                  (if(will_use_manufacturing) "_man" else ""),
-                  ".csv", sep = "")
-  if(!force_fresh_data & !is.null(cached_free[[text_s]])){
-    #print (paste("Using Cached Free Data from hash for: ", year_for_comparison))
+  
+  # Generate cache key based on 'year' and 'will_normalise'
+  text_s <- paste("df_free_", year, if (will_normalise) "_norm" else "", ".csv", sep = "")
+  
+  # Check if data is already cached
+  if (!force_fresh_data && !is.null(cached_free[[text_s]])) {
+    # Return the cached data
     return(cached_free[[text_s]])
   }
+  
+  # List of European countries with data
+  list_eur_countries <- c(
+    "Austria", "Belgium", "Bulgaria", "Cyprus", "Denmark", "Estonia",
+    "Finland", "France", "Germany", "Greece", "Hungary", "Ireland",
+    "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands",
+    "Poland", "Portugal", "Romania", "Slovenia", "Spain", "Sweden",
+    "United Kingdom"
+  )
+  
+  # Connect to the database
   kanali <- dbConnect(RMySQL::MySQL(),
                       user = use,
                       password = passwor,
                       dbname = db,
                       host = hos)
-  ##################################
-  # include verified emissions data
-  ##################################
-  qurry_countries <- "SELECT name, abbr2L, eu_abbr2L from countries where EU =1"
-  res <- dbSendQuery(kanali, qurry_countries) # send query to database
-  countries <- dbFetch(res, n = -1) # fetch all data from querry
-  dbClearResult(res) # clear result
-
-  for (i in 1:length(list_eur_countries)) { # nolint
-    querr <- paste(
-      "SELECT CAST(SUM(freeAlloc) AS DOUBLE) FROM `eutl_compliance` WHERE country = '",
-      countries$eu_abbr2L[which (countries$name == list_eur_countries[i])], "' AND etos ='",year_for_comparison,"'", sep = "", collapse = NULL)
-    #res <- dbSendQuery(kanali, querr) # send query to database
-    #free <- dbFetch(res, n = -1) # fetch all data from querry
-    # Use dbGetQuery to send and fetch results in one step
-    free <- dbGetQuery(kanali, querr)
-
-    #dbClearResult(res) # clear result
-
-    if (i == 1){
-      df_free <- data.frame("GEO" = list_eur_countries[i], "Free" = free[1,1])
-    } else {
-      df_free <- rbind(df_free, data.frame("GEO" = list_eur_countries[i], "Free" = free[1,1]))
-    }
-  }
-
-  df_free$Free <- as.numeric(df_free$Free)
-  dbDisconnect(kanali)
-  if (will_use_log){
-    df_free$Free <- log(abs(df_free$Free))
-  }
-  if (will_normalise){
-    df_free$Free <- df_free$Free/max(df_free$Free)
-  }
-
-  cached_free[[text_s]] <- df_free
   
-  return (df_free)
+  # Retrieve country codes for the specified countries
+  query_countries <- sprintf(
+    "SELECT name, eu_abbr2L FROM countries WHERE EU = 1 AND name IN (%s)",
+    paste(shQuote(list_eur_countries), collapse = ", ")
+  )
+  countries <- dbGetQuery(kanali, query_countries)
+  
+  # Prepare the list of country codes for the SQL IN clause
+  country_codes <- paste(shQuote(countries$eu_abbr2L), collapse = ", ")
+  
+  # Build and execute the query to fetch free allocation data
+  query_free <- sprintf(
+    "SELECT c.name AS GEO, SUM(CAST(ec.freeAlloc AS DOUBLE)) AS Free
+         FROM eutl_compliance ec
+         JOIN countries c ON ec.country = c.eu_abbr2L
+         WHERE c.eu_abbr2L IN (%s) AND ec.etos = '%s'
+         GROUP BY c.name",
+    country_codes, year
+  )
+  df_free_db <- dbGetQuery(kanali, query_free)
+  
+  # Disconnect from the database
+  dbDisconnect(kanali)
+  
+  # Convert 'Free' column to numeric
+  df_free_db$Free <- as.numeric(df_free_db$Free)
+  
+  # Check for missing countries in the database data
+  missing_countries <- setdiff(list_eur_countries, df_free_db$GEO)
+  
+  if (length(missing_countries) > 0) {
+    # Read the CSV data
+    df_csv_raw <- read.csv(file = paste0(data_path, "Historical emissions_data.csv"),
+                           header = TRUE,
+                           stringsAsFactors = FALSE)
+    names(df_csv_raw) <- c("Main.Activity", "Country", "Year", "ETS.information",
+                           "Emissions.Unit", "ETS.Information")
+    
+    # Replace "United Kingdom (excl. NI)" with "United Kingdom"
+    df_csv_raw$Country[df_csv_raw$Country == "United Kingdom (excl. NI)"] <- "United Kingdom"
+    
+    # Remove spaces in 'ETS.Information' and convert to numeric
+    df_csv_raw$ETS.Information <- as.numeric(gsub(" ", "", df_csv_raw$ETS.Information))
+    
+    # Filter data for the missing countries and the specified year
+    df_csv_year <- df_csv_raw[df_csv_raw$Country %in% missing_countries & df_csv_raw$Year == year, ]
+    
+    # Initialize data frame to store data for missing countries
+    df_free_csv <- data.frame(GEO = character(), Free = numeric(), stringsAsFactors = FALSE)
+    
+    for (country in missing_countries) {
+      # Subset data for the country
+      df_country <- df_csv_year[df_csv_year$Country == country, ]
+      
+      # Get aviation data
+      aviation <- df_country$ETS.Information[
+        df_country$ETS.information == "1.1 Freely allocated allowances" &
+          df_country$Main.Activity == "10 Aviation"
+      ]
+      # Get all stationary installations data
+      all_stationary <- df_country$ETS.Information[
+        df_country$ETS.information == "1.1 Freely allocated allowances" &
+          df_country$Main.Activity == "20-99 All stationary installations"
+      ]
+      # Sum the values, handling missing values
+      aviation <- ifelse(length(aviation) > 0, aviation, 0)
+      all_stationary <- ifelse(length(all_stationary) > 0, all_stationary, 0)
+      free_value <- aviation + all_stationary
+      # Append to df_free_csv
+      df_free_csv <- rbind(df_free_csv, data.frame(GEO = country, Free = free_value, stringsAsFactors = FALSE))
+    }
+    
+    # Combine the data from database and CSV
+    df_free <- rbind(df_free_db, df_free_csv)
+  } else {
+    df_free <- df_free_db
+  }
+  
+  # Convert 'Free' to numeric (again, in case of data from CSV)
+  df_free$Free <- as.numeric(df_free$Free)
+  
+  # Normalize the data if required
+  if (will_normalise) {
+    df_free$Free <- df_free$Free / max(df_free$Free, na.rm = TRUE)
+  }
+  
+  # Sort the data frame by 'GEO' in alphabetical order
+  df_free <- df_free[order(df_free$GEO), ]
+  
+  # Cache the result in the global environment
+  cached_free[[text_s]] <<- df_free
+  
+  return(df_free)
 }
+
 
 find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weight_inflation = 1, weight_agriculture = 1, weight_industry = 1, weight_manufacturing = 1, weight_total_energy_supply = 1, weight_verified_emisions = 1){
   if(year != 0) {year_for_comparison <- year}
@@ -1062,7 +760,7 @@ create_graph <- function(year = 0, type = "png", name = "01_distances_from_featu
   
   # Set the comparison year
   year_for_comparison <- ifelse(year != 0, year, current_year())  # Replace current_year() with an appropriate default
-  
+  browser
   # Retrieve slopes and data
   slopes <- find_slopes(
     year = year_for_comparison, 
@@ -1119,18 +817,42 @@ create_graph <- function(year = 0, type = "png", name = "01_distances_from_featu
     scale_color_manual(values = colors, na.value = "grey") +
     geom_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "black", linetype = "dashed") +
     labs(
-      title = paste("Distance in free Allocation vs. Distance in features for Year", year),
+      #title = paste("Distance in free Allocation vs. Distance in features for Year", year),
       x = "Combined Features Distance",
       y = "Free Allocation Distance",
       color = "Highlighted Countries"
     ) +
     theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(
+      plot.title = element_text(hjust = 0.5),
+      legend.position = c(0.95, 0.05),  # Position legend at bottom right
+      legend.justification = c("right", "bottom"),
+      legend.background = element_rect(fill = "white", color = "black", size = 0.5, linetype = "solid")  # White background with border
+    ) +
     xlim(0, x_max_value) +
     ylim(0, y_max_value)
   
   # Save the plot
-  ggsave(filename = paste0(path, name, year, ".", type), plot = p, width = 20, height = 20, units = "cm")
+  ggsave(filename = paste0(path,year,name , ".", type), plot = p, width = 20, height = 20, units = "cm")
+  
+  # Create the second plot with regression lines (scatter plot with linear and quadratic regression)
+  p2 <- ggplot(df_1D, aes(x = df_distance, y = df_free_distance)) +
+    geom_point(color = "darkblue") +
+    geom_smooth(method = "lm", formula = y ~ x, se = TRUE, color = "red", linetype = "dashed") +
+    geom_smooth(method = "lm", formula = y ~ poly(x, 2), se = TRUE, color = "green") +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "black", linetype = "dashed") +
+    labs(
+      #title = paste("Distance in free Allocation vs. Distance in features for Year", year),
+      x = "Combined Features Distance",
+      y = "Free Allocation Distance"
+    ) +
+    #ggtitle("Scatter Plot with Linear (Red Dashed) and Quadratic (Green Solid) Regression Lines") +
+    theme_minimal()+
+    xlim(0, x_max_value) +
+    ylim(0, y_max_value)
+  
+  # Save the second plot with a modified name to avoid overwriting
+  ggsave(filename = paste0(path, year, "regression_", name, ".", type), plot = p2, width = 20, height = 20, units = "cm")
 }
 
 
@@ -1138,9 +860,15 @@ find_slopes_with_weights <- function(weights){
   return (find_slopes(weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8]))
 }
 
-find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weight_inflation = 1, weight_agriculture = 1, weight_industry = 1, weight_manufacturing = 1, weight_total_energy_supply = 1, weight_verified_emisions = 1, country = "none"){
-  if(year != 0) {year_for_comparison <- year}
+find_slopes_with_one_country <- function(year = 0, weights = list(
+  Total_energy_supply = 1, GDPpc = 1, 
+  Population = 1, Inflation = 1, 
+  Agriculture = 1, Industry = 1, 
+  Manufacturing = 1, Energy_Intensity = 1),
+  country = "none") {
   
+  if (year != 0) { year_for_comparison <- year }
+
 
   #df_data <-read_data( TRUE, 2016,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
   df_data <-read_data_2(year_for_comparison)
@@ -1182,17 +910,19 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   # Create a 2 D dataframe with countries as rows and countries as columns and the value of the Eukleidian Distance between all the values the two countries
   df_distance <- data.frame(matrix(NA, nrow = nrow(df_data) - 1, ncol = 3))
   colnames(df_distance) <- c("GEO", "df_distance", "df_free_distance")
-  for (i in 1 : nrow(df_distance)) { #nolint
-  df_distance[i, 1] <- df_data[i, 1]
-      df_distance[i, 2] <- sqrt((df_data[i, 2] - df_data[country_index, 2])^2 * weight_total_energy_supply 
-      + (df_data[i, 3] - df_data[country_index, 3])^2 * weight_GDPpc
-      + (df_data[i, 4] - df_data[country_index, 4])^2 * weight_population
-      + (df_data[i, 5] - df_data[country_index, 5])^2 * weight_inflation
-      + (df_data[i, 6] - df_data[country_index, 6])^2 * weight_verified_emisions
-      + (df_data[i, 7] - df_data[country_index, 7])^2 * weight_agriculture
-      + (df_data[i, 8] - df_data[country_index, 8])^2 * weight_industry
-      + (df_data[i, 9] - df_data[country_index, 9])^2 * weight_manufacturing
-      )
+  
+  for (i in 1:nrow(df_distance)) {
+    df_distance[i, 1] <- df_data[i, "GEO"]
+    df_distance[i, 2] <- sqrt(
+      (df_data[i, "Total_energy_supply"] - df_data[country_index, "Total_energy_supply"])^2 * weights$Total_energy_supply +
+        (df_data[i, "GDPpc"] - df_data[country_index, "GDPpc"])^2 * weights$GDPpc +
+        (df_data[i, "Population"] - df_data[country_index, "Population"])^2 * weights$Population +
+        (df_data[i, "Inflation"] - df_data[country_index, "Inflation"])^2 * weights$Inflation +
+        (df_data[i, "Energy_Intensity"] - df_data[country_index, "Energy_Intensity"])^2 * weights$Energy_Intensity +  # Assuming this maps to "verified emissions"
+        (df_data[i, "Agriculture"] - df_data[country_index, "Agriculture"])^2 * weights$Agriculture +
+        (df_data[i, "Industry"] - df_data[country_index, "Industry"])^2 * weights$Industry +
+        (df_data[i, "Manufacturing"] - df_data[country_index, "Manufacturing"])^2 * weights$Manufacturing
+    )
   }
   
   # save a file "distance_2015.tex" with the content of the dataframe df_distance
@@ -1224,23 +954,39 @@ find_slopes_with_one_country <- function(year = 0, weight_population = 1, weight
   return (list( data = df_distance, linear =  lm, country = country))
 }
   
-find_slopes_with_one_country_with_weights <- function( year = 0, country = "none", weights = c(1,1,1,1,1,1,1,1)){
-  if(year != 0) { year_for_comparison <- year}
-  return (find_slopes_with_one_country(country = country, weight_population = weights[1], weight_GDPpc = weights[2], weight_inflation = weights[3], weight_agriculture = weights[4], weight_industry = weights[5], weight_manufacturing = weights[6], weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8]))
+find_slopes_with_one_country_with_weights <- function(year = 0, country = "none", 
+                                                      weights = list(
+                                                        Total_energy_supply = 1, GDPpc = 1, 
+                                                        Population = 1, Inflation = 1, 
+                                                        Agriculture = 1, Industry = 1, 
+                                                        Manufacturing = 1, Energy_Intensity = 1)) {
+  if (year != 0) { year_for_comparison <- year }
+  
+  return(find_slopes_with_one_country(
+    year = year_for_comparison,
+    weights = weights,
+    country = country
+  ))
 }
 
-create_graph_for_one <- function(year = 0, name = "", type = "png", country = "none", weights = c(1,1,1,1,1,1,1,1), path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
+create_graph_for_one <- function(year = 0, name = "", type = "png", country = "none", 
+                                 weights = list(
+                                   Total_energy_supply = 1, GDPpc = 1, 
+                                   Population = 1, Inflation = 1, 
+                                   Agriculture = 1, Industry = 1, 
+                                   Manufacturing = 1, Energy_Intensity = 1), 
+                                 path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/") {
   # Set the comparison year
   if (year != 0) {
     year_for_comparison <- year
   }
   
   # Fetch data and linear model
-  buffer <- find_slopes_with_one_country(country = country, year = year_for_comparison,
-                                         weight_population = weights[1], weight_GDPpc = weights[2],
-                                         weight_inflation = weights[3], weight_agriculture = weights[4],
-                                         weight_industry = weights[5], weight_manufacturing = weights[6],
-                                         weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
+  buffer <- find_slopes_with_one_country(
+    year = year_for_comparison,
+    weights = weights,
+    country = country
+  )
   
   df_1D <- buffer$data
   lm <- buffer$linear
@@ -1250,7 +996,7 @@ create_graph_for_one <- function(year = 0, name = "", type = "png", country = "n
   #print(paste("Generating plot for country:", country))
   
   # Construct the file path and name
-  file_name <- paste0(path, name, country, "_", year_for_comparison, ".", type)
+  file_name <- paste0(path, year_for_comparison, "_", name, country, ".", type)
   
   # Start device
   if (type == "png") {
@@ -1777,13 +1523,6 @@ log_message <- function(message, log_file) {
 
 #EWxperiment 1-2
 
-# Helper function to log messages with timestamp
-log_message <- function(message) {
-  timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
-  entry <- paste("[", timestamp, "]", message)
-  write(entry, file = log_file, append = TRUE)
-}
-
 
 # Main function to visualize attribute trends and summarize data
 visualize_attribute <- function(attribute_name, year_range = 2008:2018) {
@@ -1962,6 +1701,7 @@ minMax <- function(x) {
 # Helper function for normalization
 normalize_data <- function(data, method) {
   data <- data %>% mutate(across(-GEO, ~ as.numeric(as.character(.))))
+  
   if (method == "Mean") {
     data %>% mutate(across(-GEO, ~ . / mean(., na.rm = TRUE)))
   } else if (method == "MinMax") {
@@ -1970,17 +1710,20 @@ normalize_data <- function(data, method) {
     data %>% mutate(across(-GEO, ~ . / .[GEO == "Germany"]))
   } else if (method == "max") {
     data %>% mutate(across(-GEO, ~ . / max(., na.rm = TRUE)))
+  } else if (method == "Avg") {
+    data %>% mutate(across(-GEO, ~ . / mean(., na.rm = TRUE)))
   } else if (method == 'none'){
     message("Not normalizing")
     return (data)
   } else {
-    stop("Invalid normalization method. Choose from 'Mean', 'MinMax', 'Germany', or 'max'.")
+    stop("Invalid normalization method. Choose from 'Mean', 'MinMax', 'Germany', 'max', or 'Avg'.")
   }
 }
 
-clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10) {
+clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10, year = 0) {
+  if(year != 0) {year_for_comparison <- year}
   # Read and prepare data
-  features <- read_data_2()
+  features <- read_data_2(year = year)
   # Remove the "Free" column if it exists
   if ("Free" %in% colnames(features)) {
     features <- features %>% select(-Free)
@@ -2009,7 +1752,33 @@ clustering <- function(normalize = "Mean", minNc = 3, maxNc = 10) {
   return(features)
 }
 
-clustering_per_capita <- function(normalize_method = "max", minNc = 2, maxNc = 10) {
+clustering_with_k <- function(normalize = "Mean", k = 3, year = 0) {
+  # Read and prepare data
+  features <- read_data_2(year = year)
+  
+  # Remove the "Free" column if it exists
+  if ("Free" %in% colnames(features)) {
+    features <- features %>% select(-Free)
+  }
+  
+  # Normalize data
+  features <- normalize_data(features, normalize)
+  
+  # Perform k-means clustering with specified number of clusters
+  set.seed(123)  # For reproducibility
+  kmeans_result <- kmeans(features %>% select(-GEO), centers = k, nstart = 25)
+  
+  # Assign clusters
+  features$partition <- kmeans_result$cluster
+  
+  # Arrange data by cluster
+  features <- features %>% arrange(partition)
+  
+  return(features)
+}
+
+clustering_per_capita <- function(normalize_method = "max", minNc = 2, maxNc = 10, year = 0) {
+  if(year != 0) {year_for_comparison <- year}
   # Load data
   features <- read_data_2()
   
@@ -2051,7 +1820,7 @@ can_countries_explain_their_own_cluster_2 <-function(){
   # ÎÎ¹Î± Î½Î± ÏÏÎ­Î¾ÎµÎ¹ ÏÏÎ­ÏÎµÎ¹ ÏÏÏÏÎ± Î½Î± Î­ÏÎ¿ÏÎ¼Îµ Î²Î¬Î»ÎµÎ¹ ÏÎ»ÎµÏ ÏÎ¹Ï ÏÏÏÎµÏ Î¾Î±Î½Î¬.
   will_normalise <- FALSE
   
-  features <- clustering()
+  features <- clustering(year = 2015)
   feat <-list()
   slop <- list()
   # First cluster
@@ -2081,7 +1850,8 @@ can_countries_explain_their_own_cluster_2 <-function(){
 
 can_countries_explain_their_own_cluster <- function(cluster_to_plot = 2) {
   # Perform clustering
-  features <- clustering()
+  features <- clustering(year = 2015)
+  
   
   # Initialize lists to store features and slopes by cluster
   cluster_features <- list()
@@ -2124,8 +1894,8 @@ can_countries_explain_their_own_cluster <- function(cluster_to_plot = 2) {
   return(list(features = cluster_features, slopes = cluster_slopes))
 }
 
-
-visualize_clustering_results <- function(normalize = "max", minNc = 3, maxNc = 10, use_pca = TRUE) {
+visualize_clustering_results <- function(normalize = "max", minNc = 3, maxNc = 10, use_pca = TRUE, year = 0) {
+  if(year != 0) {year_for_comparison <- year}
   # Run clustering with specified normalization and cluster range
   if (use_pca) {
     # Use PCA-reduced features for clustering
@@ -2164,7 +1934,8 @@ visualize_clustering_results <- function(normalize = "max", minNc = 3, maxNc = 1
   return(clustered_data)
 }
 
-clustering_with_pca <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2) {
+clustering_with_pca <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2, year = 0) {
+  if(year != 0) {year_for_comparison <- year}
   # Step 1: Read and normalize the data
   features <- read_data_2()
   
@@ -2203,7 +1974,8 @@ clustering_with_pca <- function(normalize = "max", minNc = 3, maxNc = 10, n_comp
   return(features)
 }
 
-compare_clustering_methods <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2) {
+compare_clustering_methods <- function(normalize = "max", minNc = 3, maxNc = 10, n_components = 2, year = 2015) {
+  if(year != 0) {year_for_comparison <- year}
   # Perform clustering on the original features
   original_clusters <- clustering(normalize = normalize, minNc = minNc, maxNc = maxNc)
   

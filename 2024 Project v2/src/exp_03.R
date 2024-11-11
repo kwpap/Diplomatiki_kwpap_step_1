@@ -5,17 +5,57 @@ library(kableExtra)
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/2024 Project v2/src/All_in_on.R")
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/2024 Project v2/src/linear_tester.R")
 
-optimize_weights_with_constraints_with_one <- function(year = 0, country = "none") {
-  initial_weights <- rep(1, 8)
+# Let's try again. 
+r_sq_finder <- function(year , country,weights){
+
+  df_data <-read_data_2(year)
+  df_free <- read_free(year)
+  country_index <- which(df_data$GEO == country)
+  country_free_index <- which(df_free$GEO == country)
+  #print(paste("now working with:", country,"for:", year, "with verified:", df_data[df_data$GEO == country,]$Verified_emissions, "and free:", df_free[df_free$GEO==country,]$Free))
   
-  objective_function <- function(weights) {
+  df_distance <- data.frame(matrix(NA, nrow = nrow(df_data) - 1, ncol = 3))
+  colnames(df_distance) <- c("GEO", "df_distance", "df_free_distance")
+  for (i in 1 : nrow(df_distance)) { #nolint
+    df_distance[i, 1] <- df_data[i, 1]
+    df_distance[i, 2] <- sqrt(
+                            (df_data[i, "Total_energy_supply"] - df_data[country_index, "Total_energy_supply"])^2 * weights$Total_energy_supply +
+                            (df_data[i, "GDPpc"] - df_data[country_index, "GDPpc"])^2 * weights$GDPpc +
+                            (df_data[i, "Population"] - df_data[country_index, "Population"])^2 * weights$Population +
+                            (df_data[i, "Inflation"] - df_data[country_index, "Inflation"])^2 * weights$Inflation +
+                            (df_data[i, "Agriculture"] - df_data[country_index, "Agriculture"])^2 * weights$Agriculture +
+                            (df_data[i, "Industry"] - df_data[country_index, "Industry"])^2 * weights$Industry +
+                            (df_data[i, "Manufacturing"] - df_data[country_index, "Manufacturing"])^2 * weights$Manufacturing +
+                            (df_data[i, "Energy_Intensity"] - df_data[country_index, "Energy_Intensity"])^2 * weights$Energy_Intensity
+                              )
+    df_distance[i,3] <- abs(df_free$Free[which(df_data[i,1] == df_free$GEO)] - df_free$Free[country_free_index])
+  }
+  r_2 <-  summary(lm(df_distance$"df_free_distance" ~ df_distance$"df_distance"))$r.squared
+  return (r_2)
+}
+
+# Define expected column names for weights
+weight_names <- c("Total_energy_supply", "GDPpc", "Population", "Inflation", 
+                  "Agriculture", "Industry", "Manufacturing", "Energy_Intensity")
+
+# Conversion function from vector to named list
+vector_to_named_weights <- function(weight_vector) {
+  setNames(as.list(weight_vector), weight_names)
+}
+
+# The optimization function
+optimize_weights_with_constraints_with_one <- function(year = 0, country = "none") {
+  initial_weights <- rep(50, 8)
+  
+  objective_function <- function(weight_vector) {
+    # Convert vector to named list for readability within the function
+    named_weights <- vector_to_named_weights(weight_vector)
+    
     # Penalize negative weights
-    if (any(weights < 0)) return(Inf)
-    -summary(
-      find_slopes_with_one_country_with_weights(
-        year = year, country = country, weights = weights
-      )$linear
-    )$r.squared
+    if (any(weight_vector < 0)) return(Inf)
+    
+    # Pass the named list to r_sq_finder
+    -r_sq_finder(year = year, country = country, weights = named_weights)
   }
   
   result <- optim(
@@ -26,7 +66,8 @@ optimize_weights_with_constraints_with_one <- function(year = 0, country = "none
     upper = rep(100, 8)
   )
   
-  best_weights <- result$par
+  # Retrieve the best weights and convert to named list
+  best_weights <- vector_to_named_weights(result$par)
   best_r_squared <- -result$value
   
   print(best_weights)
@@ -34,28 +75,29 @@ optimize_weights_with_constraints_with_one <- function(year = 0, country = "none
   return(best_weights)
 }
 
+
+
 perform_analysis <- function(log_file, plot_path, start_year, end_year) {
   will_normalise <- TRUE
-  
+  list_of_useful_countries <- setdiff(list_eur_countries, c("Romania", "Malta", "Cyprus"))
   # Define the year range
   years <- start_year:end_year
   # Initialize data frames to store R^2 and model objects
-  r_squared_df <- data.frame(matrix(NA, nrow = length(list_eur_countries), ncol = length(years)))
-  rownames(r_squared_df) <- list_eur_countries
+  r_squared_df <- data.frame(matrix(NA, nrow = length(list_of_useful_countries), ncol = length(years)))
+  rownames(r_squared_df) <- list_of_useful_countries
   colnames(r_squared_df) <- years
   
-  linear_models_df <- data.frame(matrix(vector("list", length(list_eur_countries) * length(years)), 
-                                        nrow = length(list_eur_countries), ncol = length(years)))
-  rownames(linear_models_df) <- list_eur_countries
+  linear_models_df <- data.frame(matrix(vector("list", length(list_of_useful_countries) * length(years)), 
+                                        nrow = length(list_of_useful_countries), ncol = length(years)))
+  rownames(linear_models_df) <- list_of_useful_countries
   colnames(linear_models_df) <- years
   
-
   # Iterate over each country and year
-  for (country in list_eur_countries) {
+  for (country in list_of_useful_countries) {
     for (year in years) {
       
       # Log the start of the iteration
-      log_message(paste("Starting analysis for Country:", country, "Year:", year))
+      log_message(paste("Starting analysis for Country:", country, "Year:", year), log_file = log_file)
       
       tryCatch({
         # Step 1: Find the best combination of weights
@@ -79,9 +121,9 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
                                type = "png", 
                                country = country, 
                                weights = weights, 
-                               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/")
+                               path = plot_path)
         }, error = function(e) {
-          log_message(paste("Failed to create PNG plot for Country:", country, "Year:", year, "- Error:", e$message))
+          log_message(paste("Failed to create PNG plot for Country:", country, "Year:", year, "- Error:", e$message), log_file = log_file)
         })
         
         tryCatch({
@@ -90,9 +132,9 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
                                type = "svg", 
                                country = country, 
                                weights = weights, 
-                               path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/")
+                               path = plot_path)
         }, error = function(e) {
-          log_message(paste("Failed to create SVG plot for Country:", country, "Year:", year, "- Error:", e$message))
+          log_message(paste("Failed to create SVG plot for Country:", country, "Year:", year, "- Error:", e$message), log_file = log_file)
         })
         
         # Log successful completion of the iteration
@@ -100,11 +142,11 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
                           "- Weights:", toString(weights), 
                           "- R^2:", r_squared, 
                           "- P-Value:", p_val_model, 
-                          "- MSE:", mse_model))
+                          "- MSE:", mse_model), log_file = log_file)
         
       }, error = function(e) {
         # Log any error that occurs in the main analysis steps
-        log_message(paste("Failed analysis for Country:", country, "Year:", year, "- Error:", e$message))
+        log_message(paste("Failed analysis for Country:", country, "Year:", year, "- Error:", e$message), log_file = log_file)
       })
     }
   }
@@ -116,17 +158,16 @@ perform_analysis <- function(log_file, plot_path, start_year, end_year) {
 
 ##################################### EXP 3 ####################################################################
 # Define file paths and year range
-log_file <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file.txt"
-plot_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/"
-RDS_03_file <-"C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/exp_03_normalized.rds"
+log_file <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file_v2.txt"
+plot_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/v2/"
+RDS_03_file <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/exp_03_normalized_v2.rds"
 start_year <- 2005
 end_year <- 2020
 
-# Call the perform_analysis function
+# Call the perform_analysis function############################################################################################
 results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
-#results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
 saveRDS(results, file = RDS_03_file)
-#results <- readRDS(RDS_03_file)
+results <- readRDS(RDS_03_file)
 # Access the results
 r_squared_data <- results$R_Squared
 linear_models_data <- results$Linear_Models
@@ -158,51 +199,69 @@ latex_code <- print(
   sanitize.text.function = identity
 )
 
+# Or using the new one:
+r_squared_data_2_decimal <- r_squared_data %>% mutate(across(where(is.numeric), round, 2))
+latex_table <- kable(r_squared_data_2_decimal, format = "latex", longtable = TRUE, booktabs = TRUE, row.names = TRUE) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  column_spec(2:ncol(r_squared_data_2_decimal), width = "0.45cm") # Adjust 2cm as needed to fit the page
+
+# Save to .tex file
+cat(latex_table, file = "exp3_3_r^2.tex")
+
 
 ################################################################################################################
-
+remove_columns <- function(dataframe, columns_to_remove) {
+  dataframe <- dataframe[, !colnames(dataframe) %in% columns_to_remove]
+  return(dataframe)
+}
 # Function to parse the log file and extract completion lines
 parse_log_file <- function(log_file_path) {
-  # Read the log file
-  log_lines <- readLines(log_file_path)
-  
-  # Initialize an empty list to store the extracted data
+  lines <- readLines(log_file_path)
   completion_data <- list()
   
-  # Regular expression to match completion lines
-  completion_pattern <- "\\[.*\\] Completed analysis for Country: (.+) Year: (\\d+) - Weights: (.+) - R\\^2: (.+) - P-Value: (.+) - MSE: (.+)"
-  
-  # Loop through each line and extract data
-  for (line in log_lines) {
+  for (i in seq_along(lines)) {
+    line <- lines[i]
+    
+    # Check for completed analysis
     if (grepl("Completed analysis for Country:", line)) {
-      match <- regexec(completion_pattern, line)
-      matched_groups <- regmatches(line, match)
-      
-      if (length(matched_groups[[1]]) > 1) {
-        country <- matched_groups[[1]][2]
-        year <- as.integer(matched_groups[[1]][3])
-        weights_str <- matched_groups[[1]][4]
-        r_squared <- as.numeric(matched_groups[[1]][5])
-        p_value <- as.numeric(matched_groups[[1]][6])
-        mse <- as.numeric(matched_groups[[1]][7])
-        
-        # Parse the weights string into a numeric vector
-        weights <- as.numeric(unlist(strsplit(weights_str, ",\\s*")))
-        
-        # Append to the list
-        completion_data[[length(completion_data) + 1]] <- list(
-          country = country,
-          year = year,
-          weights = weights,
-          r_squared = r_squared,
-          p_value = p_value,
-          mse = mse
+      matches <- regmatches(line, gregexpr("Country: ([^ ]+) Year: ([0-9]+) - Weights: ([^ ]+) - R\\^2: ([^ ]+) - P-Value: ([^ ]+) - MSE: ([^ ]+)", line))
+      if (length(matches[[1]]) > 0) {
+        entry <- list(
+          type = "completed",
+          country = sub(".*Country: ([^ ]+) .*", "\\1", line),
+          year = as.integer(sub(".*Year: ([0-9]+) .*", "\\1", line)),
+          weights = as.numeric(strsplit(sub(".*Weights: ([^ ]+) - R\\^2.*", "\\1", line), ",")[[1]]),
+          r_squared = as.numeric(sub(".*R\\^2: ([^ ]+) .*", "\\1", line)),
+          p_value = as.numeric(sub(".*P-Value: ([^ ]+) .*", "\\1", line)),
+          mse = as.numeric(sub(".*MSE: ([^ ]+)", "\\1", line))
         )
+        completion_data[[length(completion_data) + 1]] <- entry
       }
+      
+      # Check for failed analysis
+    } else if (grepl("Failed analysis for Country:", line)) {
+      entry <- list(
+        type = "failed",
+        country = sub(".*Country: ([^ ]+) Year: ([0-9]+).*", "\\1", line),
+        year = as.integer(sub(".*Year: ([0-9]+).*", "\\1", line)),
+        error = sub(".*Error: (.+)", "\\1", line)
+      )
+      completion_data[[length(completion_data) + 1]] <- entry
     }
   }
   
   return(completion_data)
+}
+
+# Function to modify column names for LaTeX \makecell with line breaks
+format_colnames_for_latex <- function(dataframe) {
+  colnames(dataframe) <- sapply(colnames(dataframe), function(name) {
+    # Replace underscores with line breaks (\\n in LaTeX syntax)
+    modified_name <- gsub("_", " ", name)
+    # Wrap in \makecell for LaTeX
+    paste0(modified_name, "")
+  })
+  return(dataframe)
 }
 
 # Function to process each completion entry
@@ -217,23 +276,18 @@ process_completion_entry <- function(entry) {
     # Call find_slopes_with_one_country() with the extracted parameters
     regression_result <- find_slopes_with_one_country(
       year = year,
-      weight_population = weights[1],
-      weight_GDPpc = weights[2],
-      weight_inflation = weights[3],
-      weight_agriculture = weights[4],
-      weight_industry = weights[5],
-      weight_manufacturing = weights[6],
-      weight_total_energy_supply = weights[7],
-      weight_verified_emisions = weights[8],
+      weights = weights,  # Pass the entire weights list directly
       country = country
     )
     
     # Extract data for linearity checks
     df_distance <- regression_result$data
-    # Assuming df_distance has columns 'df_distance' and 'df_free_distance'
     
-    # Check if df_distance has enough data points
-    if (nrow(df_distance) < 2 || all(is.na(df_distance$df_distance)) || all(is.na(df_distance$df_free_distance))) {
+    # Verify that df_distance has the required columns and data
+    if (!all(c("df_distance", "df_free_distance") %in% names(df_distance)) || 
+        nrow(df_distance) < 2 || 
+        all(is.na(df_distance$df_distance)) || 
+        all(is.na(df_distance$df_free_distance))) {
       message(paste("Insufficient data for regression analysis for", country, "in", year))
       return(NULL)  # Exclude this entry
     }
@@ -252,28 +306,28 @@ process_completion_entry <- function(entry) {
       return(NULL)  # Exclude this entry
     }
     
-    # Extract required metrics from the results
+    # Extract required metrics from the results, with safety checks for each field
     result_entry <- list(
       country = country,
       year = year,
       pearson_correlation = metrics$pearson_correlation,
       spearman_correlation = metrics$spearman_correlation,
       kendall_tau = metrics$kendall_tau,
-      linear_p_value = metrics$linear_model_summary$coefficients[2, "Pr(>|t|)"],
-      linear_r_squared = metrics$linear_model_summary$r.squared,
+      linear_p_value = if (!is.null(metrics$linear_model_summary)) metrics$linear_model_summary$coefficients[2, "Pr(>|t|)"] else NA,
+      linear_r_squared = if (!is.null(metrics$linear_model_summary)) metrics$linear_model_summary$r.squared else NA,
       mse = metrics$mse,
       rmse = metrics$rmse,
       mae = metrics$mae,
-      shapiro_p_value = metrics$shapiro_test$p.value,
-      breusch_pagan_p_value = metrics$breusch_pagan_test$p.value,
-      reset_test_p_value = metrics$reset_test$p.value,
-      quadratic_p_value = metrics$quadratic_model_summary$coefficients["I(x^2)", "Pr(>|t|)"],
-      quadratic_coeff = metrics$quadratic_model_summary$coefficients["I(x^2)", "Estimate"],
-      aic_linear = metrics$aic_values["Linear_Model"],
-      bic_linear = metrics$bic_values["Linear_Model"],
-      aic_quadratic = metrics$aic_values["Quadratic_Model"],
-      bic_quadratic = metrics$bic_values["Quadratic_Model"],
-      anova_p_value = metrics$anova_models$`Pr(>F)`[2]
+      shapiro_p_value = if (!is.null(metrics$shapiro_test)) metrics$shapiro_test$p.value else NA,
+      breusch_pagan_p_value = if (!is.null(metrics$breusch_pagan_test)) metrics$breusch_pagan_test$p.value else NA,
+      reset_test_p_value = if (!is.null(metrics$reset_test)) metrics$reset_test$p.value else NA,
+      quadratic_p_value = if (!is.null(metrics$quadratic_model_summary)) metrics$quadratic_model_summary$coefficients["I(x^2)", "Pr(>|t|)"] else NA,
+      quadratic_coeff = if (!is.null(metrics$quadratic_model_summary)) metrics$quadratic_model_summary$coefficients["I(x^2)", "Estimate"] else NA,
+      aic_linear = if (!is.null(metrics$aic_values)) metrics$aic_values["Linear_Model"] else NA,
+      bic_linear = if (!is.null(metrics$bic_values)) metrics$bic_values["Linear_Model"] else NA,
+      aic_quadratic = if (!is.null(metrics$aic_values)) metrics$aic_values["Quadratic_Model"] else NA,
+      bic_quadratic = if (!is.null(metrics$bic_values)) metrics$bic_values["Quadratic_Model"] else NA,
+      anova_p_value = if (!is.null(metrics$anova_models)) metrics$anova_models$`Pr(>F)`[2] else NA
     )
     
     return(result_entry)
@@ -288,6 +342,7 @@ process_completion_entry <- function(entry) {
 }
 
 # Main function to process the log file and save the results
+
 process_log_and_save_metrics <- function(log_file_path, output_rds_path) {
   # Parse the log file
   completion_data <- parse_log_file(log_file_path)
@@ -316,7 +371,7 @@ process_log_and_save_metrics <- function(log_file_path, output_rds_path) {
   }
   
   # Convert the list of results to a dataframe
-  results_df <- do.call(rbind, lapply(all_results, as.data.frame))
+  results_df <- do.call(rbind, lapply(all_results, function(x) if (!is.data.frame(x)) as.data.frame(x) else x))
   
   # Save the dataframe using saveRDS
   saveRDS(results_df, output_rds_path)
@@ -327,9 +382,20 @@ process_log_and_save_metrics <- function(log_file_path, output_rds_path) {
 # Example usage:
 # Replace 'path/to/log_file.txt' with the actual path to your log file
 # Replace 'path/to/output_metrics.rds' with the desired output path
-log_file_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file.txt"
+log_file_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file_v2.txt"
 output_rds_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/exp_03_linear_metrics.rds"
 
-# Run the processing function
-process_log_and_save_metrics(log_file_path, output_rds_path)
+############################################################# Run the processing function ############################################
+#(log_file_path, output_rds_path)
+process_log_and_save_metrics(log_file_path = log_file_path, output_rds_path = output_rds_path)
 linear_results <- readRDS(output_rds_path)
+
+linear_results_2_decimal <- linear_results %>% mutate(across(where(is.numeric), round, 2))
+columns_to_remove <- c("shapiro_p_value", "breusch_pagan_p_value","reset_test_p_value","aic_linear","bic_linear","aic_quadratic","bic_quadratic","anova_p_value" ) # Specify the column names you want to remove
+linear_results_2_decimal <- remove_columns(linear_results_2_decimal, columns_to_remove)#linear_results_2_decimal <- format_colnames_for_latex(linear_results_2_decimal)
+latex_table <- kable(linear_results_2_decimal, format = "latex", longtable = TRUE, booktabs = TRUE, row.names = FALSE) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  column_spec(2:ncol(linear_results_2_decimal), width = "0.8cm") # Adjust 2cm as needed to fit the page
+
+# Save to .tex file
+cat(latex_table, file = "exp3_3.tex")

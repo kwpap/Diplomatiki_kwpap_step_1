@@ -1,19 +1,24 @@
+# Find the best weights
+library(xtable)
+library(kableExtra)
+
 linearity_checks <- function(df) {
   # Check if the dataframe has exactly two columns
   if (ncol(df) != 2) {
     stop("The dataframe must contain exactly two columns.")
   }
   
-  # Extract variables
-  x <- df[[1]]
-  y <- df[[2]]
-  var_names <- names(df)
-  
   # Load necessary libraries
   required_packages <- c("ggplot2", "car", "lmtest", "nortest", "Metrics", "psych")
   new_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
   if (length(new_packages)) install.packages(new_packages, dependencies = TRUE)
   lapply(required_packages, library, character.only = TRUE)
+  
+  # Extract variables
+  x <- df[[1]]
+  y <- df[[2]]
+  var_names <- names(df)
+  
   
   # 1. Visual Inspection: Scatter plot with regression lines
   # Plot both linear and quadratic regression lines

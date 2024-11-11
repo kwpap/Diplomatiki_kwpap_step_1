@@ -32,7 +32,7 @@ for (year in c(2005:2020)) {
 }
 
 ########################Linearity test ##########################
-linearity_checks(find_slopes(year = 2015)$data[, 1:2])
+linearity_checks(find_slopes(year = 2020)$data[, 1:2])
 #################################################################
 
 # Create plots for all the distances from the middle one. 
@@ -127,54 +127,8 @@ model <- features_linear_free(select = 2, attribute = "Industry")
 plot_correlation_matrix(2010)  # Replace 2020 with the desired 
 
 
-##################################### EXP 3 ####################################################################
-# Define file paths and year range
-log_file <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/log_file.txt"
-plot_path <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/"
-RDS_03_file <-"C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/03_best_weights/exp_03_normalized.rds"
-start_year <- 2010
-end_year <- 2011
-
-# Call the perform_analysis function
-results <- perform_analysis(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
-#results <- perform_analysis_parallel(log_file = log_file, plot_path = plot_path, start_year = start_year, end_year = end_year)
-#saveRDS(results, file = RDS_03_file)
-#results <- readRDS(RDS_03_file)
-# Access the results
-r_squared_data <- results$R_Squared
-linear_models_data <- results$Linear_Models
-
-# Print or inspect the data frames
-print(r_squared_data)       # View R^2 values for each country-year
-# Assuming linear_models_df contains linear regression model objects
-p_value_df <- linear_models_data  # Create a copy if you want to keep the original
-
-# Loop through each cell in the data frame
-for (i in seq_len(nrow(linear_models_data))) {
-  for (j in seq_len(ncol(linear_models_data))) {
-    # Check if the entry is a model object and has an R-squared value
-    model <- linear_models_data[[i, j]]
-    if (!is.null(model) && inherits(model, "lm")) {  # Check if it’s a valid lm object
-      p_value_df[i, j] <- p_val(model)  # Extract the R-squared value
-    } else {
-      p_value_df[i, j] <- NA  # Set to NA if there's no valid model
-    }
-  }
-}
-latex_code <- print(
-  xtable(r_squared_data, caption = "All distances", label = "tab:sample_table"),
-  type = "latex",
-  include.rownames = FALSE,
-  floating = TRUE,
-  tabular.environment = "tabular",
-  booktabs = TRUE,
-  sanitize.text.function = identity
-)
 
 
-################################################################################################################
-
-optimize_weights_with_constraints_with_one(year = 2015, country = "Poland")
+optimize_weights_with_constraints_with_one(year = 2015, country = "Germany")
 optimize_weights_integer(year = 2015, country = "Poland")
-
 
