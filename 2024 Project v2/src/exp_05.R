@@ -278,3 +278,106 @@ print(
   tabular.environment = "tabularx", 
   width = "\\textwidth"
 )
+###############################################################################
+##################################################### Case 3 ##################
+will_use_a1 <- TRUE
+will_use_a2 <- TRUE
+will_use_pop <- FALSE
+will_use_development <- TRUE  # Flag to include development-based fairness constraint
+
+# Define bounds for free allocation and population factors
+bounds <- list(
+  free_lower = 0.25,   # Lower bound coefficient for last year's free allocation (alpha_1)
+  free_upper = 15,     # Upper bound coefficient for last year's free allocation (alpha_2)
+  dev_lower = 0.5,    # Lower bound coefficient for development-based allocation (beta_1)
+  dev_upper = 2    # Upper bound coefficient for development-based allocation (beta_2)
+)
+
+df_year <- load_data(year_for_comparison)
+df_next_year <- load_data(year_for_comparison + 1)
+
+GDPpps <- load_gdp_pps(data_path, year_for_comparison)
+
+# Merge GDP PPS data with the main dataset
+df_year <- merge(df_year, GDPpps, by = "GEO")
+
+f.obj <- compute_objective(df_year)
+
+# Create constraint matrix, direction, and right-hand side
+f.con <- matrix(1, nrow = 1, ncol = nrow(df_year)) # x1 + x2 + x3 + ... = 1
+f.dir <- "="
+f.rhs <- 1
+
+# Add lower bound constraints based on last year's free allocation (alpha_1)
+if (will_use_a1){
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+  f.rhs <- c(f.rhs, bounds$free_lower * df_year$Free)
+}
+
+# Add upper bound constraints based on last year's free allocation (alpha_2)
+if (will_use_a2){
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+  f.rhs <- c(f.rhs, bounds$free_upper * df_year$Free)
+}
+
+# Add Development-Based Equity constraints (beta_1 and beta_2)
+if (will_use_development){
+  # Normalize GDP per capita
+  df_year$GDP_per_capita_norm <- df_year$GDPpps / sum(df_year$GDPpps, na.rm = TRUE)
+  
+  # Calculate inverse economic capacity index D_i
+  df_year$D_i <- 1 / df_year$GDP_per_capita_norm
+  
+  # Handle infinite values if GDP_per_capita_norm is zero
+  df_year$D_i[is.infinite(df_year$D_i)] <- 0
+  
+  # Calculate total D_i across all countries
+  D_total <- sum(df_year$D_i, na.rm = TRUE)
+  
+  # Calculate proportional allocation based on D_i
+  allocation_proportion <- df_year$D_i / D_total
+  
+  # Add lower bound constraints based on D_i
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep(">=", nrow(df_year)))
+  f.rhs <- c(f.rhs, bounds$dev_lower * allocation_proportion)
+  
+  # Add upper bound constraints based on D_i
+  f.con <- rbind(f.con, diag(nrow(df_year)))
+  f.dir <- c(f.dir, rep("<=", nrow(df_year)))
+  f.rhs <- c(f.rhs, bounds$dev_upper * allocation_proportion)
+}
+
+# Solve the LP problem with all constraints
+sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
+
+# Create data frame 'gg' by calculating columns vector-wise
+gg <- data.frame(
+  Country = df_year$GEO,
+  Calculated_Efficiency = with(df_year, GDPpps * Population / Verified_emissions * Industry / 100),
+  This_year_Allocation = sprintf("%.2f %%", (df_year$Free * 100)),
+  next_year_Allocation = sprintf("%.2f %%", (df_next_year$Free * 100)),
+  forecasted = sprintf("%.2f %%", (sol * 100)),
+  change = sprintf("%.2f %%", (sol - df_next_year$Free) / df_next_year$Free * 100) # Format percentage
+)
+
+# Sort by efficiency in decreasing order
+gg <- gg[order(gg$Calculated_Efficiency, decreasing = TRUE), ]
+
+# Output LaTeX table
+print(
+  xtable(
+    gg, 
+    caption = "Forecasted Allocation with Development-Based Fairness Constraint", 
+    label = "tab:Forecasted_Allocation_Development_Fairness", 
+    digits = 2,  # Set to 2 decimal points as per your requirement
+    align = c("l", "X", "X", "X", "X", "X", "X")
+  ), 
+  include.rownames = FALSE, 
+  booktabs = TRUE, 
+  floating = TRUE, 
+  tabular.environment = "tabularx", 
+  width = "\\textwidth"
+)

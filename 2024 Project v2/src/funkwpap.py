@@ -1083,11 +1083,15 @@ class Sector:
 class Country:
     _id_counter = 1
 
-    def __init__(self, name, size,regulator):
+    def __init__(self, name, size,regulator, GDP_per_capita = 0, population = 0, industry_percentage =0):
         self.id = Country._id_counter
         Country._id_counter += 1
         self.name = name
         self.size = size
+        self.GDP_per_capita = GDP_per_capita
+        self.population = population
+        self.industry_percentage = industry_percentage
+        self.GDP = GDP_per_capita * population
         self.firms = []  # List to store firms in this country
 
         # Register this country in the global registry
