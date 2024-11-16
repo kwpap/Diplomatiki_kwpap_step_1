@@ -451,7 +451,7 @@ clustering(normalize = "Mean", minNc = 3, maxNc = 7, year = 2005)
 
 visualize_clustering_results(normalize = "Mean", use_pca = FALSE, year = 2018)
 
-compare_clustering_methods(normalize = "Mean", minNc = 3, maxNc = 5, year = 2005)
+compare_clustering_methods(normalize = "Mean", minNc = 3, maxNc = 5, year = 2006)
 
 # Example call to the new function
 result_df <- compare_clustering_years_brute_force_old(normalize = "Mean",
@@ -648,111 +648,661 @@ this_is_not_a_function_just_a_huge_parenthesis <- function(){
 }
 
 features_linear_free(select = 1, attribute = "Population")
-plot_correlation_matrix(2008)
+plot_correlation_matrix(2015)
 
 
-# Load necessary libraries
-library(dplyr)
-library(ggplot2)
-library(readr)    # Assuming read_data_2 uses readr functions
-library(stringr)  # For string manipulation if needed
-
-# Define the function
-generate_scatterplot <- function(phase_number, attribute, use_log = FALSE, plot_path) {
-  
-  # Validate inputs
-  valid_attributes <- c("Population", "GDPpc", "Total_energy_supply")
-  if (!(attribute %in% valid_attributes)) {
-    stop(paste("Invalid attribute. Choose from:", paste(valid_attributes, collapse = ", ")))
+Peirama_1 <-function(){
+  temp <- read_data_2(year = 2004)
+  temp$Phase <- "0"
+  temp$year <- 2004
+  temp2 <- read_data_2(year = 2005)
+  temp2$Phase <- "Phase I"
+  temp2$year <- 2005
+  temp <- rbind(temp, temp2)
+  for (i in 2006:2007){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase I"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
+  }
+  for (i in 2008:2012){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase II"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
+  }
+  for (i in 2013:2020){
+    temp2 <- read_data_2(year = i)
+    temp2$Phase <- "Phase III"
+    temp2$year <- i
+    temp <- rbind(temp, temp2)
   }
   
-  # Define phases based on phase_number
-  phase_mapping <- list(
-    "0" = 2004,
-    "Phase I" = 2005:2007,
-    "Phase II" = 2008:2012,
-    "Phase III" = 2013:2020
-  )
-  
-  selected_phase <- names(phase_mapping)[sapply(phase_mapping, function(x) phase_number %in% x)]
-  if (is.null(selected_phase)) {
-    stop("Invalid phase number.")
-  }
-  
-  # Read and combine data
-  years <- unlist(phase_mapping[selected_phase])
-  temp <- lapply(years, function(year) {
-    data <- read_data_2(year = year)
-    data$Phase <- selected_phase
-    data$year <- year
-    return(data)
-  }) %>% bind_rows()
-  
-  # Assign clusters using a more efficient approach
-  cluster_df <- data.frame(GEO = unlist(clusters), partition = rep(c("First", "Second", "Third"), times = sapply(clusters, length)))
-  temp <- temp %>% 
-    left_join(cluster_df, by = "GEO")
-  
-  # Calculate additional variables if needed
-  temp <- temp %>%
-    mutate(
-      actual_agri = Agriculture * GDPpc * Population,
-      actual_ind = Industry * GDPpc * Population,
-      actual_manu = Manufacturing * GDPpc * Population,
-      tot_and_EI = Total_energy_supply * Energy_Intensity
-    )
-  
-  # Calculate last_verified emissions
-  temp <- temp %>%
-    arrange(GEO, year) %>%
-    group_by(GEO) %>%
-    mutate(last_verified = lag(Verified_emissions, n = 1, order_by = year)) %>%
-    ungroup()
-  
-  # Filter data for the selected phase
-  filtered_data <- temp %>% filter(Phase == selected_phase)
-  
-  # Define cluster colors
-  cluster_colors <- c("First" = "orange", "Second" = "green", "Third" = "blue")
-  
-  # Create the scatterplot
-  plot <- ggplot(filtered_data, aes_string(x = attribute, y = "Free", color = "partition")) +
-    geom_point(aes(alpha = year), size = 2) +
-    # Connect points for the same country
-    geom_line(aes(group = GEO, alpha = year), color = "black", size = 0.5) +
-    # Add regression lines for each cluster
-    geom_smooth(method = "lm", se = FALSE, aes(color = partition)) +
-    scale_color_manual(values = cluster_colors) +
-    # Adjust alpha based on year
-    scale_alpha(range = c(0.5, 1), guide = FALSE) +
-    # Apply log scale if requested
-    { if (use_log) {
-      list(
-        scale_x_log10(),
-        scale_y_log10()
-      )
-    } else {
-      NULL
+  # Find which cluster they belong to from the list "clusters"
+  for (i in 1:nrow(temp)){
+    for (j in 1:6){
+      if (temp$GEO[i] == clusters[[1]][j]){
+        temp$partition[i] <- "First"
+      }
     }
-    } +
-    labs(
-      title = paste("Free Allocation vs", attribute, "in Phase", phase_number),
-      x = attribute,
-      y = "Free Allocation",
-      color = "Cluster"
-    ) +
-    theme_minimal()
+    for (j in 1:6){
+      if (temp$GEO[i] == clusters[[2]][j]){
+        temp$partition[i] <- "Second"
+      }
+    }    
+    for (j in 1:13){
+      if (temp$GEO[i] == clusters[[3]][j]){
+        temp$partition[i] <- "Third"
+      }
+    }
+  }
   
-  # Save the plot
-  ggsave(filename = paste0("Phase_", phase_number, "_", attribute, ".svg"), plot = plot, path = plot_path, width = 8, height = 6)
   
-  # Return the plot object
-  return(plot)
+  temp$actual_agri <- temp$Agriculture*temp$GDPpc*temp$Population
+  temp$actual_ind <- temp$Industry*temp$GDPpc*temp$Population
+  temp$actual_manu <- temp$Manufacturing*temp$GDPpc*temp$Population
+  temp$tot_and_EI <- temp$Total_energy_supply*temp$Energy_Intensity
+  
+  temp$last_verified <- 0
+  for (i in 1:nrow(temp)){
+    a <- temp[i,]
+    for (j in 1:nrow(temp)){
+      b <- temp[j,]
+      if (a$GEO == b$GEO & a$year == b$year + 1){
+        temp$last_verified[i] <- b$Verified_emissions
+      }
+    }
+  }
+  temp[which(temp$GEO == "Greece"),][c(1,2,3,13,19)]
+  
+  
+  
+  
+  
+  
+  #Linear for Paper
+  temp$Total_ener_times_EI <- temp$Total_energy_supply*temp$Energy_Intensity
+  temp_phaseIII <- temp[which(temp$Phase=="Phase III"),]
+  Lin <- lm(temp_phaseIII$Free ~ temp_phaseIII$Population + temp_phaseIII$GDPpc + temp_phaseIII$Total_ener_times_EI)
+  summary(Lin)
+  theme_set(theme_minimal())
+  
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase I")] ~ temp$Verified_emissions[which(temp$Phase=="Phase I")])
+  summary(ff)
+  ggplot(temp[which(temp$Phase=="Phase I"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    #scale_x_log10()+
+    #scale_y_log10() +
+    labs(title = "Phase I", color = "Cluster")
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase II")] ~ temp$Verified_emissions[which(temp$Phase=="Phase II")])
+  summary(ff)
+  ggplot(temp[which(temp$Phase=="Phase II"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster")
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase III")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III")])
+  summary(ff)
+  ggplot(temp[which(temp$Phase=="Phase III"),], aes(x = Verified_emissions, y = Free))+
+    geom_point(aes(color = partition)) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "3,Phase III", color = "Cluster")
+  
+  
+  ff <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "First")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "First")])
+  summary(ff)
+  f2 <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "Second")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "Second")])
+  summary(f2)
+  f3 <- lm(temp$Free[which(temp$Phase=="Phase III" & temp$partition == "Third")] ~ temp$Verified_emissions[which(temp$Phase=="Phase III"& temp$partition == "Third")])
+  summary(f3)
+  ggplot(temp[which(temp$Phase=="Phase III" & temp$partition=="First"),])+
+    geom_point( aes(x = Verified_emissions, y = Free, alpha = year, color = GEO))+ 
+    geom_smooth(aes(x = Verified_emissions, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Verified_emissions, y = Free, color = GEO, alpha = year))+
+    #scale_x_log10()+
+    #scale_y_log10() +
+    xlab("Verified emissions in  t CO2 equivalent ") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III First Cluster", color = "Country")
+  
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Population, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "5,year = 2019", color = "Cluster")
+  
+  
+  
+  
+  ############################verified Phase III ###################################
+  # Calculate the linear models for each cluster
+  # Calculate the linear models for each cluster
+  lm1 <- coef(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "First"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "First"]))
+  lm2 <- coef(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "Second"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "Second"]))
+  lm3 <- coef(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "Third"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "Third"]))
+  
+  # Print summaries if needed
+  print(summary(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "First"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "First"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "Second"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "Second"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase III" & temp$partition == "Third"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase III" & temp$partition == "Third"])))
+  
+  # Create the plot
+  image <- ggplot(temp[temp$Phase == "Phase III", ]) +
+    geom_point(aes(x = Verified_emissions, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1[1], slope = lm1[2], color = rgb(248, 118, 100, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2[1], slope = lm2[2], color = rgb(0, 186, 56, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3[1], slope = lm3[2], color = rgb(97, 156, 255, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_line(aes(x = Verified_emissions, y = Free, group = GEO, alpha = year)) +
+    xlab("Verified emissions in t CO2 equivalent") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III", color = "Cluster") 
+  
+  # Print the plot
+  print(image)
+  #######################################################################################
+  ############################verified Phase II ###################################
+  # Calculate the linear models for each cluster
+  # Calculate the linear models for each cluster in Phase II
+  lm1 <- coef(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "First"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "First"]))
+  lm2 <- coef(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "Second"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "Second"]))
+  lm3 <- coef(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "Third"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "Third"]))
+  
+  # Print summaries if needed
+  print(summary(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "First"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "First"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "Second"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "Second"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase II" & temp$partition == "Third"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase II" & temp$partition == "Third"])))
+  
+  # Create the plot
+  image <- ggplot(temp[temp$Phase == "Phase II", ]) +
+    geom_point(aes(x = Verified_emissions, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1[1], slope = lm1[2], color = rgb(248, 118, 100, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2[1], slope = lm2[2], color = rgb(0, 186, 56, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3[1], slope = lm3[2], color = rgb(97, 156, 255, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_line(aes(x = Verified_emissions, y = Free, group = GEO, alpha = year)) +
+    xlab("Verified emissions in t CO2 equivalent") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster") 
+  
+  # Print the plot
+  print(image)
+  
+  #######################################################################################
+  ############################verified Phase I ###################################
+  # Calculate the linear models for each cluster
+  # Calculate the linear models for each cluster in Phase I
+  lm1 <- coef(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "First"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "First"]))
+  lm2 <- coef(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "Second"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "Second"]))
+  lm3 <- coef(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "Third"] ~ 
+                   temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "Third"]))
+  
+  # Print summaries if needed
+  print(summary(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "First"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "First"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "Second"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "Second"])))
+  print(summary(lm(temp$Free[temp$Phase == "Phase I" & temp$partition == "Third"] ~ 
+                     temp$Verified_emissions[temp$Phase == "Phase I" & temp$partition == "Third"])))
+  
+  # Create the plot
+  image <- ggplot(temp[temp$Phase == "Phase I", ]) +
+    geom_point(aes(x = Verified_emissions, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1[1], slope = lm1[2], color = rgb(248, 118, 100, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2[1], slope = lm2[2], color = rgb(0, 186, 56, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3[1], slope = lm3[2], color = rgb(97, 156, 255, maxColorValue = 255), 
+                linetype = "dashed", size = 1) +
+    geom_line(aes(x = Verified_emissions, y = Free, group = GEO, alpha = year)) +
+    xlab("Verified emissions in t CO2 equivalent") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase I", color = "Cluster") 
+  
+  # Print the plot
+  print(image)
+  
+  #######################################################################################
+  
+  
+  ###################################Population Phase III  
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  
+  image6 <- ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    xlab("Population") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III", color = "Cluster") 
+  print(image6)
+  ggsave(file="6.svg", plot=image6, path = "./Paper4pages/graphs", width = 6)
+  
+  ####################### Population Phase II
+  
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="Third")]))
+  
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase II" & temp$partition=="Third")]))
+  image61 <- ggplot(temp[which(temp$Phase == "Phase II"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    xlab("Population") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster") 
+  print(image61)
+  
+  ####################### Population Phase I
+  
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="Third")]))
+  
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~temp$Population[which(temp$Phase == "Phase I" & temp$partition=="Third")]))
+  image62 <- ggplot(temp[which(temp$Phase == "Phase I"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), 
+                linetype="dashed", size=1)+
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    xlab("Population") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase I", color = "Cluster") 
+  print(image62)
+  
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Population") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "7, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Population, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Population, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Population, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Population") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",8 All", color = "Cluster")
+  
+  
+  
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = GDPpc, y = Free, color = partition))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "9,year = 2019", color = "Cluster")
+  
+  
+  ##################################### GDP per capita Phase III
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~ temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~ temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~ temp$GDPpc[which(temp$Phase == "Phase III" & temp$partition=="Third")])) 
+  
+  image10 <- ggplot(temp[which(temp$Phase == "Phase III"),]) +
+    geom_point(aes(x = GDPpc, y = Free, color = partition, alpha = year)) + 
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year)) +
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    xlab("GDPpc") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III", color = "Cluster") 
+  
+  print(image10)
+  
+  ggsave(file="10.svg", plot=image10, path = "./Paper4pages/graphs", width = 6)
+  ########################################################################
+  ##################################### GDP per capita Phase II
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~ temp$GDPpc[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~ temp$GDPpc[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~ temp$GDPpc[which(temp$Phase == "Phase II" & temp$partition=="Third")])) 
+  
+  image111 <- ggplot(temp[which(temp$Phase == "Phase II"),]) +
+    geom_point(aes(x = GDPpc, y = Free, color = partition, alpha = year)) + 
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year)) +
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    xlab("GDPpc") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster") 
+  
+  print(image111)
+  
+  ggsave(file="10.svg", plot=image10, path = "./Paper4pages/graphs", width = 6)
+  ########################################################################
+  ##################################### GDP per capita Phase II
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~ temp$GDPpc[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~ temp$GDPpc[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~ temp$GDPpc[which(temp$Phase == "Phase I" & temp$partition=="Third")])) 
+  
+  image1111 <- ggplot(temp[which(temp$Phase == "Phase I"),]) +
+    geom_point(aes(x = GDPpc, y = Free, color = partition, alpha = year)) + 
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year)) +
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    xlab("GDPpc") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase I", color = "Cluster") 
+  
+  print(image1111)
+  
+  ggsave(file="10.svg", plot=image10, path = "./Paper4pages/graphs", width = 6)
+  ########################################################################
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of GDPpc") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "11, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = GDPpc, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = GDPpc, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = GDPpc, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of GDPpc") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",12 All", color = "Cluster")
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "13,year = 2019", color = "Cluster")
+  
+  
+  
+  ######################### Total Energy Supply Phase III
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase III" & temp$partition=="Third")])) 
+  
+  image14 <- ggplot(temp[which(temp$Phase == "Phase III"),]) +
+    geom_point(aes(x = Total_energy_supply, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year)) +
+    xlab("Total_energy_supply") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III", color = "Cluster") 
+  
+  print(image14)
+  ggsave(file="14.svg", plot=image14, path = "./Paper4pages/graphs", width = 6)
+  ######################################################
+  ######################### Total Energy Supply Phase II
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase II" & temp$partition=="Third")])) 
+  
+  image141 <- ggplot(temp[which(temp$Phase == "Phase II"),]) +
+    geom_point(aes(x = Total_energy_supply, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year)) +
+    xlab("Total_energy_supply") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster") 
+  
+  print(image141)
+  ggsave(file="14.svg", plot=image14, path = "./Paper4pages/graphs", width = 6)
+  ######################################################
+  ######################### Total Energy Supply Phase II
+  lm1 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  lm2 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  lm3 <- summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~ temp$Total_energy_supply[which(temp$Phase == "Phase I" & temp$partition=="Third")])) 
+  
+  image1411 <- ggplot(temp[which(temp$Phase == "Phase I"),]) +
+    geom_point(aes(x = Total_energy_supply, y = Free, color = partition, alpha = year)) + 
+    geom_abline(intercept = lm1$coefficients[1, 1], slope = lm1$coefficients[2, 1], 
+                color = rgb(248, 118, 100, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm2$coefficients[1, 1], slope = lm2$coefficients[2, 1], 
+                color = rgb(0, 186, 56, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_abline(intercept = lm3$coefficients[1, 1], slope = lm3$coefficients[2, 1], 
+                color = rgb(97, 156, 255, maxColorValue = 255), linetype = "dashed", size = 1) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year)) +
+    xlab("Total_energy_supply") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase I", color = "Cluster") 
+  
+  print(image1411)
+  ggsave(file="14.svg", plot=image14, path = "./Paper4pages/graphs", width = 6)
+  ######################################################
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "15, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Total_energy_supply, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",16 All", color = "Cluster")
+  
+  ggplot(temp[which(temp$year==2019),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    labs(title = "17,year = 2019", color = "Cluster")
+  
+  
+  ################################## tot time EI ####################################
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="First")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Second")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase III" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase III" & temp$partition=="Third")]))
+  
+  
+  image18 <- ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), linetype="dashed", size=1)+
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    xlab("Total_energy_supply Energy_Intensity") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase III", color = "Cluster") 
+  print(image18)
+  ggsave(file="18.svg", plot=image18, path = "./Paper4pages/graphs", width = 6)
+  ################################################################################
+  ################################## tot time EI ####################################
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="Third")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="First")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="Second")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase II" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase II" & temp$partition=="Third")]))
+  
+  
+  image181 <- ggplot(temp[which(temp$Phase == "Phase II"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), linetype="dashed", size=1)+
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    xlab("Total_energy_supply Energy_Intensity") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase II", color = "Cluster") 
+  print(image181)
+  ggsave(file="18.svg", plot=image18, path = "./Paper4pages/graphs", width = 6)
+  ################################################################################
+  ################################## tot time EI ####################################
+  lm1 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  lm2 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  lm3 <- coef(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="Third")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="First")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="First")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Second")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="Second")]))
+  summary(lm(temp$Free[which(temp$Phase == "Phase I" & temp$partition=="Third")] ~temp$Total_ener_times_EI[which(temp$Phase == "Phase I" & temp$partition=="Third")]))
+  
+  
+  image1811 <- ggplot(temp[which(temp$Phase == "Phase I"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_abline(intercept = lm1[1] , slope = lm1[2], color=rgb(248, 118, 100,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm2[1] , slope = lm2[2], color=rgb(0, 186, 56,maxColorValue=255), linetype="dashed", size=1)+
+    geom_abline(intercept = lm3[1] , slope = lm3[2], color=rgb(97, 156, 255,maxColorValue=255), linetype="dashed", size=1)+
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    xlab("Total_energy_supply Energy_Intensity") + 
+    ylab("Free Allocation in t CO2 equivalent") +
+    labs(title = "Phase I", color = "Cluster") 
+  print(image1811)
+  ggsave(file="18.svg", plot=image18, path = "./Paper4pages/graphs", width = 6)
+  ################################################################################
+  
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase III"),])+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply*Energy_Intensity") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = "19, Phase III", color = "Cluster")
+  
+  ggplot(temp)+
+    geom_point( aes(x = Total_energy_supply*Energy_Intensity, y = Free, color = partition, alpha = year))+ 
+    geom_smooth(aes(x = Total_energy_supply*Energy_Intensity, y = Free),method = "lm", se = FALSE, color = "black", size =0.5) +
+    geom_line(aes(x = Total_energy_supply*Energy_Intensity, y = Free, group = GEO, alpha = year))+
+    scale_x_log10()+
+    scale_y_log10() +
+    xlab("Log 10 of Total_energy_supply*Energy_Intensity") + 
+    ylab("Log 10 of Free Allocation in t CO2 equivalent") +
+    labs(title = ",20 All", color = "Cluster")
+  
+  
+  tep <- temp[-which(temp$Free == 0),]
+  tep <- tep[-which(tep$last_verified == 0),]  
+  tep$year <- as.integer(tep$year)
+  lm1 <- lm(tep$Free[which(tep$Phase == "Phase I")] ~tep$last_verified[which(tep$Phase == "Phase I")])
+  lm2 <- lm(tep$Free[which(tep$Phase == "Phase II")] ~tep$last_verified[which(tep$Phase == "Phase II")])
+  lm3 <- lm(tep$Free[which(tep$Phase == "Phase III" & tep$GEO != "Malta")] ~tep$last_verified[which(tep$Phase == "Phase III" & tep$GEO != "Malta")])
+  
+  summary(lm3)
+  my_plot <- ggplot(tep[which(tep$Phase == "Phase III" & tep$GEO != "Malta"),])+
+    labs(title = "Phase III of EU ETS")+
+    scale_x_log10()+
+    scale_y_log10() +
+    geom_point( aes(x = last_verified, y = Free, alpha = factor(year)))+
+    geom_smooth(aes(x = last_verified, y = Free),method = "lm", se = FALSE, color = "black", size =0.5)+
+    geom_line(aes(x = last_verified, y = Free, group = GEO, alpha = factor(year)))+
+    scale_alpha_discrete(name = "Year")+
+    annotate(
+      "text",
+      x = max(tep$last_verified),  # Set x to the maximum x-value
+      y = min(tep$Free),  # Set y to the minimum y-value
+      label = "Multiple R-squared:  0.9058
+      Adjusted R-squared:  0.9053
+      p-value: < 2.2e-16",
+      vjust = 0,  # Adjust vertical alignment
+      hjust = 1   # Adjust horizontal alignment
+    )+
+    xlab("Last year's verified emissions (log)") + 
+    ylab("Free Allocation in t CO2 equivalent (log)") +
+    theme(panel.background = element_rect(fill = rgb(220/255, 220/255, 220/255)),
+          axis.title.x = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          axis.title.y = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"),
+          title = element_text(colour = rgb(183/255, 213/255, 73/255),face="bold"))
+  print(my_plot)
+  ggsave(filename = "./4σέλιδο/Phase_III.svg", plot = my_plot, device = "svg")
+  
+  
+  
+  ggplot(temp[which(temp$Phase == "Phase I"),])+
+    labs(title = "Presentation 2", color = "Cluster")+
+    geom_point( aes(x = Verified_emissions, y = Free, color = partition, alpha = year))+
+    geom_smooth(aes(x = Verified_emissions, y = Free),method = "lm", se = FALSE, color = "black", size =0.5)+
+    geom_line(aes(x = Verified_emissions, y = Free, color = partition, group = GEO, alpha = year))
+  
 }
-
-# Example usage:
-plot_dir <- "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/04/"
-plot1_path <- paste0(plot_dir, "test.png")
-generate_scatterplot(phase_number = 3, attribute = "Population", use_log = TRUE, plot_path = plot1_path)
-
-  

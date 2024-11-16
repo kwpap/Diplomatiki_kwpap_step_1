@@ -194,8 +194,8 @@ will_use_pop <- TRUE  # Set to TRUE to include population-based constraints
 
 # Define bounds for free allocation and population factors
 bounds <- list(
-  free_lower = 0.5,   # Lower bound coefficient for last year's free allocation (alpha_1)
-  free_upper = 2,     # Upper bound coefficient for last year's free allocation (alpha_2)
+  free_lower = 0.8,   # Lower bound coefficient for last year's free allocation (alpha_1)
+  free_upper = 1.2,     # Upper bound coefficient for last year's free allocation (alpha_2)
   pop_lower = 0.5,    # Lower bound coefficient for population ratio (alpha_3)
   pop_upper = 2       # Upper bound coefficient for population ratio (alpha_4)
 )

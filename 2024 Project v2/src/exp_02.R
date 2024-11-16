@@ -25,7 +25,7 @@ create_graph_for_one(year = 2018,
                      path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/")
 
 prepare_data_for_year_exp2 <- function (year){
-  find_slopes_with_one_country(year = year)$data[,1:2]
+  find_slopes_with_one_country(year = year)$data[,2:3]
 }
 
 compile_results_exp2 <- function(start_year, end_year) {
@@ -41,7 +41,9 @@ compile_results_exp2 <- function(start_year, end_year) {
       }
     )
     if (!is.null(result_entry)) {
-      all_results <- append(all_results, list(find_slopes_with_one_country(year = year)$country, result_entry))
+      # Prepend the country to the result entry
+      result_entry <- c(country = find_slopes_with_one_country(year = year)$country, result_entry)
+      all_results <- append(all_results, list(result_entry))
     }
   }
   
@@ -52,8 +54,10 @@ compile_results_exp2 <- function(start_year, end_year) {
 
 
 # Example of usage
+RDS_02_file <-"C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/02_distances_from_one/exp_02_normalized.rds"
 start_year <- 2005
 end_year <- 2020
 results_df <- compile_results_exp2(start_year, end_year)
+saveRDS(results_df, file = RDS_02_file)
 latex_table <- prepare_for_latex(results_df)
 save_latex_table(latex_table, "exp3_2.tex")

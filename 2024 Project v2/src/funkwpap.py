@@ -322,6 +322,65 @@ class Regulator:
     def __repr__(self):
         return f"Regulator(id={self.id}, name='{self.name}', permit_price={self.permit_price}, emission_cap={self.emission_cap})"
     
+    def exp7_find_coefficient_for_free_allocation(self, print_output = False, percentage = 0.4, method = "optimization_with_positive_constraints_ab"):
+        """
+            Perform a binary search to find the optimal coefficient for free allocation.
+            This method adjusts the free emission multiplier for each sector to ensure that the 
+            total free allocation is a specified percentage of the emission cap. The search is 
+            performed using a binary search algorithm.
+            Parameters:
+            print_output (bool): If True, prints the bounds and total free allocation during the search.
+            percentage (float): The desired percentage of the emission cap for free allocation.
+            method (str): The optimization method to use. Options are "optimization_with_positive_constraints_ab" 
+                          or "optimization_with_least_squares_ab".
+            Returns:
+            float: The optimal coefficient for the free emission multiplier.
+            """
+        # Step 1: Keep the original values of the free_multiplier
+        original_free_multipliers = {}
+        for sector in self.sector_registry.values():
+            original_free_multipliers[sector.name] = sector.free_emission_multiplier
+
+        # Step 2: Define the bounds for the binary search
+        lower_bound = 0
+        upper_bound = 2
+        current_bound = (lower_bound + upper_bound) / 2
+        target_free_allocation = self.emission_cap * percentage
+
+        # Step 3: Perform the binary search
+        while upper_bound - lower_bound > 0.01:
+            # Step 3.1: Set the free_multiplier of every sector to the current bound
+            for sector in self.sector_registry.values():
+                sector.free_emission_multiplier = original_free_multipliers[sector.name]*current_bound
+
+            # Step 3.2: Perform the optimization
+            if method == "optimization_with_positive_constraints_ab":
+                self.optimization_with_positive_constraints_ab(BAU=False, print_output=False)
+            elif method == "optimization_with_least_squares_ab":
+                self.optimization_with_least_squares(BAU=False, print_output=False)
+            else:
+                print("Invalid method")
+                return
+
+            # Step 3.3: Calculate the free allocation
+            total_free_allocation = 0
+            for firm in self.firm_registry.values():
+                total_free_allocation += firm.actual_output*firm.sector.free_emission_multiplier
+
+            # Step 3.4: Update the bounds
+            if total_free_allocation > target_free_allocation:
+                upper_bound = current_bound
+            else:
+                lower_bound = current_bound
+            current_bound = (lower_bound + upper_bound) / 2
+            if print_output:
+                print(f"Lower bound: {lower_bound}, Upper bound: {upper_bound}, Current bound: {current_bound}, Total free allocation: {total_free_allocation}")
+
+        # Step 4: Set the free_multiplier of every sector to the optimal value
+        for sector in self.sector_registry.values():
+            sector.free_emission_multiplier = original_free_multipliers[sector.name]
+        return current_bound
+
     def calculate_average_of_10_states(self, BAU = False, max_output = {}):
         # Here we calculate an average state of 10 random states, to be used as a starting point for the optimization process.
         # Step 1: For every firm, assign random values to the output of the other firms and calculate the output of the firm. 
@@ -437,6 +496,7 @@ class Regulator:
             total_emission = get_emission(self.firm_registry.values())
         print("Permit price: {} and total emission: {} and emission cap {}".format(self.permit_price, total_emission, self.emission_cap))
         return x_mid
+
     def optimization_with_least_squares(self, BAU = False, gurobi_print = False, lp_file = "least_squares.lp", print_output = False):
     
         m = Model("Least Squares")
@@ -768,11 +828,11 @@ class Regulator:
         m.params.OutputFlag = 1 if gurobi_print else 0
         m.write("positive_constraints_ab.lp")
         m.optimize()
-
-        if m.status == gb.GRB.OPTIMAL:
-            print("Optimal solution found")
-        else:
-            print("No solution found")
+        if print_output:
+            if m.status == gb.GRB.OPTIMAL:
+                print("Optimal solution found")
+            else:
+                print("No solution found")
         
         if BAU:
             for firm in self.firm_registry.values():
@@ -790,9 +850,10 @@ class Regulator:
             print(f"Permit price: {ppp.X}")
         return m
 
-    def optimization_everything_constrained_and_ab(self, BAU = False, gurobi_print = True, lp_file = "everything_constrained_and_ab.lp", print_output = True):
+
+    def exp7_optimization_with_positive_constraints_ab(self, BAU = False, gurobi_print = False, lp_file = "exp7_positive_constraints_ab.lp", print_output = False):
     
-        m = Model("everything_constrained_and_ab")
+        m = Model("positive_constraints_ab")
         
         # Define one pair of output and emission for each firm for sympy and for gurobi and the dictionary of them
         symbol_map = {}
@@ -839,17 +900,13 @@ class Regulator:
                 sum_sector_outputs += sympy_output[sect.firms[i].id]
             firm_revenew = sect.price_demand_function.subs(x, sum_sector_outputs) * sympy_output[firm.id]
             firm_abatement = -firm.abatement_cost_function.subs(x, sympy_abatement[firm.id])
-            firm_trading = -pp * ((1 - sect.free_emission_multiplier) * sympy_output[firm.id] - sympy_abatement[firm.id])
-            if BAU:
-                firm_abatement = 0
-                firm_trading = 0
+            firm_trading = -pp * (sympy_output[firm.id] - sympy_abatement[firm.id] - firm.exp7_free_allocation)
             firm_profit += firm_revenew + firm_abatement + firm_trading
             profit_dq = sp.diff(firm_profit, sympy_output[firm.id])
             profit_dab = sp.diff(firm_profit, sympy_abatement[firm.id])
-            # sympy_objective += profit_dq + profit_dab
-            sympy_objective = profit_dq
+            sympy_objective += profit_dq + profit_dab
             m.addConstr(sympy_to_gurobi(profit_dq, symbol_map, m) >= 0)
-            m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) == 0)
+            m.addConstr(sympy_to_gurobi(profit_dab, symbol_map, m) >= 0)
         # sympy_objective += (self.emission_cap + sum(sympy_output.values())- sum(sympy_abatement.values()))**2
         m.addConstr(sum(gurobi_output.values())- sum(gurobi_abatement.values()) == self.emission_cap)
 
@@ -860,7 +917,7 @@ class Regulator:
         gurobi_objective = sympy_to_gurobi(sympy_objective, symbol_map, m)
         m.setObjective(gurobi_objective, gb.GRB.MINIMIZE)
         m.params.OutputFlag = 1 if gurobi_print else 0
-        m.write(lp_file)
+        m.write("positive_constraints_ab.lp")
         m.optimize()
 
         if m.status == gb.GRB.OPTIMAL:
@@ -868,21 +925,16 @@ class Regulator:
         else:
             print("No solution found")
         
-        if BAU:
-            for firm in self.firm_registry.values():
-                firm.BAU_output = gurobi_output[firm.id].X
-                firm.BAU_emission = gurobi_output[firm.id].X
-            self.BAU_emissions = sum([firm.BAU_emission for firm in self.firm_registry.values()])
-        else:
-            for firm in self.firm_registry.values():
-                firm.actual_output = gurobi_output[firm.id].X
-                firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
-            self.permit_price = ppp.X
+        for firm in self.firm_registry.values():
+            firm.actual_output = gurobi_output[firm.id].X
+            firm.emission = gurobi_output[firm.id].X - gurobi_abatement[firm.id].X
+        self.permit_price = ppp.X
         if print_output:
             for firm in self.firm_registry.values():
                 print(f"Firm {firm.name} has output {firm.actual_output} and emission {firm.emission}")
             print(f"Permit price: {ppp.X}")
         return m
+
 
 
     def optimization_concave_formulation_ab(self, BAU = False, success_print = False, gurobi_print = False, lp_file = "optimization_concave_formulation_ab.lp", print_output = False):
@@ -1060,6 +1112,8 @@ class Sector:
         self.price_demand_function = price_demand_function
         self.free_emission_multiplier = free_emission_multiplier
         self.firms = []  # List to store firms in this sector
+        self.regulator = regulator
+        self.consumer_surplus = 0
 
         # Register this sector in the global registry
         regulator.sector_registry[self.id] = self
@@ -1078,7 +1132,8 @@ class Sector:
         sum_of_production = 0
         for firm in self.firms:
             sum_of_production += firm.actual_output
-        return sp.integrate(self.price_demand_function, (x, 0, sum_of_production)) - sum_of_production * self.price_demand_function.subs(x, sum_of_production).evalf()
+        self.consumer_surplus = sp.integrate(self.price_demand_function, (x, 0, sum_of_production)) - sum_of_production * self.price_demand_function.subs(x, sum_of_production).evalf()
+        return self.consumer_surplus
 
 class Country:
     _id_counter = 1
@@ -1110,7 +1165,7 @@ class Country:
 class Firm:
     _id_counter = 1
 
-    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, regulator, BAU_output=0, BAU_emission=0, BAU_profit=0):
+    def __init__(self, name, sector, country, production_cost_function, abatement_cost_function, actual_output, emission, profit, regulator, BAU_output=0, BAU_emission=0, BAU_profit=0, exp7_free_allocation = 0):
         self.id = Firm._id_counter
         Firm._id_counter += 1
         self.name = name
@@ -1142,6 +1197,7 @@ class Firm:
         self.permits_used = 0
         self.free_permits = 0
         self.permits_bought = 0
+        self.exp7_free_allocation = exp7_free_allocation
 
         # Register this firm in the global registry
         regulator.firm_registry[self.id] = self
@@ -1271,4 +1327,28 @@ class Firm:
             trading = 0
         return (income + abatement + trading).subs({out: self.actual_output, em: self.emission}).evalf()
 
-    
+    def exp7_calculate_profit_components(self):
+        sector = self.sector
+        regulator = self.regulator
+        # Sum of all other outputs
+        sum_other_outputs = 0
+        for i in range(len(sector.firms)):
+            if sector.firms[i].id != self.id:
+                sum_other_outputs += sector.firms[i].actual_output
+        
+        permit_price = regulator.permit_price
+        price_demand_function = sector.price_demand_function
+        production_cost_function = self.production_cost_function
+        abatement_cost_function = self.abatement_cost_function
+
+
+        out, em = sp.symbols('out em')
+        # Calculate the output of the firm
+        income = (price_demand_function.subs(x, sum_other_outputs + out) - production_cost_function.subs(x, out))*out
+        self.sales = income.subs(out, self.actual_output).evalf()
+        self.abatement = abatement_cost_function.subs({x: self.actual_output - self.emission, y: self.emission}).evalf()
+        self.permits_used = self.emission
+        self.free_permits = 0
+        self.permits_bought = self.permits_used - self.exp7_free_allocation
+        self.permits_costs = permit_price * self.permits_bought
+        self.profit = self.sales - self.abatement - self.permits_costs

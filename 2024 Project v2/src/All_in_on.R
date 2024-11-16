@@ -2162,62 +2162,85 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
   # lp("max", f.obj, f.con, f.dir, f.rhs, compute.sens=TRUE)$duals.to
   will_use_a1 <- TRUE
   will_use_a2 <- TRUE
-  will_use_pop <- TRUE
+  will_use_pop <- FALSE
   
-  a_1 <- 0.5 # Συντελεστής κάτω ορίου ως προς τα περσινά free
-  a_2 <- 2 # Συντελεστής ανω ορίου ως προς τα περσινά free
-  a_3 <- 0.5 # Συντελεστής κάτω ορίου ως προς το συντελεστή πληθυσμού
-  a_4 <- 2 # Συντελεστής κάτω ορίου ως προς το συντελεστή πληθυσμού
-  # free / total free -> 10%
-  # > a_1* 10% -> 9%
-  # < a_2* 10% -> 11%
-  # pop / total pop -> 14%
-  # >7%
-  # <28%
+  # Define bounds for free allocation and population factors
+  bounds <- list(
+    free_lower = 0.8,   # Lower bound coefficient for last year's free allocation
+    free_upper = 1.2,     # Upper bound coefficient for last year's free allocation
+    pop_lower = 0.5,    # Lower bound coefficient for population ratio
+    pop_upper = 2       # Upper bound coefficient for population ratio
+  )
   
-
-
-  df_year <- read_data_2(year = year_for_comparison)
-   df_next_year<- read_data_2(year = year_for_comparison+1)
-   df_year <-df_year[-c(17),] #Remove Malta
-   df_next_year <-df_next_year[-c(17),]
-  df_year$Free <- df_year$Free / sum(df_year$Free)
-  df_next_year$Free <- df_next_year$Free / sum(df_next_year$Free)
-  df_year$Pop_norm <- df_year$Population / sum(df_year$Population)
-  df_next_year$Pop_norm <- df_next_year$Population / sum(df_next_year$Population)
-  # Let's read the data from GDP per capita PPS 
-  GDPpps <- read.csv(paste0(data_path,"/tec00114_linear.csv"), header = TRUE, sep = ",")
-  GDPpps <- GDPpps[-c(1,2,3,4,5,9)]
-  # convert eu 2letter abbriviation to country name
-  eu_2l_name <- data.frame(eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
-                           eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom"))
-
-  GDPpps <- GDPpps[-which(GDPpps$geo %in% c("BA", "CH", "EA19", "EA20", "EU27_2007","EU27_2020","EU28", "IS", "JP", "ME","MK","NO","RS","TR","US" )),]
-  for (i in 1:nrow(GDPpps)){
-    GDPpps$geo[i] <- eu_2l_name$eu_name[which(eu_2l_name$eu_2l == GDPpps$geo[i])]
+  # Load data for specified year and next year, removing Malta
+  load_data <- function(year) {
+    df <- read_data_2(year = year)
+    df <- df[-c(17), ] # Exclude Malta
+    df$Free <- df$Free / sum(df$Free)
+    df$Pop_norm <- df$Population / sum(df$Population)
+    return(df)
   }
-  GDPpps <- GDPpps[which(GDPpps$TIME_PERIOD == year_for_comparison),]
-  GDPpps <- GDPpps[-c(2)]
-  names(GDPpps) <- c("GEO", "GDPpps")
+  
+  df_year <- load_data(year_for_comparison)
+  df_next_year <- load_data(year_for_comparison + 1)
+  
+  # Load GDP per capita PPS data and clean
+  load_gdp_pps <- function(data_path, year) {
+    GDPpps <- read.csv(paste0(data_path, "/tec00114_linear.csv"), header = TRUE, sep = ",")
+    GDPpps <- GDPpps[-c(1:5, 9)]  # Drop unnecessary columns
+    
+    # EU country code to name mapping
+    eu_2l_name <- data.frame(
+      eu_2l = c("AL", "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "UK"), 
+      eu_name = c("Albania", "Austria", "Belgium", "Bulgaria", "Cyprus", "Czechia", "Germany", "Denmark", "Estonia", "Greece", "Spain", "Finland", "France", "Croatia", "Hungary", "Ireland", "Italy", "Lithuania", "Luxembourg", "Latvia", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Sweden", "Slovenia", "Slovakia", "United Kingdom")
+    )
+    
+    # Filter out non-EU or unwanted regions
+    exclude_regions <- c("BA", "CH", "EA19", "EA20", "EU27_2007", "EU27_2020", "EU28", "IS", "JP", "ME", "MK", "NO", "RS", "TR", "US")
+    GDPpps <- GDPpps[!GDPpps$geo %in% exclude_regions, ]
+    
+    # Map EU codes to names
+    GDPpps$geo <- sapply(GDPpps$geo, function(code) {
+      match <- eu_2l_name$eu_name[eu_2l_name$eu_2l == code]
+      if (length(match) == 0) return(NA) else return(match)
+    })
+    
+    # Filter for the specified year and drop unnecessary columns
+    GDPpps <- GDPpps[GDPpps$TIME_PERIOD == year, c("geo", "OBS_VALUE")]
+    names(GDPpps) <- c("GEO", "GDPpps")
+    return(GDPpps)
+  }
+  
+  GDPpps <- load_gdp_pps(data_path, year_for_comparison)
+  
+  # Merge GDP PPS data with the main dataset
   df_year <- merge(df_year, GDPpps, by = "GEO")
 
-  f.obj <- c(df_year$GDPpps*df_year$Population/df_year$Verified_emissions*df_year$Industry/100)
-
-  # repeat 1 for each row
-  f.con <- matrix( rep(1, nrow(df_year)), nrow = 1, byrow = TRUE)
-  f.dir <- c("=")
-  f.rhs <- c(1)
+  # Compute objective function coefficients
+  compute_objective <- function(df) {
+    with(df, GDPpps * Population / Verified_emissions * Industry / 100)
+  }
+  
+  f.obj <- compute_objective(df_year)
+  
+  # Create constraint matrix, direction, and right-hand side
+  f.con <- matrix(1, nrow = 1, ncol = nrow(df_year)) # x1+ x2 x3+ x4 +x5...
+  f.dir <- "=" # =
+  f.rhs <- 1 # 1
+  #Ara olo mazi x1+x2+x3+... =1
+  
+  # Solve the LP problem
   sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
 
   if (will_use_a1){
     f.con <- rbind(f.con, diag(nrow(df_year)))
     f.dir <- c(f.dir, rep(">=", nrow(df_year)))
-    f.rhs <- c(f.rhs, a_1*df_year$Free)
+    f.rhs <- c(f.rhs, bounds$free_lower*df_year$Free)
   }
   if (will_use_a2){
     f.con <- rbind(f.con, diag(nrow(df_year)))
     f.dir <- c(f.dir, rep("<=", nrow(df_year)))
-    f.rhs <- c(f.rhs, a_2*df_year$Free)
+    f.rhs <- c(f.rhs, bounds$free_upper*df_year$Free)
   }
   if (will_use_pop){
     f.con <- rbind(f.con, diag(nrow(df_year)))
@@ -2228,20 +2251,47 @@ Kosta_eisai_vlakas_grapse_to_lp <- function(){
     f.rhs <- c(f.rhs, a_4*df_year$Pop_norm)
   }
 
-
-
-
-
-
+  # Run the optimization
   sol <- lp("max", f.obj, f.con, f.dir, f.rhs)$solution
-
-  gg <- data.frame(Country =  df_year$GEO[1], efficiency =  (df_year$GDPpps[1]*df_year$Population[1]/df_year$Verified_emissions[1]*df_year$Industry[1]/100), last_year = df_year$Free[1], low_free = a_1*df_year$Free[1] ,up_free = a_2*df_year$Free[1], pop = df_year$Pop_norm[1], min = df_year$Pop_norm[1]*a_3, max = df_year$Pop_norm[1]*a_4, forecasted =  sol[1], change = paste((sol[1]-df_year$Free[1])/df_year$Free[1]*100, "%"))
-  for (i in 2:nrow(df_year)){
-    gg <- rbind(gg, data.frame(Country =  df_year$GEO[i], efficiency =  (df_year$GDPpps[i]*df_year$Population[i]/df_year$Verified_emissions[i]*df_year$Industry[i]/100), last_year = df_year$Free[i], low_free = a_1*df_year$Free[i] ,up_free = a_2*df_year$Free[i], pop = df_year$Pop_norm[i], min = df_year$Pop_norm[i]*a_3, max = df_year$Pop_norm[i]*a_4, forecasted =  sol[i], change = paste((sol[i]-df_year$Free[i])/df_year$Free[i]*100, "%")))
-  }
-  gg <-gg[order(gg$efficiency, decreasing = TRUE),]
-  xtable(gg, caption = "GDP per capita PPS", label = "tab:GDPpps", digits = 4, include.rownames = FALSE, booktabs = TRUE, floating = TRUE, file = "GDPpps.tex")
-
+  
+  # Create data frame 'gg' by calculating columns vector-wise
+  ################################################################### 
+  # gg <- data.frame(
+  #   Country = df_year$GEO,
+  #   efficiency = with(df_year, GDPpps * Population / Verified_emissions * Industry / 100),
+  #   last_year = df_year$Free,
+  #   low_free = a_1 * df_year$Free,
+  #   up_free = a_2 * df_year$Free,
+  #   pop = df_year$Pop_norm,
+  #   min = df_year$Pop_norm * a_3,
+  #   max = df_year$Pop_norm * a_4,
+  #   forecasted = sol,
+  #   change = sprintf("%.2f %%", (sol - df_next_year$Free) / df_next_year$Free * 100) # Format percentage
+  # )
+  gg <- data.frame(
+    Country = df_year$GEO,
+    Calculated_Efficiency = with(df_year, GDPpps * Population / Verified_emissions * Industry / 100),
+    This_year_Allocation = sprintf("%.2f %%", (df_year$Free * 100)),
+    next_year_Allocation = sprintf("%.2f %%", (df_next_year$Free * 100)),
+    forecasted = sprintf("%.2f %%", (sol * 100)),
+    change = sprintf("%.2f %%", (sol - df_next_year$Free) / df_next_year$Free * 100) # Format percentage
+  )
+  # Sort by efficiency in decreasing order
+  gg <- gg[order(gg$Calculated_Efficiency, decreasing = TRUE), ]
+  
+  # Output LaTeX table
+  xtable(
+    gg, 
+    caption = "GDP per capita PPS", 
+    label = "tab:GDPpps", 
+    digits = 4, 
+    include.rownames = FALSE, 
+    booktabs = TRUE, 
+    floating = TRUE, 
+    file = "GDPpps.tex"
+  )
+  ###################################################################################################
+  ########################################################## Case 2 of Paper #######################
   # LEt's create the same thing with slitghly different contraints
   df_year$b <- df_year$GDPpps/mean(df_year$GDPpps)
   e <- 0.5

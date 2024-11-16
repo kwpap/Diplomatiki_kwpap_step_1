@@ -1,6 +1,4 @@
-# Find the best weights
-library(xtable)
-library(kableExtra)
+
 # Load the functions defined in functions.R
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/2024 Project v2/src/All_in_on.R")
 source("C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/2024 Project v2/src/linear_tester.R")
