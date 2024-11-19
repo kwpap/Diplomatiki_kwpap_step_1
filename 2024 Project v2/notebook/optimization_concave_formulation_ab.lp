@@ -1,13 +1,21 @@
 \ Model optimization_concave_formulation_ab
 \ LP format - for model browsing. Use MPS format to capture full model detail.
 Minimize
-  0.4 qq1 + 4 ab1 + 0.4 qq2 + 6 ab2 + 0.4 qq3 + 6 ab3 + 0.4 qq4 + 10 ab4
-   + 0.4 qq5 + 12 ab5 + 0.4 qq6 + 14 ab6 + 16 ab7 + 18 ab8 + 20 ab9
-   + 6 quad_aux_3919 + 6 quad_aux_3921 + 6 quad_aux_3923 + 6 quad_aux_3925
-   + 9 quad_aux_3927 + 9 quad_aux_3929 + 12 quad_aux_3931
-   + 30 quad_aux_3933 + 33 quad_aux_3935 + 0.06 pow_aux_3937
-   - 1322 Constant + [ 0.06 qq7 * pow_aux_3939 + 0.06 qq8 * pow_aux_3941
-   + 0.06 qq9 * pow_aux_3943 ] / 2 
+  0.6 qq1 + 6 ab1 + 0.6 qq2 + 4 ab2 + 0.6 qq3 + 2 ab3 + 0.6 qq4 + 4 ab4
+   + 0.6 qq5 + 6 ab5 + 0.3 qq6 + 4 ab6 + 0.3 qq7 + 2 ab7 + 0.3 qq8 + 2 ab8
+   + 0.3 qq9 + 6 ab9 + 0.3 qq10 + 4 ab10 + 0.12 qq11 + 2 ab11 + 0.12 qq12
+   + 4 ab12 + 0.12 qq13 + 2 ab13 + 0.12 qq14 + 2 ab14 + 0.12 qq15 + 4 ab15
+   + 0.9 qq16 + 8 ab16 + 0.9 qq17 + 6 ab17 + 0.9 qq18 + 10 ab18 + 0.9 qq19
+   + 6 ab19 + 0.9 qq20 + 4 ab20 + 1.2 qq21 + 8 ab21 + 1.2 qq22 + 10 ab22
+   + 1.2 qq23 + 6 ab23 + 1.2 qq24 + 8 ab24 + 1.2 qq25 + 6 ab25 + 0.06 qq26
+   + 2 ab26 + 0.06 qq27 + 4 ab27 + 0.06 qq28 + 2 ab28 + 0.06 qq29 + 2 ab29
+   + 0.06 qq30 + 4 ab30 - 5336 Constant + [ 6 ab1 ^2 + 12 ab2 ^2
+   + 18 ab3 ^2 + 12 ab4 ^2 + 6 ab5 ^2 + 18 ab6 ^2 + 12 ab7 ^2 + 6 ab8 ^2
+   + 6 ab9 ^2 + 6 ab10 ^2 + 6 ab11 ^2 + 6 ab12 ^2 + 12 ab13 ^2 + 6 ab14 ^2
+   + 12 ab15 ^2 + 6 ab16 ^2 + 12 ab17 ^2 + 6 ab18 ^2 + 18 ab19 ^2
+   + 24 ab20 ^2 + 6 ab21 ^2 + 12 ab22 ^2 + 12 ab23 ^2 + 18 ab24 ^2
+   + 24 ab25 ^2 + 6 ab26 ^2 + 6 ab27 ^2 + 12 ab28 ^2 + 6 ab29 ^2
+   + 12 ab30 ^2 ] / 2 
 Subject To
  R0: qq1 - ab1 >= 0
  R1: ab1 >= 0
@@ -27,65 +35,129 @@ Subject To
  R15: ab8 >= 0
  R16: qq9 - ab9 >= 0
  R17: ab9 >= 0
- R18: - 0.2 qq1 - 0.1 qq2 - 0.1 qq3 - ppp <= -100
- R19: - 0.1 qq1 - 0.2 qq2 - 0.1 qq3 - ppp <= -100
- R20: - 0.1 qq1 - 0.1 qq2 - 0.2 qq3 - ppp <= -100
- R21: - 0.2 qq4 - 0.1 qq5 - 0.1 qq6 - ppp <= -150
- R22: - 0.1 qq4 - 0.2 qq5 - 0.1 qq6 - ppp <= -150
- R23: - 0.1 qq4 - 0.1 qq5 - 0.2 qq6 - ppp <= -150
- R24: - qq7 - qq8 - qq9 + pow_base_aux_3906 = 0
- R25: - qq7 - qq8 - qq9 + pow_base_aux_3908 = 0
- R26: - qq7 - qq8 - qq9 + pow_base_aux_3910 = 0
- R27: - qq7 - qq8 - qq9 + pow_base_aux_3912 = 0
- R28: - qq7 - qq8 - qq9 + pow_base_aux_3914 = 0
- R29: - qq7 - qq8 - qq9 + pow_base_aux_3916 = 0
- R30: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
-   + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 = 2230.850907576413
- R31: - ab1 + pow_base_aux_3918 = 0
- R32: - ab2 + pow_base_aux_3920 = 0
- R33: - ab3 + pow_base_aux_3922 = 0
- R34: - ab5 + pow_base_aux_3924 = 0
- R35: - ab4 + pow_base_aux_3926 = 0
- R36: - ab6 + pow_base_aux_3928 = 0
- R37: - ab7 + pow_base_aux_3930 = 0
- R38: - ab8 + pow_base_aux_3932 = 0
- R39: - ab9 + pow_base_aux_3934 = 0
- R40: - qq7 - qq8 - qq9 + pow_base_aux_3936 = 0
- R41: - qq7 - qq8 - qq9 + pow_base_aux_3938 = 0
- R42: - qq7 - qq8 - qq9 + pow_base_aux_3940 = 0
- R43: - qq7 - qq8 - qq9 + pow_base_aux_3942 = 0
- qc0: - 4 ab1 + ppp + [ - 6 ab1 ^2 ] <= 2
- qc1: - 6 ab2 + ppp + [ - 6 ab2 ^2 ] <= 3
- qc2: - 6 ab3 + ppp + [ - 6 ab3 ^2 ] <= 1
- qc3: - 10 ab4 + ppp + [ - 9 ab4 ^2 ] <= 7
- qc4: - 12 ab5 + ppp + [ - 6 ab5 ^2 ] <= 1
- qc5: - 14 ab6 + ppp + [ - 9 ab6 ^2 ] <= 2
- qc6: - ppp - 0.02 pow_aux_3907 + [ - 0.03 qq7 * pow_aux_3909 ] <= -200
- qc7: - 16 ab7 + ppp + [ - 12 ab7 ^2 ] <= 3
- qc8: - ppp - 0.02 pow_aux_3911 + [ - 0.03 qq8 * pow_aux_3913 ] <= -200
- qc9: - 18 ab8 + ppp + [ - 30 ab8 ^2 ] <= 4
- qc10: - ppp - 0.02 pow_aux_3915 + [ - 0.03 qq9 * pow_aux_3917 ] <= -200
- qc11: - 20 ab9 + ppp + [ - 33 ab9 ^2 ] <= 5
- qc12: quad_aux_3919 + [ - pow_base_aux_3918 ^2 ] = 0
- qc13: quad_aux_3921 + [ - pow_base_aux_3920 ^2 ] = 0
- qc14: quad_aux_3923 + [ - pow_base_aux_3922 ^2 ] = 0
- qc15: quad_aux_3925 + [ - pow_base_aux_3924 ^2 ] = 0
- qc16: quad_aux_3927 + [ - pow_base_aux_3926 ^2 ] = 0
- qc17: quad_aux_3929 + [ - pow_base_aux_3928 ^2 ] = 0
- qc18: quad_aux_3931 + [ - pow_base_aux_3930 ^2 ] = 0
- qc19: quad_aux_3933 + [ - pow_base_aux_3932 ^2 ] = 0
- qc20: quad_aux_3935 + [ - pow_base_aux_3934 ^2 ] = 0
+ R18: qq10 - ab10 >= 0
+ R19: ab10 >= 0
+ R20: qq11 - ab11 >= 0
+ R21: ab11 >= 0
+ R22: qq12 - ab12 >= 0
+ R23: ab12 >= 0
+ R24: qq13 - ab13 >= 0
+ R25: ab13 >= 0
+ R26: qq14 - ab14 >= 0
+ R27: ab14 >= 0
+ R28: qq15 - ab15 >= 0
+ R29: ab15 >= 0
+ R30: qq16 - ab16 >= 0
+ R31: ab16 >= 0
+ R32: qq17 - ab17 >= 0
+ R33: ab17 >= 0
+ R34: qq18 - ab18 >= 0
+ R35: ab18 >= 0
+ R36: qq19 - ab19 >= 0
+ R37: ab19 >= 0
+ R38: qq20 - ab20 >= 0
+ R39: ab20 >= 0
+ R40: qq21 - ab21 >= 0
+ R41: ab21 >= 0
+ R42: qq22 - ab22 >= 0
+ R43: ab22 >= 0
+ R44: qq23 - ab23 >= 0
+ R45: ab23 >= 0
+ R46: qq24 - ab24 >= 0
+ R47: ab24 >= 0
+ R48: qq25 - ab25 >= 0
+ R49: ab25 >= 0
+ R50: qq26 - ab26 >= 0
+ R51: ab26 >= 0
+ R52: qq27 - ab27 >= 0
+ R53: ab27 >= 0
+ R54: qq28 - ab28 >= 0
+ R55: ab28 >= 0
+ R56: qq29 - ab29 >= 0
+ R57: ab29 >= 0
+ R58: qq30 - ab30 >= 0
+ R59: ab30 >= 0
+ R60: - 0.2 qq1 - 0.1 qq2 - 0.1 qq3 - 0.1 qq4 - 0.1 qq5 - ppp <= -200
+ R61: - 0.1 qq1 - 0.2 qq2 - 0.1 qq3 - 0.1 qq4 - 0.1 qq5 - ppp <= -200
+ R62: - 0.1 qq1 - 0.1 qq2 - 0.2 qq3 - 0.1 qq4 - 0.1 qq5 - ppp <= -200
+ R63: - 0.1 qq1 - 0.1 qq2 - 0.1 qq3 - 0.2 qq4 - 0.1 qq5 - ppp <= -200
+ R64: - 0.1 qq1 - 0.1 qq2 - 0.1 qq3 - 0.1 qq4 - 0.2 qq5 - ppp <= -200
+ R65: - 0.1 qq6 - 0.05 qq7 - 0.05 qq8 - 0.05 qq9 - 0.05 qq10 - ppp <= -150
+ R66: - 0.05 qq6 - 0.1 qq7 - 0.05 qq8 - 0.05 qq9 - 0.05 qq10 - ppp <= -150
+ R67: - 0.05 qq6 - 0.05 qq7 - 0.1 qq8 - 0.05 qq9 - 0.05 qq10 - ppp <= -150
+ R68: - 0.05 qq6 - 0.05 qq7 - 0.05 qq8 - 0.1 qq9 - 0.05 qq10 - ppp <= -150
+ R69: - 0.05 qq6 - 0.05 qq7 - 0.05 qq8 - 0.05 qq9 - 0.1 qq10 - ppp <= -150
+ R70: - 0.04 qq11 - 0.02 qq12 - 0.02 qq13 - 0.02 qq14 - 0.02 qq15 - ppp
+   <= -100
+ R71: - 0.02 qq11 - 0.04 qq12 - 0.02 qq13 - 0.02 qq14 - 0.02 qq15 - ppp
+   <= -100
+ R72: - 0.02 qq11 - 0.02 qq12 - 0.04 qq13 - 0.02 qq14 - 0.02 qq15 - ppp
+   <= -100
+ R73: - 0.02 qq11 - 0.02 qq12 - 0.02 qq13 - 0.04 qq14 - 0.02 qq15 - ppp
+   <= -100
+ R74: - 0.02 qq11 - 0.02 qq12 - 0.02 qq13 - 0.02 qq14 - 0.04 qq15 - ppp
+   <= -100
+ R75: - 0.3 qq16 - 0.15 qq17 - 0.15 qq18 - 0.15 qq19 - 0.15 qq20 - ppp
+   <= -250
+ R76: - 0.15 qq16 - 0.3 qq17 - 0.15 qq18 - 0.15 qq19 - 0.15 qq20 - ppp
+   <= -250
+ R77: - 0.15 qq16 - 0.15 qq17 - 0.3 qq18 - 0.15 qq19 - 0.15 qq20 - ppp
+   <= -250
+ R78: - 0.15 qq16 - 0.15 qq17 - 0.15 qq18 - 0.3 qq19 - 0.15 qq20 - ppp
+   <= -250
+ R79: - 0.15 qq16 - 0.15 qq17 - 0.15 qq18 - 0.15 qq19 - 0.3 qq20 - ppp
+   <= -250
+ R80: - 0.4 qq21 - 0.2 qq22 - 0.2 qq23 - 0.2 qq24 - 0.2 qq25 - ppp <= -300
+ R81: - 0.2 qq21 - 0.4 qq22 - 0.2 qq23 - 0.2 qq24 - 0.2 qq25 - ppp <= -300
+ R82: - 0.2 qq21 - 0.2 qq22 - 0.4 qq23 - 0.2 qq24 - 0.2 qq25 - ppp <= -300
+ R83: - 0.2 qq21 - 0.2 qq22 - 0.2 qq23 - 0.4 qq24 - 0.2 qq25 - ppp <= -300
+ R84: - 0.2 qq21 - 0.2 qq22 - 0.2 qq23 - 0.2 qq24 - 0.4 qq25 - ppp <= -300
+ R85: - 0.02 qq26 - 0.01 qq27 - 0.01 qq28 - 0.01 qq29 - 0.01 qq30 - ppp
+   <= -80
+ R86: - 0.01 qq26 - 0.02 qq27 - 0.01 qq28 - 0.01 qq29 - 0.01 qq30 - ppp
+   <= -80
+ R87: - 0.01 qq26 - 0.01 qq27 - 0.02 qq28 - 0.01 qq29 - 0.01 qq30 - ppp
+   <= -80
+ R88: - 0.01 qq26 - 0.01 qq27 - 0.01 qq28 - 0.02 qq29 - 0.01 qq30 - ppp
+   <= -80
+ R89: - 0.01 qq26 - 0.01 qq27 - 0.01 qq28 - 0.01 qq29 - 0.02 qq30 - ppp
+   <= -80
+ R90: qq1 - ab1 + qq2 - ab2 + qq3 - ab3 + qq4 - ab4 + qq5 - ab5 + qq6 - ab6
+   + qq7 - ab7 + qq8 - ab8 + qq9 - ab9 + qq10 - ab10 + qq11 - ab11 + qq12
+   - ab12 + qq13 - ab13 + qq14 - ab14 + qq15 - ab15 + qq16 - ab16 + qq17
+   - ab17 + qq18 - ab18 + qq19 - ab19 + qq20 - ab20 + qq21 - ab21 + qq22
+   - ab22 + qq23 - ab23 + qq24 - ab24 + qq25 - ab25 + qq26 - ab26 + qq27
+   - ab27 + qq28 - ab28 + qq29 - ab29 + qq30 - ab30 = 14111.102184
+ qc0: - 6 ab1 + ppp + [ - 3 ab1 ^2 ] <= 2
+ qc1: - 4 ab2 + ppp + [ - 6 ab2 ^2 ] <= 3
+ qc2: - 2 ab3 + ppp + [ - 9 ab3 ^2 ] <= 4
+ qc3: - 4 ab4 + ppp + [ - 6 ab4 ^2 ] <= 2
+ qc4: - 6 ab5 + ppp + [ - 3 ab5 ^2 ] <= 3
+ qc5: - 4 ab6 + ppp + [ - 9 ab6 ^2 ] <= 1
+ qc6: - 2 ab7 + ppp + [ - 6 ab7 ^2 ] <= 2
+ qc7: - 2 ab8 + ppp + [ - 3 ab8 ^2 ] <= 3
+ qc8: - 6 ab9 + ppp + [ - 3 ab9 ^2 ] <= 1
+ qc9: - 4 ab10 + ppp + [ - 3 ab10 ^2 ] <= 2
+ qc10: - 2 ab11 + ppp + [ - 3 ab11 ^2 ] <= 1
+ qc11: - 4 ab12 + ppp + [ - 3 ab12 ^2 ] <= 1
+ qc12: - 2 ab13 + ppp + [ - 6 ab13 ^2 ] <= 1
+ qc13: - 2 ab14 + ppp + [ - 3 ab14 ^2 ] <= 2
+ qc14: - 4 ab15 + ppp + [ - 6 ab15 ^2 ] <= 1
+ qc15: - 8 ab16 + ppp + [ - 3 ab16 ^2 ] <= 3
+ qc16: - 6 ab17 + ppp + [ - 6 ab17 ^2 ] <= 4
+ qc17: - 10 ab18 + ppp + [ - 3 ab18 ^2 ] <= 2
+ qc18: - 6 ab19 + ppp + [ - 9 ab19 ^2 ] <= 3
+ qc19: - 4 ab20 + ppp + [ - 12 ab20 ^2 ] <= 2
+ qc20: - 8 ab21 + ppp + [ - 3 ab21 ^2 ] <= 5
+ qc21: - 10 ab22 + ppp + [ - 6 ab22 ^2 ] <= 4
+ qc22: - 6 ab23 + ppp + [ - 6 ab23 ^2 ] <= 3
+ qc23: - 8 ab24 + ppp + [ - 9 ab24 ^2 ] <= 2
+ qc24: - 6 ab25 + ppp + [ - 12 ab25 ^2 ] <= 1
+ qc25: - 2 ab26 + ppp + [ - 3 ab26 ^2 ] <= 1
+ qc26: - 4 ab27 + ppp + [ - 3 ab27 ^2 ] <= 1
+ qc27: - 2 ab28 + ppp + [ - 6 ab28 ^2 ] <= 1
+ qc28: - 2 ab29 + ppp + [ - 3 ab29 ^2 ] <= 2
+ qc29: - 4 ab30 + ppp + [ - 6 ab30 ^2 ] <= 1
 Bounds
  Constant = 1
-General Constraints
- GC0: pow_aux_3907 = POW ( pow_base_aux_3906 ^ 1.5 )
- GC1: pow_aux_3909 = POW ( pow_base_aux_3908 ^ 0.5 )
- GC2: pow_aux_3911 = POW ( pow_base_aux_3910 ^ 1.5 )
- GC3: pow_aux_3913 = POW ( pow_base_aux_3912 ^ 0.5 )
- GC4: pow_aux_3915 = POW ( pow_base_aux_3914 ^ 1.5 )
- GC5: pow_aux_3917 = POW ( pow_base_aux_3916 ^ 0.5 )
- GC6: pow_aux_3937 = POW ( pow_base_aux_3936 ^ 1.5 )
- GC7: pow_aux_3939 = POW ( pow_base_aux_3938 ^ 0.5 )
- GC8: pow_aux_3941 = POW ( pow_base_aux_3940 ^ 0.5 )
- GC9: pow_aux_3943 = POW ( pow_base_aux_3942 ^ 0.5 )
 End

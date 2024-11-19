@@ -29,7 +29,7 @@ will_use_  <- TRUE
 will_use_industry <- TRUE
 will_use_manufacturing <- TRUE
 will_normalise <- TRUE
-force_fresh_data <- FALSE
+force_fresh_data <- TRUE
 use_mean_for_missing_data <- TRUE
 will_use_free <- TRUE
 will_use_energy_intensity <- TRUE
@@ -1009,15 +1009,15 @@ find_slopes <- function(year = 0, weight_population = 1, weight_GDPpc = 1, weigh
   df_1D <- df_1D[df_1D$"df_free_distance" != 0,]
   
   lm <- lm(df_1D$"df_free_distance" ~ df_1D$"df_distance")
-  summary(lm)
+  #summary(lm)
   
   #write that summary to a file
-  sink(paste("linear_regration_summary_for", text_s, ".txt"))
-  summary(lm)
-  sink()
+  #sink(paste("linear_regration_summary_for", text_s, ".txt"))
+  #summary(lm)
+  #sink()
   # plot the regression line
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Distance between countries in 2015", ylab = "Distance between countries in 2015 with free allocation", main = paste("Distance between countries in 2015 and in 2015 with free allocation", year_for_comparison))
-  abline(lm, col = "red")
+  #plot(df_1D$"df_distance", df_1D$"df_free_distance", xlab = "Distance between countries in 2015", ylab = "Distance between countries in 2015 with free allocation", main = paste("Distance between countries in 2015 and in 2015 with free allocation", year_for_comparison))
+  #abline(lm, col = "red")
   return (list( data = df_1D, linear =  lm))
 }
 
@@ -1057,66 +1057,82 @@ select_closest_points <- function(df_1D, n) {
   list(df_below_threshold = df_below_threshold, df_above_threshold = df_above_threshold)
 }
 
-create_graph <- function (year = 0, type = "png", name = "01_distances_from_features_to_frees_all_countries_", path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/distnaces_all_from_all/", weights = c(1,1,1,1,1,1,1,1)) {
+create_graph <- function(year = 0, type = "png", name = "01_distances_from_features_to_frees_all_countries_", 
+                         path = "C:/Users/Kostas/Documents/GitHub/Diplomatiki_kwpap_step_1/Thesis/R_plots/distnaces_all_from_all/", 
+                         weights = c(1,1,1,1,1,1,1,1), 
+                         log_file_name = "linear_model_log.txt") {
   
-  if (year != 0) {
-    year_for_comparison <- year
-  }
+  # Set the comparison year
+  year_for_comparison <- ifelse(year != 0, year, current_year())  # Replace current_year() with an appropriate default
   
+  # Retrieve slopes and data
+  slopes <- find_slopes(
+    year = year_for_comparison, 
+    weight_population = weights[1], 
+    weight_GDPpc = weights[2], 
+    weight_inflation = weights[3], 
+    weight_agriculture = weights[4], 
+    weight_industry = weights[5], 
+    weight_manufacturing = weights[6], 
+    weight_total_energy_supply = weights[7], 
+    weight_verified_emisions = weights[8]
+  )
   
-  # Assuming weights is already passed correctly
-  slopes <- find_slopes(year = year_for_comparison, 
-                       weight_population = weights[1], weight_GDPpc = weights[2], 
-                       weight_inflation = weights[3], weight_agriculture = weights[4], 
-                       weight_industry = weights[5], weight_manufacturing = weights[6], 
-                       weight_total_energy_supply = weights[7], weight_verified_emisions = weights[8])
   df_1D <- slopes$data
   
-  lm <- slopes$linear
+  # Log the summary of the linear model
+  linear_model_summary <- summary(slopes$linear)
+  log_title <- paste0("Distances from All to ALL, for year: ", year_for_comparison)
+  log_file_path <- paste0(path, log_file_name)
+  log_message(message = log_title, log_file = log_file_path)
+  log_message(capture.output(linear_model_summary), log_file_path)
   
-  if (type == "png"){
-    # Set up plot file
-    png(paste(path, name, year, ".png", sep=""), width = 1000, height = 1000)
-  }else if(type == "svg"){
-    svg(paste(path, name, year, ".svg", sep=""))
-  }
-
+  # Extract countries from the pair column
+  df_1D <- df_1D %>%
+    mutate(
+      country1 = str_trim(str_split(pair, "-", simplify = TRUE)[,1]),
+      country2 = str_trim(str_split(pair, "-", simplify = TRUE)[,2])
+    )
   
-  # Base plot with grid lines
-  plot(df_1D$"df_distance", df_1D$"df_free_distance", 
-       xlab = "Combined calculated distance", 
-       ylab = "Free distance", 
-       main = paste("Scatterplot of calculated distance and actual distance for the year ", year, sep = ""),
-       pch = 20, col = "black")  # Base points in black
-  
-  grid()  # Add grid lines
-  
-  # Define countries and colors in a vector for reuse
+  # Define countries and corresponding colors
   countries <- c("Germany", "Greece", "Italy", "Ukraine", "France", "United Kingdom", "Luxembourg")
-  colors <- c("red", "blue", "green", "yellow", "orange", "purple")
+  colors <- c("red", "blue", "green", "yellow", "orange", "purple", "pink")
+  names(colors) <- countries
   
-  # Use a loop to color points by country
-  for (i in seq_along(countries)) {
-    country <- countries[i]
-    color <- colors[i]
-    
-    # Highlight points for each country with the corresponding color
-    points(df_1D[str_detect(df_1D$"pair", regex(paste0(".", country))), 1], 
-           df_1D[str_detect(df_1D$"pair", regex(paste0(".", country))), 2], 
-           col = color, pch = 20)
-    points(df_1D[str_detect(df_1D$"pair", regex(paste0(country, "."))), 1], 
-           df_1D[str_detect(df_1D$"pair", regex(paste0(country, "."))), 2], 
-           col = color, pch = 20)
-  }
+  # Identify points to highlight
+  df_1D <- df_1D %>%
+    rowwise() %>%
+    mutate(
+      country_highlight = case_when(
+        country1 %in% countries ~ country1,
+        country2 %in% countries ~ country2,
+        TRUE ~ NA_character_
+      )
+    ) %>%
+    ungroup()
   
-  # Add regression line
-  abline(lm, col = "red", lwd = 2)
+  # Set individual axis limits
+  x_max_value <- 1.1 * max(df_1D$df_distance, na.rm = TRUE)
+  y_max_value <- 1.1 * max(df_1D$df_free_distance, na.rm = TRUE)
   
-  # Add a legend
-  legend("bottomright", legend = countries, col = colors, pch = 20, title = "Countries")
+  # Create the plot
+  p <- ggplot(df_1D, aes(x = df_distance, y = df_free_distance)) +
+    geom_point(aes(color = country_highlight), size = 2) +
+    scale_color_manual(values = colors, na.value = "grey") +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "black", linetype = "dashed") +
+    labs(
+      title = paste("Distance in free Allocation vs. Distance in features for Year", year),
+      x = "Combined Features Distance",
+      y = "Free Allocation Distance",
+      color = "Highlighted Countries"
+    ) +
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    xlim(0, x_max_value) +
+    ylim(0, y_max_value)
   
-  # Close the file device
-  dev.off()
+  # Save the plot
+  ggsave(filename = paste0(path, name, year, ".", type), plot = p, width = 20, height = 20, units = "cm")
 }
 
 
@@ -1448,13 +1464,6 @@ MSE <- function(modelobject){
   if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
   return(mean(summary(modelobject)$residuals^2))
 }
-
-
-
-# Usage:
-# Assuming you have a dataframe 'df' and a list of European countries 'list_eur_countries'
-# final_data <- analyze_european_data(df, list_eur_countries, "log_file.txt", "plots/", 2008, 2018)
-
 
 is_first_linear_regration_better <- function(lm1, lm2){
   return(summary(lm1)$r.squared > summary(lm2)$r.squared && (p_val(lm1) < 0.05 || p_val(lm1) < p_val(lm2)) && MSE(lm1) < MSE(lm2)*1.5)

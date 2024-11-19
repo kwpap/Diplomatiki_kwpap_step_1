@@ -1,0 +1,7 @@
+id,name,price_demand_function,free_emission_multiplier,consumer_surplus
+1,Steel,200 - 0.1*x,0,110285.066266991
+2,Cement,150 - 0.05*x,0,114167.879458191
+3,Paper,100 - 0.02*x,0,106219.621511554
+4,Chemicals,250 - 0.15*x,0,120564.869277332
+5,Automotive,300 - 0.2*x,0,134385.326338058
+6,Textiles,80 - 0.01*x,0,117690.292427081
